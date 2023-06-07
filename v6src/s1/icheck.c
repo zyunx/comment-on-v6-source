@@ -94,8 +94,8 @@ char *file;
 	for (ip = bmap; ip < &bmap[4096];)
 		*ip++ = 0;
 	sync();
-	bread(1, &sblock, 512);
-	nifiles = sblock.s_isize*16;
+	bread(1, &sblock, 512);		/* coment: super block is at the 2nd(index 1 is 2nd of 0 based index) 512-bytes block of disk */
+	nifiles = sblock.s_isize*16;	/* comment: 1 block contains 16 i-nodes, so i-node is 32 bytes */
 	for(i=0; ino < nifiles; i =+ NINODE/16) {
 		bread(i+2, inode, sizeof inode);
 		for(j=0; j<NINODE && ino<nifiles; j++) {
@@ -199,7 +199,7 @@ struct inode *aip;
 }
 
 chk(ab, s)
-char *ab;
+char *ab; /* comment: address of a block */
 {
 	register char *b;
 	register n, m;
@@ -211,6 +211,8 @@ char *ab;
 		printf("%l bad; inode=%l, class=%s\n", b, ino, s);
 		return(1);
 	}
+
+	/* comment: use a bit to indicate a bool for saving space */
 	m = 1 << (b&017);
 	n = (b>>4) & 07777;
 	if (bmap[n]&m) {
@@ -218,6 +220,7 @@ char *ab;
 		ndup++;
 	}
 	bmap[n] =| m;
+
 	for (n=0; blist[n] != -1; n++)
 		if (b == blist[n])
 			printf("%l arg; inode=%l, class=%s\n", b, ino, s);
