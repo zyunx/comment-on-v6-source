@@ -94,7 +94,7 @@ char *file;
 	for (ip = bmap; ip < &bmap[4096];)
 		*ip++ = 0;
 	sync();
-	bread(1, &sblock, 512);		/* coment: super block is at the 2nd(index 1 is 2nd of 0 based index) 512-bytes block of disk */
+	bread(1, &sblock, 512);		/* comment: super block is at the 2nd(index 1 is 2nd of 0 based index) 512-bytes block of disk */
 	nifiles = sblock.s_isize*16;	/* comment: 1 block contains 16 i-nodes, so i-node is 32 bytes */
 	for(i=0; ino < nifiles; i =+ NINODE/16) {
 		bread(i+2, inode, sizeof inode);
