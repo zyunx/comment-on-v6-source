@@ -274,6 +274,10 @@ free(in)
 	int buf[256];
 
 	if (sblock.s_nfree >= 100) {
+		/* comment: users only need this block is free, 
+		 * they don't care the content in the free blocks
+		 * so the block can store some maintainance info
+		 * such as linkage and free block map. */
 		buf[0] = sblock.s_nfree;
 		for(i=0; i<100; i++)
 			buf[i+1] = sblock.s_free[i];
