@@ -96,7 +96,7 @@ char *file;
 	sync();
 	bread(1, &sblock, 512);		/* comment: super block is at the 2nd(index 1 is 2nd of 0 based index) 512-bytes block of disk */
 	nifiles = sblock.s_isize*16;	/* comment: 1 block contains 16 i-nodes, so i-node is 32 bytes */
-	for(i=0; ino < nifiles; i =+ NINODE/16) {
+	for(i=0; ino < nifiles; i =+ NINODE/16) {	/* comment: iterate all i-nodes, NINODE i-nodes a batch */
 		bread(i+2, inode, sizeof inode);
 		for(j=0; j<NINODE && ino<nifiles; j++) {
 			ino++;
@@ -198,6 +198,8 @@ struct inode *aip;
 	}
 }
 
+/* comment: check one of i-nodes' block addresses if it exceeds file system's data block range,
+ * if it used by more than one i-nodes, and display block info passed by '-b' */
 chk(ab, s)
 char *ab; /* comment: address of a block */
 {
