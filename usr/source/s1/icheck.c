@@ -123,7 +123,7 @@ char *file;
 	for (ip = bmap; ip < &bmap[4096];) {
 		i = *ip++;
 		while (i) {
-			if (i<0)
+			if (i<0)	/* comment: most significant bit is 1 */
 				j--;
 			i =<< 1;
 		}
