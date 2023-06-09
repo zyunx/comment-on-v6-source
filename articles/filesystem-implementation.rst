@@ -53,7 +53,7 @@ For large file i-node::
       i_addr[0] |       |---/           |   -   |                                                
                 |-------|               |       |                                                
       i_addr[1] |       |               +-------+                                                
-                --------|                                                              data block
+                |-------|                                                              data block
       i_addr[2] |       |                                                               +-------+
                 |-------|                                                               |       |
       i_addr[3] |       |                                   2nd indirect block          |       |
@@ -76,6 +76,8 @@ Each of the first 7 elements of i-node's i_addr points a indirect block (a speci
 The 8th element of i_addr points a indirect block that contain 256 pointers to 2nd level indirect blocks of which each contains 256  data block adresses.
 
 So large file's size is 7 * 256 * 512 + 256 * 256 * 512 bytes at maximum.
+
+For code, see *pass1()* in usr/source/s1/icheck.c
 
 Data Block Management
 =====================
