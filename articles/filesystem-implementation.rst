@@ -25,7 +25,7 @@ Super block is located block 1 (2nd block).
 
 I-node list starts at block 2, and is *s_isize* size.
 
-data block stats at block *s_isize* + 2, and ends at *s_fsize* (exclusive).
+Data blocks start at block *s_isize* + 2, and ends at *s_fsize* (exclusive).
 
 Other blocks are unused.
 
