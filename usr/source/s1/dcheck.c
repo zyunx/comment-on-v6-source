@@ -13,7 +13,7 @@ char	*dargv[]
 #include "/usr/sys/ino.h"
 #include "/usr/sys/filsys.h"
 
-struct	inode	inode[NINODE];
+struct	inode	inode[NINODE];		/* comment: currently processing part of the inode list */
 struct	filsys	sblock;
 
 int	sflg;
@@ -92,7 +92,7 @@ char *file;
 	for (i=0; i<nfiles; i++)
 		ecount[i] = 0;
 	for(i=0; ino<nfiles; i =+ NINODE/16) {
-		bread(i+2, inode, sizeof inode);
+		bread(i+2, inode, sizeof inode);			/* comment: read 16 blocks once */
 		for(j=0; j<NINODE && ino<nfiles; j++) {
 			ino++;
 			pass1(&inode[j]);
@@ -152,6 +152,7 @@ pass2(aip)
 	    ecount[i]&0377, ip->i_nlink&0377);
 }
 
+/* comment: return a pointer to directry entry of inode pointed by 'aip' and at offset 'aoff' */
 dread(aip, aoff)
 {
 	register b, off;
