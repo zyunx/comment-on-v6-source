@@ -81,3 +81,45 @@ For code, see *pass1()* in usr/source/s1/icheck.c
 
 Data Block Management
 =====================
+
+All used blocks can be addressed by all i-node's *i_addr* fields.
+
+Free blocks are addressed by a linked list. 
+The head of the linked list is stored in s_nfree and s_free[100] of super block.
+Each of ther nodes is stored in one of the the free blocks that is address by previous node's first free block address.
+
+The only thing users care about free blocks is that they are free.
+Content of free blocks is no importance for users.
+Thus system software can use them to store some information.
+
+Free blocks addressed by some node can be allocated only after ones addressed by previous nodes.
+So when a block which contains a node is about to be allocated, the node will be the head of the linked list.
+And just before the block is allocated, the node data is read into s_nfree and s_free[100].
+So the head of the linked list is never lost. S_nfree and s_free[100] is always the head.
+
+The linked list is like::
+
+    +---------------------------------------------------+                                                                                               
+    |         |           |                |            |                                                                                               
+    | s_nfree | s_free[0] |   - - - - - -  | s_free[99] |                                                                                               
+    |         |           |                |            |                                                                                               
+    +---------------------------------------------------+                                                                                               
+                    \                                                                                                                                   
+                     \ +-----------------------------------------------------------------------------------------------+                                
+                      -|                  |                        |                 |                        |        |                                
+                       | free block count | 1st free block address |   - - - - - -   | nth free block address | unused |                                
+                       |                  |                        |                 |                        |        |                                
+                       +-----------------------------------------------------------------------------------------------+                                
+                                                    \                                                                                                   
+                                                     \ +-----------------------------------------------------------------------------------------------+
+                                                      -|                  |                        |                 |                        |        |
+                                                       | free block count | 1st free block address |   - - - - - -   | nth free block address | unused |
+                                                       |                  |                        |                 |                        |        |
+                                                       +-----------------------------------------------------------------------------------------------+
+                                                                                    \                                                                   
+                                                                                     \                                                                  
+                                                                                      -                                                                 
+                                                                                                - - - - - - 
+
+                                         
+For code, see *free()* and *alloc()* in usr/source/s1/icheck.c
