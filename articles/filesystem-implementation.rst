@@ -6,6 +6,7 @@ The Implementation of File System
 Super Block
 ===========
 
+see: UNIX V6 manual fs(V) or FILE SYSTEM ( V )
 see: struct filsys in usr/sys/filsys.h
 
 Disk Layout
