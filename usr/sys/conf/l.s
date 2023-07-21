@@ -1,15 +1,23 @@
+/ comment: To understand UNIX assembly, see UNIX Assembler Reference Manual and LD(I) in V6 manual.
 / low core
+
+/ comment: bus request priorities, see 2.6 AUTOMATIC PRIORITY INTERRUPTS in PDP11/40 Processor Handbook.
 
 br4 = 200
 br5 = 240
 br6 = 300
 br7 = 340
 
+/ comment: The object code of this file will be loaded at memory 0. see /usr/sys/run and LD(I) in V6 manual.
+/ comment: Low memory map, see APPENDIX B MEMORY MAP in PDP11/40 Processor Handbook.
+/ comment: see BASIC ADDRESSING LOGIC in PDP11/40 Processor Handbook.
+
 . = 0^.
         br      1f
         4
 
 / trap vectors
+/ comment: To understand what these traps mean, see 2.7 PROCESSOR TRAPS in PDP11/40 Processor Handbook.
         trap; br7+0.            / bus error
         trap; br7+1.            / illegal instruction
         trap; br7+2.            / bpt-trace trap
@@ -52,6 +60,8 @@ br7 = 340
 //////////////////////////////////////////////////////
 /               interface code to C
 //////////////////////////////////////////////////////
+
+/ comment: Global symbols in assembly, which begin with '_', is the same as global variables without the '_' in C source
 
 .globl  call, trap
 
