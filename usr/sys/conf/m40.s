@@ -12,6 +12,9 @@ reset	= 5
 .globl	_trap
 trap:
 	mov	PS,-4(sp)
+	/ comment: Trap may be coursed by fault. 
+	/ comment: If nofault is not 0, trap is intentionally as fault handle mechanisum.
+	/ comment: And the nofault stores the fault handler address.
 	tst	nofault
 	bne	1f
 	mov	SSR0,ssr
@@ -453,6 +456,7 @@ fuword:
 
 gword:
 	mov	PS,-(sp)
+	/ comment: set priority at 7, disable interrupts
 	bis	$340,PS
 	mov	nofault,-(sp)
 	mov	$err,nofault
@@ -483,6 +487,7 @@ pword:
 err:
 	mov	(sp)+,nofault
 	mov	(sp)+,PS
+	/ comment: go back two call level
 	tst	(sp)+
 	mov	$-1,r0
 	rts	pc
@@ -834,6 +839,7 @@ _cputype:40.
 
 .bss
 .globl	nofault, ssr, badtrap
+/ comment: nofault stores fault handler address
 nofault:.=.+2
 ssr:	.=.+6
 badtrap:.=.+2
