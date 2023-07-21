@@ -10,6 +10,7 @@ reset	= 5
 
 .globl	trap, call
 .globl	_trap
+/ comment: for trap
 trap:
 	mov	PS,-4(sp)
 	/ comment: Trap may be coursed by fault. 
@@ -30,9 +31,11 @@ trap:
 .globl	_runrun, _swtch
 call1:
 	tst	-(sp)
+	/ comment: set priority 0, so that trap can be interrupted.
 	bic	$340,PS
 	br	1f
 
+/ comment: for interrupt
 call:
 	mov	PS,-(sp)
 1:
@@ -41,7 +44,9 @@ call:
 	mov	4(sp),-(sp)
 	bic	$!37,(sp)
 	bit	$30000,PS
+	/ comment: when unix is running in kernel(0) mode, branch to 1f
 	beq	1f
+	/ comment: when unix is running in user(3) mode
 	jsr	pc,*(r0)+
 2:
 	bis	$340,PS
@@ -55,12 +60,14 @@ call:
 	mtpi	sp
 	br	2f
 1:
+	/ comment: when unix is running in kernel(0) mode, set previous mode to user(3)
 	bis	$30000,PS
 	jsr	pc,*(r0)+
 	cmp	(sp)+,(sp)+
 2:
 	mov	(sp)+,r1
 	tst	(sp)+
+	/ comment: recover r0 in 'xxx:   jsr     r0,call; _xxx' in l.s
 	mov	(sp)+,r0
 	rtt
 
