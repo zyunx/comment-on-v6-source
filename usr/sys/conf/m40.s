@@ -18,8 +18,10 @@ trap:
 	/ comment: And the nofault stores the fault handler address.
 	tst	nofault
 	bne	1f
+	/ coment: Memory management status registers. see 6.6 Fault registers in PDP11 Processor Handbook.
 	mov	SSR0,ssr
 	mov	SSR2,ssr+4
+	/ comment: resume page status monistoring.
 	mov	$1,SSR0
 	jsr	r0,call1; _trap
 	/ no return
@@ -848,5 +850,6 @@ _cputype:40.
 .globl	nofault, ssr, badtrap
 / comment: nofault stores fault handler address
 nofault:.=.+2
+/ comment: memory management status registers, SR0, SR1, SR2, see 6.6 Fault Registers in PDP11/40 Processor Handbook.
 ssr:	.=.+6
 badtrap:.=.+2

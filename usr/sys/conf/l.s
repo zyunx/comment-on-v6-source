@@ -55,6 +55,7 @@ br7 = 340
 . = 240^.
         trap; br7+7.            / programmed interrupt
         trap; br7+8.            / floating point
+/ comment: also known as PDP11 Aborts, see 6.5.2 Page Descriptor Register and 6.6 Fault Registers in PDP11 Processor Handbook
         trap; br7+9.            / segmentation violation
 
 //////////////////////////////////////////////////////
