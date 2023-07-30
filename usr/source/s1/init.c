@@ -58,6 +58,7 @@ main()
 		if ((i = open(wtmpf, 1)) >= 0) {
 			seek(i, 0, 2);
 			wtmp.tty = '~';
+			/* comment: get date and time */
 			time(wtmp.time);
 			write(i, &wtmp, 16);
 			close(i);
@@ -69,8 +70,14 @@ main()
 	 * close all files and
 	 * check switches for magic values
 	 */
-
+	/* comment: reset, setexit − execute non-local goto */
 	setexit();
+	/* comment: 1 is hangup. The SIGHUP signal is sent to a process when its controlling terminal is closed. 
+	 * It was originally designed to notify the process of a serial line drop (a hangup). 
+	 * In modern systems, this signal usually means that the controlling pseudo or virtual terminal has been closed.
+	 * Many daemons will reload their configuration files and reopen their logfiles instead of exiting when 
+	 * receiving this signal.[4] nohup is a command to make a command ignore the signal.
+	 */
 	signal(1, reset);
 	for(i=0; i<10; i++)
 		close(i);
@@ -212,6 +219,7 @@ struct tab *p;
 	if (f >= 0) {
 		wtmp.tty = p->line;
 		time(wtmp.time);
+		/* commen: set file pointer to the end so that append */
 		seek(f, 0, 2);
 		write(f, &wtmp, 16);
 		close(f);

@@ -35,10 +35,14 @@ char **argv;
 	char pwbuf[9];
 	int t, sflags, f, c, uid, gid;
 
+	/* comment: ignore interrupt signal */
 	signal(3, 1);
+	/* comment: ignore quit signal */
 	signal(2, 1);
+	/* comment: restore at default priority level, priority level will pass to child process. */
 	nice(0);
 	ttyx = "/dev/ttyx";
+	/* comment: ttyn(0) returns standard input tty name */
 	if ((utmp.tty=ttyn(0)) == 'x') {
 		write(1, "Sorry.\n", 7);
 		exit();
@@ -49,6 +53,7 @@ char **argv;
 	ttyb.kill = '@';
 	stty(0, &ttyb);
     loop:
+	/* comment: get user name */
 	namep = utmp.name;
 	if (argc>1) {
 		np = argv[1];
@@ -66,10 +71,13 @@ char **argv;
 	}
 	while (namep < utmp.name+8)
 		*namep++ = ' ';
+	/* comment: get /etc/passwd entry for the user name, see PASSWD(V) */
 	if (getpwentry(utmp.name, pbuf))
 		goto bad;
+	/* comment: skip user name part and compare password */
 	np = colon(pbuf);
 	if (*np!=':') {
+		/* comment: diable echo */
 		sflags = ttyb.tflags;
 		ttyb.tflags =& ~ ECHO;
 		stty(0, &ttyb);
@@ -82,6 +90,7 @@ char **argv;
 				*namep++ = c;
 		}
 		*namep++ = '\0';
+		/* comment: recover tty mode */
 		ttyb.tflags = sflags;
 		stty(0, &ttyb);
 		write(1, "\n", 1);
@@ -90,23 +99,28 @@ char **argv;
 		if (*--namep!='\0' || *--np!=':')
 			goto bad;
 	}
+	/* comment: skip password part and get uid */
 	np = colon(np);
 	uid = 0;
 	while (*np != ':')
 		uid = uid*10 + *np++ - '0';
+	/* comment: get gid */
 	np++;
 	gid = 0;
 	while (*np != ':')
 		gid = gid*10 + *np++ - '0';
 	np++;
+	/* comment: skip GCOS part */
 	np = colon(np);
 	namep = np;
 	np = colon(np);
+	/* comment: change work directory */
 	if (chdir(namep)<0) {
 		write(1, "No directory\n", 13);
 		goto loop;
 	}
 	time(utmp.time);
+	/* comment: user login databsae */
 	if ((f = open("/etc/utmp", 1)) >= 0) {
 		t = utmp.tty;
 		if (t>='a')
@@ -120,11 +134,13 @@ char **argv;
 		write(f, &utmp, 16);
 		close(f);
 	}
+	/* comment: motd = message of the day */
 	if ((f = open("/etc/motd", 0)) >= 0) {
 		while(read(f, &t, 1) > 0)
 			write(1, &t, 1);
 		close(f);
 	}
+	/* comment: get file inode info */
 	if(stat(".mail", &statb) >= 0 && statb.size)
 		write(1, "You have mail.\n", 15);
 	chown(ttyx, uid);
@@ -132,6 +148,7 @@ char **argv;
 	setuid(uid);
 	if (*np == '\0')
 		np = "/bin/sh";
+	/* comment: execute sh directly without fork */
 	execl(np, "-", 0);
 	write(1, "No shell.\n", 9);
 	exit();
