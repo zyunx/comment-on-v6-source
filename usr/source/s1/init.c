@@ -18,6 +18,8 @@ struct
 	int	line;
 	char	coms[2];
 } line;
+
+/* comment: state for all teletypers */
 struct	tab
 {
 	int	pid;
@@ -45,6 +47,7 @@ main()
 	 */
 
 	if(getcsw() != single) {
+		/* comment: run script /etc/rc */
 		i = fork();
 		if(i == 0) {
 			open("/", 0);
@@ -54,9 +57,12 @@ main()
 			exit();
 		}
 		while(wait() != i);
+		/* comment: create or rewrite /etc/utmp */
 		close(creat(utmp, 0644));
+		/* comment: write a record in /usr/adm/wtmp */
 		if ((i = open(wtmpf, 1)) >= 0) {
 			seek(i, 0, 2);
+			/* comment: ‘ ̃’ indicates that the system was rebooted at the indicated time */
 			wtmp.tty = '~';
 			/* comment: get date and time */
 			time(wtmp.time);
@@ -104,7 +110,9 @@ main()
 	/*
 	 * open and merge in init file
 	 */
-
+	/* comment: init file is /etc/ttys.
+	 * Itab may be not empty when a huangup signal received.
+	 */
 	fi = open(ifile, 0);
 	q = &itab[0];
 	while(rline()) {
@@ -130,9 +138,11 @@ main()
 		goto error;
 	for(; q < &itab[tabsize]; q++)
 		term(q);
+	/* comment: create processes for every tty if there's no process on this tty */
 	for(all)
 		if(p->line != 0 && p->pid == 0)
 			dfork(p);
+	/* comment: wait all child process exits, and recreate new process. */
 	for(ever) {
 		i = wait();
 		for(all)
@@ -143,6 +153,7 @@ main()
 	}
 }
 
+/* comment: terminate all processes on ttys */
 termall()
 {
 	register struct tab *p;
@@ -151,6 +162,7 @@ termall()
 		term(p);
 }
 
+/* comment: terminate the process on a tty */
 term(ap)
 struct tab *ap;
 {
@@ -177,6 +189,7 @@ rline()
 	return(1);
 }
 
+/* comment: fork and execute /etc/getty on this tty */
 dfork(ap)
 struct tab *ap;
 {
@@ -200,12 +213,13 @@ struct tab *ap;
 	p->pid = i;
 }
 
+/* comment: erase utmp record and record logout in wtmp */
 rmut(p)
 struct tab *p;
 {
 	register i, f;
 	static char zero[16];
-
+	/* comment: erase utmp record in /etc/utmp */
 	f = open(utmp, 1);
 	if(f >= 0) {
 		i = p->line;
@@ -215,6 +229,7 @@ struct tab *p;
 		write(f, zero, 16);
 		close(f);
 	}
+	/* comment: record logout in /usr/adm/wtmp */
 	f = open(wtmpf, 1);
 	if (f >= 0) {
 		wtmp.tty = p->line;
