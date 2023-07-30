@@ -129,6 +129,7 @@ char **argv;
 		tmode.sgospd = tabp->ospeed;
 		stty(0, &tmode);
 		puts(tabp->message);
+		/* set tty mode and get user name */
 		stty(0, &tmode);
 		if(getname()) {
 			tmode.sgerase = ERASE;
@@ -140,6 +141,7 @@ char **argv;
 				tmode.sgflag =| LCASE;
 			if(lower)
 				tmode.sgflag =& ~LCASE;
+			/* comment: set tty mode and invoke login */
 			stty(0, &tmode);
 			execl("/bin/login", "login", name, 0);
 			exit(1);
@@ -163,6 +165,7 @@ getname()
 			exit(0);
 		if ((c = cs&0177) == 0)
 			return(0);
+		/* comment: now c is a ascii char */
 		write(1, &cs, 1);
 		if (c>='a' && c <='z')
 			lower++;
