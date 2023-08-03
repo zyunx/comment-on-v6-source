@@ -13,6 +13,7 @@ dir:	. = .+[mdirent*dirsiz]
 tapeb:
 map:	.=.+4096.
 emap:
+/ comment: ch is used as a buffer by putc
 ch:	.=.+1
 flc:	.=.+1
 flf:	.=.+1

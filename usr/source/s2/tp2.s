@@ -9,15 +9,16 @@ pstr:
 	rts	pc
 
 mesg:
-	movb	(r5)+,r0
-	beq	1f
+	movb	(r5)+,r0			/ comment: r5 point to the message str, r0 is the current char
+	beq	1f						/ comment: 0 ends the string.
 	jsr	pc,putc
 	br	mesg
-1:
+1:								/ comment: r5 is at the end of the message string
 	inc	r5
-	bic	$1,r5
+	bic	$1,r5					/ comment: make r5 at even address
 	rts	r5
 
+/ comment: put a char, ch is a buffer.
 putc:
 	movb	r0,ch
 	mov	$1,r0
