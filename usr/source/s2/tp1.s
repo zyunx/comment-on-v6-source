@@ -14,6 +14,7 @@ mdirent = 496.
 
 	mov	(sp),rnarg
 	mov	(sp)+,narg
+	/ comment: 'r' is the default command
 	mov	$cmr,command
 	incb	flu
 	tst	(sp)+
@@ -25,6 +26,8 @@ mdirent = 496.
 	mov	(sp)+,r0
 	mov	sp,parg
 1:
+/ comment: process command options
+/ comment: A example of switch case statement implementation
 	movb	(r0)+,r1
 	beq	3f
 	mov	$swtab,r2
@@ -43,6 +46,7 @@ mdirent = 496.
 	jsr	pc,setb
 	jmp	*command
 
+/ comment: open tape
 optap:
 	tstb	flm
 	bne	2f
@@ -60,7 +64,9 @@ optap:
 2:
 	sys	open; mt; 1
 3:
+	/ comment: opened file descriptor <= 0
 	bes	1f
+	/ comment: open success
 	mov	r0,fio
 	mov	ndirent,r1
 	ash	$-3,r1
@@ -75,12 +81,15 @@ optap:
 		<Tape open error\n\0>; .even
 	jmp	done
 
+/ comment: set command according by the key option
 setcom:
+	/ comment: is first set, command is $cmr by default.
 	cmp	command,$cmr
 	bne	useerr
 	mov	(r5)+,command
 	rts	r5
 
+/ comment: gurantee flags is clear
 noflag:
 	mov	(r5)+,r0
 	beq	1f
@@ -168,6 +177,7 @@ dcx:
 	jsr	r5,setcom; cmx
 	rts	pc
 
+/ comment: function option 'd'
 cmd:
 	jsr	r5,noflag; flm; flc; flf; 0
 	cmp	narg,$2
@@ -179,6 +189,7 @@ cmd:
 	jsr	pc,wrdir
 	br	check
 
+/ comment: function option 'r'
 cmr:
 	jsr	r5,noflag; 0
 	tstb	flc
@@ -194,6 +205,7 @@ cmr:
 	jsr	pc,update
 	br	check
 
+/ comment: function option 't'
 cmt:
 	jsr	r5,noflag; flc; flf; flw; 0
 	jsr	pc,rddir
@@ -205,6 +217,7 @@ cmt:
 	jsr	r5,gettape; taboc
 	br	check1
 
+/ comment: function option 'x'
 cmx:
 	jsr	r5,noflag; flc; flf; 0
 	jsr	pc,rddir
@@ -245,17 +258,20 @@ decode:
 	mov	(sp)+,r2
 	rts	r5
 
+/ comment: set break
 setb:
 	mov	r0,-(sp)
 	mov	r4,r0
 	add	$513.,r0
 	cmp	r0,sp
+	/ comment: branch if higher or same, same as BCC, branch if C is clear
 	bhis	2f
 	bic	$777,r0
 	cmp	r0,0f
 	beq	1f
 	mov	r0,0f
 	sys	break; 0:..
+	/ comment: branch on error set, that is C is set
 	bes	2f
 1:
 	mov	(sp)+,r0

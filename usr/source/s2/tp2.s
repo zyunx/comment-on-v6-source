@@ -1,5 +1,6 @@
 / tap2 -- dec-tape lod/dmp
 
+/ comment: print str in r1
 pstr:
 	movb	(r1)+,r0
 	beq	1f
