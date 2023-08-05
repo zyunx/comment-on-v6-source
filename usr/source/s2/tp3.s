@@ -256,6 +256,7 @@ bitmap:
 	rts	pc
 
 setmap:
+	/ comment: r1 is address of the dir entry in $dir
 	movb	size0(r1),r2
 	mov	size1(r1),r3
 	add	$511.,r3

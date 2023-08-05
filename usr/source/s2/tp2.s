@@ -32,6 +32,7 @@ getc:
 	movb	ch,r0
 	rts	pc
 
+/ comment: clear $dir buffer
 clrdir:
 	mov	$dir,r1
 	mov	ndirent,r2
@@ -40,6 +41,7 @@ clrdir:
 	sob	r2,1b
 	rts	pc
 
+/ comment: clear one entry in $dir
 clrent:
 	mov	r1,-(sp)
 	add	$dirsiz,(sp)
@@ -70,6 +72,7 @@ rddir:
 	jsr	pc,tread
 	mov	$tapeb,r3
 2:
+	/ comment: OR $tapeb 64-bytes record
 	mov	r1,-(sp)
 	mov	r3,-(sp)
 	mov	$32.,r0
@@ -77,6 +80,8 @@ rddir:
 2:
 	add	(r3)+,(sp)
 	sob	r0,2b
+	/ comment: Now, (sp) contains the sum of 32 words begining at (r3)
+	/ comment: bis: bit set or inclusive OR
 	bis	(sp),sum
 	tst	(sp)+
 	bne	2f
@@ -108,6 +113,7 @@ rddir:
 	sob	r2,1b
 	tst	sum
 	beq	1f
+	/ comment: checksum invalid
 	jsr	r5,mesg
 		<Directory checksum\n\0>; .even
 	tstb	fli
@@ -183,6 +189,7 @@ wrdir:
 	bne	1b
 	rts	pc
 
+/ comment: read 512 bytes into tapeb from fio
 tread:
 	mov	fio,r0
 	sys	read; tapeb; 512.
@@ -221,6 +228,7 @@ twrerr:
 		<Tape write error\n\0>; .even
 	jmp	done
 
+/ comment: seek fio at r0*512
 rseek:
 	mov	r0,rseeka
 	mov	r0,0f
@@ -385,12 +393,14 @@ callout:
 	sys	stat; name; statb
 	bes	fserr
 	mov	statb+4,r0
+	/* comment: get file type in inode flags
 	bic	$!60000,r0
 	beq	1f
 	cmp	r0,$40000
 	beq	expand
 	rts	pc
 1:
+	/ commnet: plain file
 	mov	$dir,r1
 	clr	-(sp)
 1:
@@ -418,6 +428,7 @@ callout:
 	mov	$name,r2
 	mov	$name1,r3
 3:
+	/ commnet: compare str in address r2 and r3, that is name and name1
 	cmpb	(r2)+,(r3)
 	bne	2b
 	tstb	(r3)+

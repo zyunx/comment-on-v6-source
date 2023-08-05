@@ -11,8 +11,11 @@ tboot:	</usr/mdec/tboot\0>
 mboot:	</usr/mdec/mboot\0>
 .even
 .bss
+/ comment: directory entry buffer
 dir:	. = .+[mdirent*dirsiz]
+/ comment: tread buffer
 tapeb:
+/ comment: for bitmap
 map:	.=.+4096.
 emap:
 / comment: ch is used as a buffer by putc
@@ -47,16 +50,22 @@ catlb:	.=.+20.
 narg:	.=.+2
 rnarg:	.=.+2
 parg:	.=.+2
+/ comment: file descriptor
 fio:	.=.+2
 mss:	.=.+2
+/ comment: count of directory entry in $dir
 ndirent:.=.+2
+/ comment: ndirent divide by 8
 ndentd8:.=.+2
 edir:	.=.+2
+/ comment: rseek accumulator
 rseeka:	.=.+2
 wseeka:	.=.+2
 tapsiz:	.=.+2
+/ comment: path name
 name:	.=.+32.
 name1:	.=.+32.
+/ comment: inode buffer for stat
 statb:	.=.+40.
 
 smdate = 30.

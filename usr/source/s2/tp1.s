@@ -1,6 +1,7 @@
 / tap1 -- dec-disk lod/dmp
 
 .globl	_localtime, _end
+/ comment: record structure of $dir table
 namep = 0
 mode = 2
 uid = 4; gid = 5
@@ -9,17 +10,20 @@ size1 = 8
 time0 = 10.
 time1 = 12.
 tapea = 14.
+/ comment: directory entry size
 dirsiz = 16.
+/ comment: megatape directory entry count
 mdirent = 496.
 
 	mov	(sp),rnarg
 	mov	(sp)+,narg
-	/ comment: 'r' is the default command
+	/ comment: 'u' is the default command
 	mov	$cmr,command
 	incb	flu
 	tst	(sp)+
 	cmp	narg,$2
 	bge	1f
+	/ commnet: no key option
 	mov	$2,narg
 	br	3f
 1:
@@ -71,6 +75,7 @@ optap:
 	mov	ndirent,r1
 	ash	$-3,r1
 	mov	r1,ndentd8
+	/ comment: caculate end of $dir records
 	mov	ndirent,r1
 	mul	$dirsiz,r1
 	add	$dir,r1
@@ -234,6 +239,7 @@ done:
 		<END\n\0>; .even
 	sys	exit
 
+/ commnet: move 0-terminated string at r5 to r4, and store the string pointer in r1
 encode:
 	mov	r2,-(sp)
 	mov	r4,(r1)
@@ -246,6 +252,7 @@ encode:
 	mov	(sp)+,r2
 	rts	r5
 
+/ commnet: move 0-terminated string at address r1 to r5
 decode:
 	mov	r2,-(sp)
 	mov	r1,-(sp)
@@ -258,7 +265,7 @@ decode:
 	mov	(sp)+,r2
 	rts	r5
 
-/ comment: set break
+/ comment: set break if neccessary so that r4 is a valid address
 setb:
 	mov	r0,-(sp)
 	mov	r4,r0
