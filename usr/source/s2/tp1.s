@@ -253,7 +253,7 @@ encode:
 	mov	(sp)+,r2
 	rts	r5
 
-/ commnet: move 0-terminated string at address r1 to r5
+/ commnet: move 0-terminated string at address r1 to r5(following the jsr instruction)
 decode:
 	mov	r2,-(sp)
 	mov	r1,-(sp)

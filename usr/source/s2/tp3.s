@@ -1,5 +1,6 @@
 / tap3 -- dec-tape lod/dmp
 
+/ comment: traverse the 'dir' to process cmd argument
 gettape:
 	mov	$dir,r1
 	clr	-(sp)
@@ -22,6 +23,7 @@ gettape:
 	beq	4f
 	cmpb	(r2),$'/
 	bne	2f
+/ comment: if name not privided or names match , call the REAL function
 4:
 	mov	r1,-(sp)
 	jsr	pc,*(r5)
@@ -31,10 +33,12 @@ gettape:
 	add	$dirsiz,r1
 	cmp	r1,edir
 	blo	1b
+	/ comment: end of traverse 'dir'
 	tst	(sp)+
 	bne	2f
 	cmp	rnarg,$2
 	ble	2f
+	/ comment: A name comamnd arg is provided and the name is not found
 	mov	*parg,r1
 	jsr	pc,pstr
 	jsr	r5,mesg
@@ -43,6 +47,7 @@ gettape:
 	dec	narg
 	add	$2,parg
 	cmp	narg,$2
+	/ comment: branch to process next command argument
 	bgt	gettape
 	tst	(r5)+
 	rts	r5
@@ -302,7 +307,7 @@ maperr:
 usage:
 	jsr	pc,bitmap
 	mov	$dir,r2
-	/ comment: calculate number of valid entries
+/ comment: calculate number of valid entries
 1:
 	tst	(r2)
 	beq	2f
@@ -406,6 +411,7 @@ taboc:
 	mov	$' ,r0
 	jsr	pc,putc
 4:
+/ comment: print name
 	mov	$name,r1
 	jsr	pc,pstr
 	jsr	r5,mesg
