@@ -234,6 +234,7 @@ phserr:
 bitmap:
 	mov	$map,r0
 1:
+	/ comment: clear 'map'
 	clr	(r0)+
 	cmp	r0,$emap
 	blo	1b
@@ -242,8 +243,10 @@ bitmap:
 	tst	(r1)
 	beq	2f
 	bit	$100000,mode(r1)
+	/ comment: Now, not exist
 	bne	2f
 	tst	size1(r1)
+	/ comment: Now, size is not 0
 	bne	3f
 	tstb	size0(r1)
 	beq	2f
@@ -255,12 +258,14 @@ bitmap:
 	blo	1b
 	rts	pc
 
+/ comment: set disk block bit map according 'dir' entries
 setmap:
 	/ comment: r1 is address of the dir entry in $dir
 	movb	size0(r1),r2
 	mov	size1(r1),r3
 	add	$511.,r3
 	adc	r2
+	/ comment: arithmetic shift combined, r2 is no used, r3 is the block size
 	ashc	$-9.,r2
 	mov	tapea(r1),r2
 1:
@@ -273,7 +278,9 @@ setmap:
 	rts	pc
 
 bitcalc:
+	/ comment: TRICK!!! Combine with "mov r0,2(sp)", "rts pc" to make a stack element for outer procedure.
 	mov	(sp),-(sp)
+	/ comment: r2 is the tape address
 	cmp	r2,tapsiz
 	bhis	maperr
 	mov	r2,r0
@@ -295,6 +302,7 @@ maperr:
 usage:
 	jsr	pc,bitmap
 	mov	$dir,r2
+	/ comment: calculate number of valid entries
 1:
 	tst	(r2)
 	beq	2f
@@ -322,6 +330,7 @@ usage:
 3:
 	inc	r2
 	sob	r3,1b
+	/ comment: print usage statistic
 1:
 	mov	nentr,r0
 	jsr	r5,numb; 4

@@ -45,6 +45,7 @@ mdirent = 496.
 	jsr	pc,*(r2)+
 	br	1b
 3:
+	/ comment: open tape
 	jsr	pc,optap
 	mov	$_end,r4 / string pointer
 	jsr	pc,setb
@@ -239,7 +240,7 @@ done:
 		<END\n\0>; .even
 	sys	exit
 
-/ commnet: move 0-terminated string at r5 to r4, and store the string pointer in r1
+/ commnet: move 0-terminated string following the jsr to r4, and store the string pointer in r1
 encode:
 	mov	r2,-(sp)
 	mov	r4,(r1)

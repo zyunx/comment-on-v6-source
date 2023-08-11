@@ -52,11 +52,15 @@ clrent:
 	tst	(sp)+
 	rts	pc
 
+/ comment: fill 'dir' and 'map'
 rddir:
 	clr	sum
+	/ commnet: clear 'dir' table
 	jsr	pc,clrdir
+	/ comment: set tape file at 0
 	clr	r0
 	jsr	pc,rseek
+	/ comment: read a block into 'tapeb'
 	jsr	pc,tread
 	mov	tapeb+510.,r0
 	beq	1f
@@ -67,6 +71,7 @@ rddir:
 	mov	$dir,r1
 	mov	ndirent,r2
 1:
+	/ comment: tape's record size is 64 bytes, tapeb contains 8 records.
 	bit	$7,r2
 	bne	2f
 	jsr	pc,tread
@@ -92,6 +97,7 @@ rddir:
 	jsr	pc,9f
 .data
 9:
+	/ comment: move tapeb record string to r4(always at the end of user part image)
 	jsr	r5,encode; 0:..
 	rts	pc
 .text
@@ -108,6 +114,7 @@ rddir:
 	mov	(sp)+,r3
 	add	$64.,r3
 	mov	(sp)+,r1
+	/ comment: clear inode flag which indicate i-node is allocated
 	bic	$100000,mode(r1)
 	add	$dirsiz,r1
 	sob	r2,1b

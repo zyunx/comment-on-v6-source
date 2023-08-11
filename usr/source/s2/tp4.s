@@ -15,7 +15,7 @@ mboot:	</usr/mdec/mboot\0>
 dir:	. = .+[mdirent*dirsiz]
 / comment: tread buffer
 tapeb:
-/ comment: for bitmap
+/ comment: disk block useage bit map
 map:	.=.+4096.
 emap:
 / comment: ch is used as a buffer by putc
@@ -42,12 +42,15 @@ flw:	.=.+1
 command:.=.+2
 sum:	.=.+2
 size:	.=.+2
+/ comment: number of dir entries
 nentr:	.=.+2
 nused:	.=.+2
 nfree:	.=.+2
 lused:	.=.+2
 catlb:	.=.+20.
+/ comment: command arguments count
 narg:	.=.+2
+/ original comment: command arguments count
 rnarg:	.=.+2
 parg:	.=.+2
 / comment: file descriptor
@@ -61,6 +64,7 @@ edir:	.=.+2
 / comment: rseek accumulator
 rseeka:	.=.+2
 wseeka:	.=.+2
+/ comment: tape size in block(512B)
 tapsiz:	.=.+2
 / comment: path name
 name:	.=.+32.
