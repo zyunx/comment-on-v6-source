@@ -370,12 +370,15 @@ expand:
 	bes	fserr
 	tst	r0
 	beq	1f
+	/ comment: test directory entry inode field
 	tst	catlb
 	beq	1b
 	mov	$name,r0
 	mov	$catlb+2,r1
+	/ comment: test '.' and '..' directory entry
 	cmpb	(r1),$'.
 	beq	1b
+/ comment: construct full path, and callout
 2:
 	tstb	(r0)+
 	bne	2b
@@ -388,6 +391,7 @@ expand:
 	movb	(r1)+,(r0)+
 	bne	2b
 	jsr	pc,callout
+	/ comment: chop the filename of the path
 	clrb	*(sp)+
 	br	1b
 1:
