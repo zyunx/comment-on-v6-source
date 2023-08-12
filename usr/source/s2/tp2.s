@@ -285,6 +285,7 @@ seekerr:
 <Tape seek error\n\0>; .even
 	jmp	done
 
+/ comment: ask you to verify if neccessary
 verify:
 	movb	(r5)+,0f
 	inc	r5
@@ -308,9 +309,11 @@ verify:
 	beq	1f
 	jsr	r5,mesg
 		< \0>
+	/ comment: Now, wait user confirm
 	jsr	pc,getc
 	cmp	r0,$'x
 	bne	3f
+	/ comment: exit program if input 'x'
 	jsr	pc,getc
 	jmp	done
 3:
@@ -321,6 +324,7 @@ verify:
 	jsr	pc,getc
 	cmp	r0,$'\n
 	beq	2f
+/ comment: read up to newline, and ask again
 4:
 	jsr	pc,getc
 	cmp	r0,$'\n
@@ -329,11 +333,13 @@ verify:
 1:
 	jsr	r5,mesg
 		<\n\0>
+/ comment: TRICK!!! return up 1 or 2 level
 2:
 	tst	(r5)+
 3:
 	rts	r5
 
+/ comment: update info of all files specified in command into 'dir' table
 getfiles:
 	cmp	narg,$2
 	bne	1f
@@ -396,6 +402,7 @@ fserr:
 		< -- Cannot open file\n\0>; .even
 	jmp	done
 
+/ comment: update 'name' file info in 'dir' table
 callout:
 	sys	stat; name; statb
 	bes	fserr
@@ -404,17 +411,21 @@ callout:
 	bic	$!60000,r0
 	beq	1f
 	cmp	r0,$40000
+	/ comment: directory, to expand
 	beq	expand
+	/ comment: ignore other types
 	rts	pc
+/ commnet: plain file
 1:
-	/ commnet: plain file
 	mov	$dir,r1
 	clr	-(sp)
 1:
 	tst	(r1)
 	bne	3f
+	/ comment: now, the dir entry is empty
 	tst	(sp)
 	bne	2f
+	/ comment: the first empty entry if not 0
 	mov	r1,(sp)
 2:
 	add	$dirsiz,r1
@@ -425,12 +436,15 @@ callout:
 	jsr	r5,mesg
 		<Directory overflow\n\0>; .even
 	jmp	done
+/ comment: Now, no entry matches the name, find the first empty entry.
 4:
 	jsr	r5,verify; 'a
 		rts pc
+	/ comment: store name in dir entry
 	jsr	r5,encode; name
 	br	2f
 3:
+	/ comment: get name of the dir entry
 	jsr	r5,decode; name1
 	mov	$name,r2
 	mov	$name1,r3
@@ -440,17 +454,22 @@ callout:
 	bne	2b
 	tstb	(r3)+
 	bne	3b
+	/ comment: now find the dir entry, and ignore the first empty entry
 	tst	(sp)+
+	/ comment: if u flag is enabled, compare modify time
 	tstb	flu
 	beq	3f
+	/ comment: if tape file modify time is newer, skip 
 	cmp	time0(r1),statb+32.
 	blo	3f
 	bhi	1f
 	cmp	time1(r1),statb+34.
 	bhis	1f
+/ comment: Now, find the entry to be replaced.
 3:
 	jsr	r5,verify; 'r
 		rts pc
+/ comment: replace dir entry
 2:
 	mov	statb+4,mode(r1)
 	bis	$100000,mode(r1)
@@ -458,6 +477,7 @@ callout:
 	movb	statb+8,gid(r1)
 	tstb	flf
 	beq	2f
+	/ comment: to fake entry, change size to 0
 	clrb	statb+9.
 	clr	statb+10.
 2:
