@@ -58,12 +58,14 @@ delete:
 	jsr	pc,clrent
 	rts	pc
 
+/ comment: print number in r0
 numb:
 	mov	r1,-(sp)
 	mov	r0,-(sp)
 	clr	r0
 	br	1f
 
+/ comment: print number in r0
 numbx:
 	mov	r1,-(sp)
 	mov	r0,-(sp)
@@ -78,8 +80,10 @@ numbx:
 	bne	1f
 	mov	$"00,-2(r2)
 1:
+	/ comment: change number in r1 to string pointed by r2
 	mov	(sp)+,r1
 	jsr	pc,numb2
+	/ comment: print string pointed by r2, size is in (r5)
 	mov	(r5)+,r0
 	sub	r0,r2
 	mov	r2,0f
@@ -93,6 +97,7 @@ numbx:
 	mov	(sp)+,r1
 	rts	r5
 
+/ comment: recursive, change number in r0 r1 to string pointed by r2
 numb1:
 	clr	r0
 numb2:
@@ -102,6 +107,7 @@ numb2:
 	beq	1f
 	jsr	pc,numb1
 1:
+	/ comment: change digit in (sp) to char at (r2)
 	mov	(sp)+,r0
 	add	$'0,r0
 	movb	r0,(r2)+
@@ -373,14 +379,18 @@ taboc:
 	mov	(sp)+,r0
 	bit	$1000,r0
 	jsr	pc,pmod
+	/ comment: print uid
 	clr	r0
 	bisb	uid(r1),r0
 	jsr	r5,numb; 4
+	/ comment: print gid
 	clr	r0
 	bisb	gid(r1),r0
 	jsr	r5,numb; 4
+	/ comment: print tape address
 	mov	tapea(r1),r0
 	jsr	r5,numb; 5
+	/ comment: print size
 	mov	size1(r1),r0
 	jsr	r5,numbx; 9.
 	mov	r1,-(sp)
@@ -456,6 +466,7 @@ xtract:
 	bne	2f
 	tst	size1(r1)
 	beq	1f
+	/ comment: branch if size is 0
 2:
 	jsr	r5,verify; 'x
 		rts pc
