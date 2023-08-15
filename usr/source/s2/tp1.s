@@ -254,6 +254,7 @@ encode:
 	rts	r5
 
 / commnet: move 0-terminated string at address r1 to r5(following the jsr instruction)
+/ comment: move 0-terminated string of current dir entry to first argument
 decode:
 	mov	r2,-(sp)
 	mov	r1,-(sp)

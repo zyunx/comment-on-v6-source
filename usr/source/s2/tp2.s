@@ -154,6 +154,7 @@ wrdir:
 1:
 	bit	$7,r2
 	bne	2f
+/ comment: clear tapeb buffer, and reset r3
 	mov	$256.,r0
 	mov	$tapeb,r3
 3:
@@ -221,6 +222,7 @@ trderr:
 1:
 	jmp	done
 
+/ comment: tape write, write tapeb to tape
 twrite:
 	mov	fio,r0
 	sys	write; tapeb; 512.
@@ -235,7 +237,7 @@ twrerr:
 		<Tape write error\n\0>; .even
 	jmp	done
 
-/ comment: seek fio at r0*512
+/ comment: read seek fio at r0*512
 rseek:
 	mov	r0,rseeka
 	mov	r0,0f
@@ -269,6 +271,7 @@ wseek:
 	mov	fio,r0
 	sys	read; wseeka; 1
 1:
+	/ comment: do seek
 	mov	(sp),wseeka
 	mov	(sp)+,0f
 	mov	fio,r0

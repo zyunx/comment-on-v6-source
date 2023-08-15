@@ -125,9 +125,11 @@ update:
 	bne	9f
 	tst	size1(r1)
 	beq	2f
+/ comment: Now found a entry to be updated, and size is not 0
 9:
 	mov	ndentd8,-(sp)
 	inc	(sp)
+	/ comment: (sp) is the first data block
 	movb	size0(r1),r2
 	mov	size1(r1),r3
 	add	$511.,r3
@@ -143,6 +145,8 @@ update:
 	bitb	(sp)+,map(r0)
 	bne	4f
 	sob	r3,4b
+	/ comment: Now, found continuous blocks for store the file to be updated
+	/ comment: relocate the dir entry and update it's block bitmap
 	mov	(sp)+,tapea(r1)
 	jsr	pc,setmap
 	br	2f
@@ -155,11 +159,13 @@ update:
 	blo	1b
 	jsr	pc,wrdir
 
+/ comment: write updated files' data to tape
 update1:
 	mov	$dir,r1
 	clr	-(sp)
 	mov	$-1,-(sp)
 1:
+/ comment: find the 'lowest' entry to be updated
 	tst	(r1)
 	beq	2f
 	bit	$100000,mode(r1)
@@ -177,13 +183,18 @@ update1:
 	bne	1f
 	rts	pc
 1:
+/ comment: Now, a dir entry pointed by r1 with 'lowest' address 
+	/ comment: mark the entry is processed
 	bic	$100000,mode(r1)
 	movb	size0(r1),mss
 	mov	size1(r1),r2
 	bne	4f
 	tst	mss
+	/ comment: if the entry's size is 0, find next one.
 	beq	update1
 4:
+/ comment: Open file for the entry, the fd is in r3.
+/ comment: And set tape write pointer at entry's address
 	jsr	r5,decode; name
 	mov	tapea(r1),r0
 	jsr	pc,wseek
@@ -192,11 +203,13 @@ update1:
 	bes	phserr
 	mov	r0,r3
 3:
+/ comment: write all file data to tape
 	tst	mss
 	bne	4f
 	cmp	r2,$512.
 	blo	3f
 4:
+/ comment: write whole blocks data
 	mov	r3,r0
 	sys	read; tapeb; 512.
 	bes	phserr
@@ -207,6 +220,7 @@ update1:
 	sbc	mss
 	br	3b
 3:
+/ comment: write left data in last block.
 	mov	r2,0f
 	beq	3f
 	mov	r3,r0
@@ -220,6 +234,7 @@ update1:
 	bne	phserr
 	jsr	pc,twrite
 3:
+/ comment: check there are no data left
 	mov	r3,r0
 	sys	read; tapeb; 512.
 	bes	phserr
@@ -242,6 +257,7 @@ phserr:
 	sys	close
 	br	2b
 
+/ comment: initialize bitmap
 bitmap:
 	mov	$map,r0
 1:
@@ -269,7 +285,7 @@ bitmap:
 	blo	1b
 	rts	pc
 
-/ comment: set disk block bit map according 'dir' entries
+/ comment: set disk block bit map for one 'dir' entries
 setmap:
 	/ comment: r1 is address of the dir entry in $dir
 	movb	size0(r1),r2
@@ -288,6 +304,7 @@ setmap:
 	sob	r3,1b
 	rts	pc
 
+/ comment: calculte bitmap index(in r0) and mask(on stack) of block address r2 
 bitcalc:
 	/ comment: TRICK!!! Combine with "mov r0,2(sp)", "rts pc" to make a stack element for outer procedure.
 	mov	(sp),-(sp)
@@ -300,9 +317,11 @@ bitcalc:
 	mov	$1,r0
 	als	(sp)+,r0
 	mov	r0,2(sp)
+	/ comment: The bit mask is moved to stack
 	mov	r2,r0
 	ash	$-3,r0
 	bic	$160000,r0
+	/ comment: r0 contains the index of map
 	rts	pc
 
 maperr:
