@@ -133,6 +133,7 @@ rddir:
 wrdir:
 	clr	r0
 	jsr	pc,wseek
+	/ comment: open, read and close boot record
 	tstb	flm
 	bne	1f
 	sys	open; tboot; 0
@@ -146,11 +147,13 @@ wrdir:
 	sys	read; tapeb; 512.
 	mov	r1,r0
 	sys	close
+	/ comment: write number of dir entreis
 	mov	ndirent,tapeb+510.
 3:
 	jsr	pc,twrite
 	mov	$dir,r1
 	mov	ndirent,r2
+/ comment: construct tapeb block, 64B * 8 = 512B
 1:
 	bit	$7,r2
 	bne	2f
@@ -165,6 +168,7 @@ wrdir:
 	mov	r3,-(sp)
 	tst	(r1)
 	beq	2f
+	/ comment: write 'name' at first 32B of a tapeb record(64B size).
 	mov	r3,0f
 	jsr	pc,9f
 .data
@@ -173,6 +177,7 @@ wrdir:
 	rts	pc
 .text
 2:
+	/ comment: write left 14B at another 32B of tapeb record
 	add	$32.,r3
 	mov	r1,-(sp)
 	add	$dirsiz,(sp)
@@ -182,6 +187,7 @@ wrdir:
 	cmp	r1,(sp)
 	blo	9b
 	tst	(sp)+
+	/ comment: calculate the checksum
 	mov	(sp)+,r3
 	clr	-(sp)
 	mov	$31.,r0
@@ -189,6 +195,7 @@ wrdir:
 	sub	(r3)+,(sp)
 	sob	r0,2b
 	mov	(sp)+,(r3)+
+	/ comment: write whole tapeb buffer for every 8 entries
 	dec	r2
 	bit	$7,r2
 	bne	1b
