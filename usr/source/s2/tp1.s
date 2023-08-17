@@ -1,3 +1,4 @@
+/ comment: see tp(V)
 / tap1 -- dec-disk lod/dmp
 
 .globl	_localtime, _end
