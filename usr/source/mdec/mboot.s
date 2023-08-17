@@ -28,9 +28,11 @@ start:
 
 2:
 	jsr	pc,rew
+	/ comment: function vector, put, get, mesg
 	mov	$tvec,r5
 	mov	$'=,r0
 	jsr	pc,(r5)
+/ comment: read string into (r4), that is 'name'. '@' for clearing, '#' for backspace.
 2:
 	mov	r4,r1
 1:
@@ -47,6 +49,7 @@ start:
 	blo	2b
 	br	1b
 1:
+	/ comment: if name is empty, restart
 	clrb	(r1)
 	cmp	r1,r4
 	blos	start
