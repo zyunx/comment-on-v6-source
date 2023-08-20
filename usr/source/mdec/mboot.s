@@ -34,6 +34,7 @@ start:
 	/ comment: jmp to start
 	jmp	(sp)
 
+/ comment: begin of related code
 2:
 	/ comment: rewind
 	jsr	pc,rew
@@ -279,6 +280,7 @@ mesg:
 	rts	pc
 
 end:
+/ comment: below code is not related, only above code is relocated
 / comment: tape address to be read
 tapa:	.=.+2
 / comment: current megatape address
