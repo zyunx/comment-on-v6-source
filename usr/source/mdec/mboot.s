@@ -7,28 +7,38 @@
 / jsr pc,2(r5) is getc
 / jsr pc,4(r5) is mesg
 
+/ comment: 24K words of core memory
 core = 24.
 .mt. = 1
+/ relocation address, see UNIX Assembler Reference Manual
 .. = [core*2048.]-512.
 start:
 	mov	$..,sp
 	mov	$name,r4
 	mov	sp,r1
 	cmp	pc,r1
+	/ comment: if load at relocation address
 	bhis	2f
+	/ comment: load at 0
 	clr	r0
+	/ commnet: a.out magic number
 	cmp	(r0),$407
 	bne	1f
+	/ comment: skip a.out header
 	mov	$20,r0
 1:
+/ comment: relocate
 	mov	(r0)+,(r1)+
 	cmp	r1,$end
 	blo	1b
+	/ comment: jmp to start
 	jmp	(sp)
 
 2:
+	/ comment: rewind
 	jsr	pc,rew
 	/ comment: function vector, put, get, mesg
+	/ comment: put '='
 	mov	$tvec,r5
 	mov	$'=,r0
 	jsr	pc,(r5)
@@ -53,9 +63,11 @@ start:
 	clrb	(r1)
 	cmp	r1,r4
 	blos	start
+	/ read dir entries
 	mov	$1,tapa
 	mov	$-6144.,wc
 	jsr	pc,taper
+	/ comment: compare names to find the dir entry
 	clr	r1
 1:
 	mov	r1,r2
@@ -65,6 +77,7 @@ start:
 	bne	2f
 	tstb	(r1)+
 	bne	2b
+	/ comment: The named dir entry is found
 	br	1f
 2:
 	mov	r2,r1
@@ -75,6 +88,7 @@ start:
 	br	start
 1:
 	mov	44.(r2),tapa
+	/ comment: calculate word count from size in bytes
 	mov	38.(r2),r0
 	inc	r0
 	clc
@@ -82,15 +96,18 @@ start:
 	neg	r0
 	mov	r0,wc
 	clr	r0
+	/ comment: clear memory
 1:
 	clr	(r0)+
 	cmp	r0,sp
 	blo	1b
+	/ comment: read file contents
 	jsr	pc,taper
 	jsr	pc,rew
 	clr	r0
 	cmp	(r0),$407		/ unix a.out?
 	bne	2f
+	/ comment: remove a.out header
 1:
 	mov	20(r0),(r0)+
 	cmp	r0,sp
@@ -115,6 +132,7 @@ taper:
 2:
 	jsr	pc,rew
 	br	taper
+/ comment: read (wc + 255)/256 blocks
 1:
 	mov	wc,r1
 1:
@@ -123,19 +141,26 @@ taper:
 	bmi	1b
 	rts	pc
 
+/ comment: read a 512B record
 rrec:
+	/ comment: wait rewind operation to complete
 	bit	$2,*$mts
 	bne	rrec
+	/ comment: wait the tape to ready
 	tstb	*$mtc
 	bge	rrec
 	mov	$-512.,*$mtbrc
 	mov	mtma,*$mtcma
+	/ comment: 9-channel, read, go
 	mov	$60003,*$mtc
 1:
+	/ comment: wait the tape to ready
 	tstb	*$mtc
 	bge	1b
+	/ comment: test error
 	tst	*$mtc
 	bge	1f
+	/ comment: erro condition
 	mov	$-1,*$mtbrc
 	mov	$60013,*$mtc
 	br	rrec
@@ -144,7 +169,9 @@ rrec:
 	inc	mtapa
 	rts	pc
 
+/ comment: rewind
 rew:
+	/ comment: 9-channel tape, rewind, go
 	mov	$60017,*$mtc
 	clr	mtapa
 	rts	pc
@@ -252,8 +279,12 @@ mesg:
 	rts	pc
 
 end:
+/ comment: tape address to be read
 tapa:	.=.+2
+/ comment: current megatape address
 mtapa:	.=.+2
+/ commnet: current megatap memory address
 mtma:	.=.+2
+/ comment: word count
 wc:	.=.+2
 name:	.=.+32.
