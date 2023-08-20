@@ -3,6 +3,7 @@
 
 	jsr	pc,rew
 2:
+	/ comment: load from boot program, so we can use tvec in r5
 	jsr	pc,4(r5)
 		<disk offset\n\0>
 		.even
@@ -28,6 +29,7 @@
 	jsr	pc,rew
 	rts	pc
 
+/ comment: input a number
 numb:
 	clr	r1
 1:
