@@ -83,6 +83,8 @@ start:
 2:
 	mov	r2,r1
 	add	$64.,r1
+	/ comment: 12288/512=24 blocks of dir entries, 12288/64=192 dir entries
+	/ see SETTING UP UNIX in manual, file system boot program(fsboot) is at 100th block
 	cmp	r1,$12288.
 	blo	1b
 	jsr	pc,rew
