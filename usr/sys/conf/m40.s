@@ -628,13 +628,17 @@ _copyseg:
 	mov	(sp)+,PS
 	rts	pc
 
+/ comment: clear 1 block
 .globl	_clearseg
 _clearseg:
 	mov	PS,-(sp)
 	mov	UISA0,-(sp)
+	/ comment: current mode is kernel, previous mode is user, BR7 priority
 	mov	$30340,PS
+	/ comment: from first c function argument
 	mov	6(sp),UISA0
 	mov	UISD0,-(sp)
+	/ comment: w/r, 1 block
 	mov	$6,UISD0
 	clr	r0
 	mov	$32.,r1
