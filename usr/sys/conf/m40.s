@@ -720,14 +720,17 @@ dump:
 
 .globl	start, _end, _edata, _main
 start:
+	/ comment: loop until memory management disabled
 	bit	$1,SSR0
 	bne	start			/ loop if restart
 	reset
 
 / initialize systems segments
+/ comment: first 6 pages (VA = PA)
 
 	mov	$KISA0,r0
 	mov	$KISD0,r1
+	/ comment: PAF, 128 blocks in each segment
 	mov	$200,r4
 	clr	r2
 	mov	$6,r3
@@ -739,10 +742,12 @@ start:
 
 / initialize user segment
 
+	/ comment: begin at next word boundary after kernel code
 	mov	$_end+63.,r2
 	ash	$-6,r2
 	bic	$!1777,r2
 	mov	r2,(r0)+		/ ksr6 = sysu
+	/ comment: rw, usize blocks. when ED is upward, segment length = PAF -
 	mov	$usize-1\<8|6,(r1)+
 
 / initialize io segment
@@ -775,8 +780,10 @@ start:
 / set up previous mode and call main
 / on return, enter user mode at 0R
 
+	/ comment: current mode 00, previous mode 11
 	mov	$30000,PS
 	jsr	pc,_main
+	/ comment: set up old PS and old PC, and return to user space
 	mov	$170000,-(sp)
 	clr	-(sp)
 	rtt
@@ -829,10 +836,13 @@ _u	= 140000
 usize	= 16.
 
 PS	= 177776
+/ comment: segmanet status register 0
 SSR0	= 177572
 SSR2	= 177576
+/ comment: kernel instruction segment address 0
 KISA0	= 172340
 KISA6	= 172354
+/ comment: kernel instruction segment descriptor 0
 KISD0	= 172300
 MTC	= 172522
 UISA0	= 177640

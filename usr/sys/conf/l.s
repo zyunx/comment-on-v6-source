@@ -27,6 +27,7 @@ br7 = 340
         trap; br7+6.            / system entry
 
 . = 40^.
+/ comment: jump to start in m40.s or m45.s 
 .globl  start, dump
 1:      jmp     start
         jmp     dump
