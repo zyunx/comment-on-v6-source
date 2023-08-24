@@ -628,7 +628,7 @@ _copyseg:
 	mov	(sp)+,PS
 	rts	pc
 
-/ comment: clear 1 block
+/ comment: clear 1 block core memory, that is 32 words.
 .globl	_clearseg
 _clearseg:
 	mov	PS,-(sp)
