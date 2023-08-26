@@ -33,7 +33,7 @@ trap:
 .globl	_runrun, _swtch
 call1:
 	tst	-(sp)
-	/ comment: set priority 0, so that trap can be interrupted.
+	/ comment: set priority 0, so that trap can be interrupted by all devices.
 	bic	$340,PS
 	br	1f
 
@@ -428,9 +428,11 @@ jflg:	.=.+1
 .globl	_fuiword, _suiword
 _fuibyte:
 _fubyte:
+	/ comment: first C argument
 	mov	2(sp),r1
 	bic	$1,r1
 	jsr	pc,gword
+	/ comment: check if address is even
 	cmp	r1,2(sp)
 	beq	1f
 	swab	r0
@@ -470,6 +472,8 @@ gword:
 	mov	nofault,-(sp)
 	mov	$err,nofault
 	mfpi	(r1)
+	/ comment: if r1 is not a valid memory address, cause a Time-out Errors
+	/ comment: see 2.7.3 of PDP11/40 processor handbook
 	mov	(sp)+,r0
 	br	1f
 

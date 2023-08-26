@@ -61,6 +61,7 @@ main()
 	for(;;) {
 		UISA->r[0] = i;
 		if(fuibyte(0) < 0)
+			/* comment: bus timeout error, memory location is not exist */
 			break;
 		clearseg(i);
 		maxmem++;
@@ -72,6 +73,7 @@ main()
 		UBMAP->r[i] = i<<12;
 		UBMAP->r[i+1] = 0;
 	}
+	/* comment: why? */
 	printf("mem = %l\n", maxmem*5/16);
 	maxmem = min(maxmem, MAXMEM);
 	mfree(swapmap, nswap, swplo);
