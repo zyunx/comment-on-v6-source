@@ -356,12 +356,15 @@ binit()
 	register int i;
 	struct bdevsw *bdp;
 
+	/* comment: init empty bfreelist */
 	bfreelist.b_forw = bfreelist.b_back =
 	    bfreelist.av_forw = bfreelist.av_back = &bfreelist;
 	for (i=0; i<NBUF; i++) {
 		bp = &buf[i];
 		bp->b_dev = -1;
+		/* comment: set fixed address */
 		bp->b_addr = buffers[i];
+		/* comment: link into bfreelist */
 		bp->b_back = &bfreelist;
 		bp->b_forw = bfreelist.b_forw;
 		bfreelist.b_forw->b_back = bp;
@@ -369,6 +372,8 @@ binit()
 		bp->b_flags = B_BUSY;
 		brelse(bp);
 	}
+	/* comment: init device drivers' buf list.
+	 * b_forw and b_back are at the same offset in both struct devtab and struct buf */
 	i = 0;
 	for (bdp = bdevsw; bdp->d_open; bdp++) {
 		dp = bdp->d_tab;

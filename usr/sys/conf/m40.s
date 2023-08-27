@@ -596,6 +596,8 @@ _spl5:
 	rts	pc
 
 _spl6:
+	/ comment: set priority 6(set 7 and clear 1)
+	/ comment: so only traps can be serviced, all interrupts are suspended.
 	bis	$340,PS
 	bic	$40,PS
 	rts	pc
