@@ -106,8 +106,17 @@ main()
 	 */
 
 	*lks = 0115;
+	/*
+	 * init char IO system(tty)
+	 */
 	cinit();
+	/*
+	 * init block IO system(bio)
+	 */
 	binit();
+	/*
+	 * init filesystem
+	 */
 	iinit();
 	rootdir = iget(rootdev, ROOTINO);
 	rootdir->i_flag =& ~ILOCK;
