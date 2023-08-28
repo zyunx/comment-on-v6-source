@@ -118,11 +118,13 @@ _getc:
 	mov	r2,-(sp)
 	bis	$340,PS
 	bic	$100,PS		/ spl 5
+	/ comment: transfer char
 	mov	2(r1),r2	/ first ptr
 	beq	9f		/ empty
 	movb	(r2)+,r0	/ character
 	bic	$!377,r0
 	mov	r2,2(r1)
+	/ comment: decrement 'cc'
 	dec	(r1)+		/ count
 	bne	1f
 	clr	(r1)+
@@ -134,6 +136,7 @@ _getc:
 	mov	-10(r2),(r1)	/ next block
 	add	$2,(r1)
 2:
+	/ comment: calcute cblock address and return cblock to cfreelist
 	dec	r2
 	bic	$7,r2
 	mov	_cfreelist,(r2)
@@ -143,6 +146,7 @@ _getc:
 	mov	(sp)+,PS
 	rts	pc
 9:
+	/ comment: no more char
 	clr	4(r1)
 	mov	$-1,r0
 	mov	(sp)+,r2
