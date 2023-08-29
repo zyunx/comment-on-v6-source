@@ -105,10 +105,13 @@ free(dev, bno)
 	if (badblock(fp, bno, dev))
 		return;
 	if(fp->s_nfree <= 0) {
+		/* comment: last free blocks node */
 		fp->s_nfree = 1;
 		fp->s_free[0] = 0;
 	}
 	if(fp->s_nfree >= 100) {
+		/* comment: when free blocks node in core fills, write to disk. 
+		 * see article Data Block Management in filesystem-implementation.rst */
 		fp->s_flock++;
 		bp = getblk(dev, bno);
 		ip = bp->b_addr;
