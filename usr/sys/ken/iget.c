@@ -99,10 +99,13 @@ struct inode *p;
 	if(rp->i_count == 1) {
 		rp->i_flag =| ILOCK;
 		if(rp->i_nlink <= 0) {
+			/* comment: free inode-in-core's  data blocks */
 			itrunc(rp);
 			rp->i_mode = 0;
+			/* comment: free inode in superblock */
 			ifree(rp->i_dev, rp->i_number);
 		}
+		/* comment: update inode-in-core to disk */
 		iupdat(rp, time);
 		prele(rp);
 		rp->i_flag = 0;

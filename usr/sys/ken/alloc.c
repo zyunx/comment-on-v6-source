@@ -68,6 +68,8 @@ alloc(dev)
 			goto nospace;
 	} while (badblock(fp, bno, dev));
 	if(fp->s_nfree <= 0) {
+		/* comment: current free data blocks node is used up
+		 * read next free data blocks node */
 		fp->s_flock++;
 		bp = bread(dev, bno);
 		ip = bp->b_addr;
@@ -110,7 +112,7 @@ free(dev, bno)
 		fp->s_free[0] = 0;
 	}
 	if(fp->s_nfree >= 100) {
-		/* comment: when free blocks node in core fills, write to disk. 
+		/* comment: when free blocks node in core is full, write to disk. 
 		 * see article Data Block Management in filesystem-implementation.rst */
 		fp->s_flock++;
 		bp = getblk(dev, bno);
@@ -175,6 +177,7 @@ loop:
 		if (ip==NULL)
 			return(NULL);
 		if(ip->i_mode == 0) {
+			/* comment: zero inode disk related fields */
 			for(bp = &ip->i_mode; bp < &ip->i_addr[8];)
 				*bp++ = 0;
 			fp->s_fmod = 1;
@@ -187,6 +190,8 @@ loop:
 		iput(ip);
 		goto loop;
 	}
+	/* comment: superblock's inode cache is used up,
+	 * read another 100 inodes into cache */
 	fp->s_ilock++;
 	ino = 0;
 	for(i=0; i<fp->s_isize; i++) {
@@ -194,11 +199,14 @@ loop:
 		ip = bp->b_addr;
 		for(j=0; j<256; j=+16) {
 			ino++;
+			/* comment: inode in disk is used */
 			if(ip[j] != 0)
 				continue;
 			for(k=0; k<NINODE; k++)
+			/* comment: in inodes in core */
 			if(dev==inode[k].i_dev && ino==inode[k].i_number)
 				goto cont;
+			/* comment: inode of ino is really unused */
 			fp->s_inode[fp->s_ninode++] = ino;
 			if(fp->s_ninode >= 100)
 				break;
