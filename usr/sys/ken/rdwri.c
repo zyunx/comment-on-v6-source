@@ -84,6 +84,7 @@ struct inode *aip;
 	ip = aip;
 	ip->i_flag =| IACC|IUPD;
 	if((ip->i_mode&IFMT) == IFCHR) {
+		/* comment: char device file, only support sequence access */
 		(*cdevsw[ip->i_addr[0].d_major].d_write)(ip->i_addr[0]);
 		return;
 	}
@@ -93,14 +94,18 @@ struct inode *aip;
 	do {
 		bn = lshift(u.u_offset, -9);
 		on = u.u_offset[1] & 0777;
+		/* comment: number of bytes to be write */
 		n = min(512-on, u.u_count);
 		if((ip->i_mode&IFMT) != IFBLK) {
+			/* comment: ordinary file or dir */
 			if ((bn = bmap(ip, bn)) == 0)
 				return;
 			dn = ip->i_dev;
 		} else
+			/* comment: block file */
 			dn = ip->i_addr[0];
 		if(n == 512) 
+			/* comment: write whole block */
 			bp = getblk(dn, bn); else
 			bp = bread(dn, bn);
 		iomove(bp, on, n, B_WRITE);
@@ -112,6 +117,7 @@ struct inode *aip;
 		if(dpcmp(ip->i_size0&0377, ip->i_size1,
 		  u.u_offset[0], u.u_offset[1]) < 0 &&
 		  (ip->i_mode&(IFBLK&IFCHR)) == 0) {
+			/* comment: update ordinary file size */
 			ip->i_size0 = u.u_offset[0];
 			ip->i_size1 = u.u_offset[1];
 		}
