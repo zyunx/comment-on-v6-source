@@ -36,11 +36,12 @@ int (*func)();
 	while(c == '/')
 		c = (*func)();
 	if(c == '\0' && flag != 0) {
+		/* comment: create or delete root dir */
 		u.u_error = ENOENT;
 		goto out;
 	}
 
-cloop:
+cloop:	/* comment: loop to set up a new dir entry to be searched */
 	/*
 	 * Here dp contains pointer
 	 * to last component matched.
@@ -89,11 +90,12 @@ cloop:
 	u.u_offset[1] = 0;
 	u.u_offset[0] = 0;
 	u.u_segflg = 1;
+	/* comment: offset of empty dir entry */
 	eo = 0;
 	u.u_count = ldiv(dp->i_size1, DIRSIZ+2);
 	bp = NULL;
 
-eloop:
+eloop:	/* comment: loop of search dir entry */
 
 	/*
 	 * If at the end of the directory,
@@ -107,6 +109,9 @@ eloop:
 		if(flag==1 && c=='\0') {
 			if(access(dp, IWRITE))
 				goto out;
+			/* comment: create dir entry and has write priviledge
+			 * then, u.u_pdir is the parent dir entry,
+			 * u.u_offset[1] is the offset of empty dir entry */
 			u.u_pdir = dp;
 			if(eo)
 				u.u_offset[1] = eo-DIRSIZ-2; else
@@ -137,17 +142,21 @@ eloop:
 	 * and the current component.
 	 * If they do not match, go back to eloop.
 	 */
-
+	/* comment: u.u_dent is currently searching entry
+	 * comment: dp is currently searched entry
+	 */
 	bcopy(bp->b_addr+(u.u_offset[1]&0777), &u.u_dent, (DIRSIZ+2)/2);
 	u.u_offset[1] =+ DIRSIZ+2;
 	u.u_count--;
 	if(u.u_dent.u_ino == 0) {
+		/* comment: dir entry is empty, search next entry */
 		if(eo == 0)
 			eo = u.u_offset[1];
 		goto eloop;
 	}
 	for(cp = &u.u_dbuf[0]; cp < &u.u_dbuf[DIRSIZ]; cp++)
 		if(*cp != cp[u.u_dent.u_name - u.u_dbuf])
+			/* comment: pathname is not matched, serach next entry */
 			goto eloop;
 
 	/*

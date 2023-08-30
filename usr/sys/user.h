@@ -23,9 +23,11 @@ struct user
 	char	u_ruid;			/* real user id */
 	char	u_rgid;			/* real group id */
 	int	u_procp;		/* pointer to proc structure */
+	/* comment: fields for IO functions */
 	char	*u_base;		/* base address for IO */
 	char	*u_count;		/* bytes remaining for IO */
 	char	*u_offset[2];		/* offset in file for IO */
+	/* comment: fields for file system functions */
 	int	*u_cdir;		/* pointer to inode of current directory */
 	char	u_dbuf[DIRSIZ];		/* current pathname component */
 	char	*u_dirp;		/* current pointer to inode */
