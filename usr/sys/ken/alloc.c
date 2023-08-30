@@ -301,6 +301,7 @@ update()
 	if(updlock)
 		return;
 	updlock++;
+	/* comment: update superblocks */
 	for(mp = &mount[0]; mp < &mount[NMOUNT]; mp++)
 		if(mp->m_bufp != NULL) {
 			ip = mp->m_bufp->b_addr;
@@ -314,6 +315,7 @@ update()
 			bcopy(ip, bp->b_addr, 256);
 			bwrite(bp);
 		}
+	/* comment: update in-core inodes */
 	for(ip = &inode[0]; ip < &inode[NINODE]; ip++)
 		if((ip->i_flag&ILOCK) == 0) {
 			ip->i_flag =| ILOCK;
