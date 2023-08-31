@@ -32,7 +32,7 @@ iget(dev, ino)
 	register struct mount *ip;
 
 loop:
-	ip = NULL;
+	ip = NULL;	/* comment: first unused in-core inode */
 	for(p = &inode[0]; p < &inode[NINODE]; p++) {
 		if(dev==p->i_dev && ino==p->i_number) {
 			if((p->i_flag&ILOCK) != 0) {
@@ -64,8 +64,9 @@ loop:
 	p->i_dev = dev;
 	p->i_number = ino;
 	p->i_flag = ILOCK;
-	p->i_count++;
+	p->i_count++
 	p->i_lastr = -1;
+	/* comment: read disk inode fields into allocated in-core inode */
 	ip = bread(dev, ldiv(ino+31,16));
 	/*
 	 * Check I/O errors
