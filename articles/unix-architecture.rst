@@ -54,7 +54,7 @@ process and file system access all external block storages
 by just geting a buffer at (device, block),
 and keeping it or returning it without
 
-    #. going into detail over various external storages
-    through block device drivers.
-    #. deciding when to read from or write to external storages.
+#. going into detail over various external storages
+   through block device drivers.
+#. deciding when to read from or write to external storages.
 
