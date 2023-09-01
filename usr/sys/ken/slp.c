@@ -313,6 +313,7 @@ loop:
 	 * his segmentation registers.
 	 */
 	retu(rp->p_addr);
+	/* comment: setup memory mapping */
 	sureg();
 	/*
 	 * If the new process paused because it was

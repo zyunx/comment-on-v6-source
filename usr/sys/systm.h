@@ -40,8 +40,11 @@ struct	mount
 } mount[NMOUNT];
 int	mpid;			/* generic for unique process id's */
 char	runin;			/* scheduling flag */
+/* comment: there is no process scheduleable */
 char	runout;			/* scheduling flag */
+/* comment: rescheduling flag */
 char	runrun;			/* scheduling flag */
+/* comment: current privilege */
 char	curpri;			/* more scheduling */
 int	maxmem;			/* actual max memory per process */
 int	*lks;			/* pointer to clock device */

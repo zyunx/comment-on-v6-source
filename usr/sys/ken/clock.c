@@ -87,27 +87,35 @@ clock(dev, sp, r1, nps, r0, pc, ps)
 
 out:
 	if((ps&UMODE) == UMODE) {
+		/* comment: interrupt when running in user space */
 		u.u_utime++;
 		if(u.u_prof[3])
 			incupc(pc, u.u_prof);
 	} else
+		/* comment: interrupt when running in kernel space */
 		u.u_stime++;
+	/* comment: increase cpu time */
 	pp = u.u_procp;
 	if(++pp->p_cpu == 0)
 		pp->p_cpu--;
 	if(++lbolt >= HZ) {
+		/* comment: onece every HZ times, that is 1 second. */
 		if((ps&0340) != 0)
+			/* comment: other important work to do */
 			return;
 		lbolt =- HZ;
+		/* comment: update system time */
 		if(++time[1] == 0)
 			++time[0];
 		spl1();
 		if(time[1]==tout[1] && time[0]==tout[0])
 			wakeup(tout);
 		if((time[1]&03) == 0) {
+			/* comment: every 4 seconds. */
 			runrun++;
 			wakeup(&lbolt);
 		}
+		/* comment: update all processes scheduling variables */
 		for(pp = &proc[0]; pp < &proc[NPROC]; pp++)
 		if (pp->p_stat) {
 			if(pp->p_time != 127)
