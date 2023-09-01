@@ -13,8 +13,8 @@ Overview
                                             +-------------+                                  
                                                                                              
                                                                                              
- Kernel Space      +---------+                   +-------------+                             
-                   | Process |                   | File System |                             
+ Kernel Space      +---------+       open        +-------------+                             
+                   | Process | ----------------> | File System |                             
                    +---------+                   +-------------+                             
                         |                             |   |                                  
                         |                             |   |                                  
