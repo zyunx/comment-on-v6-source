@@ -557,9 +557,13 @@ _idle:
 	rts	pc
 
 .globl	_savu, _retu, _aretu
+/ comment: save sp is to save stack
+/ comment: save r5 is to save call link
 _savu:
 	bis	$340,PS
+	/ comment: move pc to r1
 	mov	(sp)+,r1
+	/ comment: first stack argument
 	mov	(sp),r0
 	mov	sp,(r0)+
 	mov	r5,(r0)+

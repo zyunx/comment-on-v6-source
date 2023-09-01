@@ -162,6 +162,7 @@ sureg()
 	while(rp > &UISA->r[0])
 		*--rp = *--up + a;
 	if((up=u.u_procp->p_textp) != NULL)
+		/* comment: a = data segment address - text segment address */
 		a =- up->x_caddr;
 	up = &u.u_uisd[16];
 	rp = &UISD->r[16];
@@ -172,6 +173,11 @@ sureg()
 	while(rp > &UISD->r[0]) {
 		*--rp = *--up;
 		if((*rp & WO) == 0)
+			/* comment: not writable, that is readonly, that is text segment.
+		     * rp = &UISD[i] = UISD + 2i, for all i
+			 * &rp[(UISA-UISD/2] = UISD + 2i + 2*(UISA-UISD)/2 = UISA + 2i = &UISA[i]
+		     * data seg address - (data seg addr - text seg addr ) = text seg addr
+			 */
 			rp[(UISA-UISD)/2] =- a;
 	}
 }
