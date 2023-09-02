@@ -47,19 +47,6 @@ ccall.s::
 
 You may see the assembly code referrence two names
 ``csv`` and ``cret``.
-There are several points for C functions.
-
-    #. The function body starts with ``jsr r5, csv``,
-       and ends with ``jmp cret``.
-    #. Before calling function, arguments are placed
-       on the stack.
-       And after returnning from function,
-       arguments are removed from stack.
-    #. To call function, use ``jsr pc, <func>``.
-    #. Return value in R0
-    #. R5 is used as call frame pointer
-    #. R2, R3, R4 are guranteed the same
-       before and after function call.
 
 Find the their source at ``/usr/source/s4.s``
 
@@ -87,6 +74,24 @@ Find the their source at ``/usr/source/s4.s``
         mov	r5,sp
         mov	(sp)+,r5
         rts	pc
+
+
+C Calling Convention
+====================
+
+There are several points for C functions.
+
+    #. The function body starts with ``jsr r5, csv``,
+       and ends with ``jmp cret``.
+    #. Before calling function, arguments are placed
+       on the stack.
+       And after returnning from function,
+       arguments are removed from stack.
+    #. To call function, use ``jsr pc, <func>``.
+    #. Return value in R0
+    #. R5 is used as call frame pointer
+    #. R2, R3, R4 are guranteed the same
+       before and after function call.
 
 Go through the Code
 ===================
