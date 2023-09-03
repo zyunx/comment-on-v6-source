@@ -579,6 +579,9 @@ _aretu:
 _retu:
 	bis	$340,PS
 	mov	(sp)+,r1
+	/ comment: kernel's 'struct user u' segment
+	/ comment: u is always 140000, so by change KISA6,
+	/ comment: u can address every process's struct user.
 	mov	(sp),KISA6
 	mov	$_u,r0
 1:
