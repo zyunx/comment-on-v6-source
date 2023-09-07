@@ -481,6 +481,7 @@ gword:
 	mov	(sp)+,r0
 	br	1f
 
+/ comment: trick, can both be used in C and assembly style
 _suiword:
 _suword:
 	mov	2(sp),r1
@@ -488,7 +489,7 @@ _suword:
 suword:
 	jsr	pc,pword
 	rts	pc
-
+/ comment: put word r0 at user space address r1
 pword:
 	mov	PS,-(sp)
 	bis	$340,PS
@@ -510,6 +511,7 @@ err:
 	rts	pc
 
 .globl	_copyin, _copyout
+/ comment: copy memory user space memory to kernel space
 _copyin:
 	jsr	pc,copsu
 1:
@@ -518,6 +520,7 @@ _copyin:
 	sob	r2,1b
 	br	2f
 
+/ comment: copy memory from kernel space to user space
 _copyout:
 	jsr	pc,copsu
 1:
@@ -556,6 +559,7 @@ _idle:
 	mov	(sp)+,PS
 	rts	pc
 
+/ comment: save and restore stack
 .globl	_savu, _retu, _aretu
 / comment: save sp is to save stack
 / comment: save r5 is to save call link
@@ -590,6 +594,7 @@ _retu:
 	bic	$340,PS
 	jmp	(r1)
 
+/ comment: set cpu priviledge level
 .globl	_spl0, _spl1, _spl4, _spl5, _spl6, _spl7
 _spl0:
 	bic	$340,PS
@@ -617,6 +622,7 @@ _spl7:
 	bis	$340,PS
 	rts	pc
 
+/ comment: copy 1 block core memory, specified by block number
 .globl	_copyseg
 _copyseg:
 	mov	PS,-(sp)
@@ -631,6 +637,7 @@ _copyseg:
 	mov	$6,UISD1
 	mov	r2,-(sp)
 	clr	r0
+	/ comment: 1st address of 2nd page
 	mov	$8192.,r1
 	mov	$32.,r2
 1:
@@ -646,6 +653,7 @@ _copyseg:
 	rts	pc
 
 / comment: clear 1 block core memory, that is 32 words.
+/ comment: specified by block number
 .globl	_clearseg
 _clearseg:
 	mov	PS,-(sp)
@@ -668,6 +676,7 @@ _clearseg:
 	mov	(sp)+,PS
 	rts	pc
 
+/ comment: double word add
 .globl	_dpadd
 _dpadd:
 	mov	2(sp),r0
@@ -675,6 +684,10 @@ _dpadd:
 	adc	(r0)
 	rts	pc
 
+/ comment: compare double word
+/ commnet: greater: > 0, equal: = 0, less = < 0
+/ comment: and the abs of return value is less
+/ comment: or equal to 512
 .globl	_dpcmp
 _dpcmp:
 	mov	2(sp),r0
@@ -700,11 +713,12 @@ _dpcmp:
 	mov	r1,r0
 	rts	pc
 
+/ comment: dump memory to magnetic tape
 .globl	dump
 dump:
 	bit	$1,SSR0
 	bne	dump
-
+/ comment: memory managment is now disabled
 / save regs r0,r1,r2,r3,r4,r5,r6,KIA6
 / starting at abs location 4
 
@@ -727,9 +741,11 @@ dump:
 1:
 	mov	$-512.,(r0)
 	inc	-(r0)
+	/ comment: wait opeation to complete
 2:
 	tstb	(r0)
 	bge	2b
+	/ comment: write next block if no error
 	tst	(r0)+
 	bge	1b
 	reset
@@ -805,11 +821,12 @@ start:
 	mov	$30000,PS
 	jsr	pc,_main
 	/ comment: set up old PS and old PC, and return to user space
-	/ comment: return from process 1
+	/ comment: return from process 1, and start executing at address 0
 	mov	$170000,-(sp)
 	clr	-(sp)
 	rtt
 
+/ comment: calculate quotient, word operation
 .globl	_ldiv
 _ldiv:
 	clr	r0
@@ -817,6 +834,7 @@ _ldiv:
 	div	4(sp),r0
 	rts	pc
 
+/ comment: calculate remainder, suport word operation
 .globl	_lrem
 _lrem:
 	clr	r0
@@ -825,15 +843,17 @@ _lrem:
 	mov	r1,r0
 	rts	pc
 
+/ comment: long shift, r0 is 16-31 bit, r1 is 0-15 bit
 .globl	_lshift
 _lshift:
 	mov	2(sp),r1
 	mov	(r1)+,r0
 	mov	(r1),r1
-	ashc	4(sp),r0
+	ashc	4(sp),r0	/ comment: arithmetic shift combined
 	mov	r1,r0
 	rts	pc
 
+/ comment: for c function compilation
 .globl	csv
 csv:
 	mov	r5,r0
