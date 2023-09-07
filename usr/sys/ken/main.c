@@ -107,15 +107,15 @@ main()
 
 	*lks = 0115;
 	/*
-	 * init char IO system(tty)
+	 * comment: init char IO system(tty)
 	 */
 	cinit();
 	/*
-	 * init block IO system(bio)
+	 * comment: init block IO system(bio)
 	 */
 	binit();
 	/*
-	 * init filesystem
+	 * comment: init filesystem
 	 */
 	iinit();
 	rootdir = iget(rootdev, ROOTINO);

@@ -805,6 +805,7 @@ start:
 	mov	$30000,PS
 	jsr	pc,_main
 	/ comment: set up old PS and old PC, and return to user space
+	/ comment: return from process 1
 	mov	$170000,-(sp)
 	clr	-(sp)
 	rtt
