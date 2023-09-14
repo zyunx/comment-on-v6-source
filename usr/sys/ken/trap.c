@@ -47,6 +47,7 @@ trap(dev, sp, r1, nps, r0, pc, ps)
 	savfp();
 	if ((ps&UMODE) == UMODE)
 		dev =| USER;
+	/* comment: store r0 in u_ar0 */
 	u.u_ar0 = &r0;
 	switch(dev) {
 
@@ -100,6 +101,7 @@ trap(dev, sp, r1, nps, r0, pc, ps)
 	case 6+USER: /* sys call */
 		u.u_error = 0;
 		ps =& ~EBIT;
+		/* comment: check which system call */
 		callp = &sysent[fuiword(pc-2)&077];
 		if (callp == sysent) { /* indirect */
 			a = fuiword(pc);
@@ -111,6 +113,7 @@ trap(dev, sp, r1, nps, r0, pc, ps)
 			for(i=0; i<callp->count; i++)
 				u.u_arg[i] = fuword(a =+ 2);
 		} else {
+			/* comment: store system call args in u_arg */
 			for(i=0; i<callp->count; i++) {
 				u.u_arg[i] = fuiword(pc);
 				pc =+ 2;
