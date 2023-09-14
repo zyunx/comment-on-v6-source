@@ -12,6 +12,7 @@ reset	= 5
 .globl	_trap
 / comment: for trap
 trap:
+	/ comment: save original PS on stack.
 	mov	PS,-4(sp)
 	/ comment: Trap may be coursed by fault. 
 	/ comment: If nofault is not 0, trap is intentionally as fault handle mechanisum.
