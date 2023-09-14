@@ -103,6 +103,7 @@ trap(dev, sp, r1, nps, r0, pc, ps)
 		ps =& ~EBIT;
 		/* comment: check which system call */
 		callp = &sysent[fuiword(pc-2)&077];
+		/* comment: sys 0 */
 		if (callp == sysent) { /* indirect */
 			a = fuiword(pc);
 			pc =+ 2;
