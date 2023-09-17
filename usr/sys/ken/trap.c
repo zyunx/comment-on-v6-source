@@ -43,8 +43,9 @@ trap(dev, sp, r1, nps, r0, pc, ps)
 {
 	register i, a;
 	register struct sysent *callp;
-
+	/* comment: empty function in m40.s */
 	savfp();
+	/* comment: user PS is initialized in ``start`` in m40.s */
 	if ((ps&UMODE) == UMODE)
 		dev =| USER;
 	/* comment: store r0 in u_ar0 */
