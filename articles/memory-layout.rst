@@ -12,7 +12,7 @@ The physical memory consist 4 parts.
 
 #. Kernel's segments, which contain kernel's text, data, bss segmetns.
 #. Process 0's segments.
-#. Available core memory segments, which is used by OS's operations.
+#. Available core memory segments, which is used by OS's later operations.
 #. IO segments, which contain hardware registers.
 
 ::
@@ -138,6 +138,9 @@ some memory will be allocated for process's
 program(See ``newproc`` in /usr/sys/ken/slp.c),
 and mapped by process's page registers.
 
+These segments are not structured,
+they can contain any data,
+includes process memory, etc.
 
 Process Memory Layout
 =====================
