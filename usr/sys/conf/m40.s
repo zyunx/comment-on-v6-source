@@ -575,6 +575,8 @@ _savu:
 	bic	$340,PS
 	jmp	(r1)
 
+/ comment: The difference between _aretu and _retu is
+/ comment: retu remaps _u while _aretu does not.
 _aretu:
 	bis	$340,PS
 	mov	(sp)+,r1

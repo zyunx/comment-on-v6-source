@@ -263,6 +263,8 @@ swaper:
  */
 swtch()
 {
+	/* comment: upon entering, CPU registers are
+	 * saved on stack, except R0, R1 */
 	static struct proc *p;
 	register i, n;
 	register struct proc *rp;
@@ -313,7 +315,10 @@ loop:
 	 * his segmentation registers.
 	 */
 	retu(rp->p_addr);
-	/* comment: setup memory mapping */
+	/* comment: At this point, CPU is the same CPU,
+	 * but user struct is another one.
+	 */
+	/* comment: setup new process's memory mapping */
 	sureg();
 	/*
 	 * If the new process paused because it was
@@ -334,6 +339,9 @@ loop:
 	 * See the newproc comments.
 	 */
 	return(1);
+	/*
+	 * comment: When it returns, the CPU is load with
+	 * new process's CPU registers */
 }
 
 /*
