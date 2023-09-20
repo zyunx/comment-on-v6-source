@@ -17,4 +17,7 @@ Master UNIX by Feynman Technique
     #. Swtch, savu, retu
     #. sched, swap 
 
-#. System entry
+#. System Call
+
+    #. System entry
+    #. open
