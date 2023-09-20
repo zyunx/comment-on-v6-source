@@ -14,5 +14,7 @@ Master UNIX by Feynman Technique
 #. Process
 
     #. Memory Layout
+    #. Swtch, savu, retu
+    #. sched, swap 
 
 #. System entry

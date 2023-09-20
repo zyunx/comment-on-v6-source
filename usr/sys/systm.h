@@ -40,7 +40,7 @@ struct	mount
 } mount[NMOUNT];
 int	mpid;			/* generic for unique process id's */
 char	runin;			/* scheduling flag */
-/* comment: there is no process scheduleable */
+/* comment: there is no process need swap in */
 char	runout;			/* scheduling flag */
 /* comment: rescheduling flag */
 char	runrun;			/* scheduling flag */

@@ -164,10 +164,12 @@ loop:
 	for(rp = &proc[0]; rp < &proc[NPROC]; rp++)
 	if(rp->p_stat==SRUN && (rp->p_flag&SLOAD)==0 &&
 	    rp->p_time > n) {
+		/* comment: runnable, not loaded and wait longer */
 		p1 = rp;
 		n = rp->p_time;
 	}
 	if(n == -1) {
+		/* comment: no process to be swapped in */
 		runout++;
 		sleep(&runout, PSWP);
 		goto loop;
@@ -186,6 +188,7 @@ loop:
 	if((a=malloc(coremap, a)) != NULL)
 		goto found2;
 
+	/* comment: At this point, no memory available for swapping in. */
 	/*
 	 * none found,
 	 * look around for easy core
@@ -195,6 +198,10 @@ loop:
 	for(rp = &proc[0]; rp < &proc[NPROC]; rp++)
 	if((rp->p_flag&(SSYS|SLOCK|SLOAD))==SLOAD &&
 	    (rp->p_stat == SWAIT || rp->p_stat==SSTOP))
+		/*
+		 * comment: process is load, but not a system one, not locked,
+		 * and is waiting or stopped.
+		 */
 		goto found1;
 
 	/*
@@ -205,16 +212,22 @@ loop:
 	 */
 
 	if(n < 3)
+		/* comment: just swapped out, so not deserved to be swapped in */
 		goto sloop;
 	n = -1;
 	for(rp = &proc[0]; rp < &proc[NPROC]; rp++)
 	if((rp->p_flag&(SSYS|SLOCK|SLOAD))==SLOAD &&
 	   (rp->p_stat==SRUN || rp->p_stat==SSLEEP) &&
 	    rp->p_time > n) {
+		/*
+		 * comment: process is load, but not a system one, not locked,
+		 * and is runnable or sleeping.
+		 */
 		p1 = rp;
 		n = rp->p_time;
 	}
 	if(n < 2)
+		/* comment: just swapped in,  so not deserved to swapped out */
 		goto sloop;
 	rp = p1;
 
@@ -231,7 +244,7 @@ found1:
 	/*
 	 * swap user in
 	 */
-
+	/* comment: Now, core memory is available for swaping in */
 found2:
 	if((rp=p1->p_textp) != NULL) {
 		if(rp->x_ccount == 0) {
