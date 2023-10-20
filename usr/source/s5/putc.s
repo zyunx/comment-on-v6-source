@@ -24,13 +24,16 @@ _putw:
 	mov	r5,-(sp)
 	mov	sp,r5
 	mov	6(r5),r1
+	/ comment: to move 1st byte to file
 	dec	2(r1)
 	bge	1f
+	/ comment: flush file to disk if buffer is full
 	jsr	pc,fl
 	dec	2(r1)
 1:
 	movb	4(r5),*4(r1)
 	inc	4(r1)
+	/ comment: to move 2nd byte to file
 	dec	2(r1)
 	bge	1f
 	jsr	pc,fl
@@ -62,6 +65,8 @@ _fflush:
 	jsr	pc,fl
 	br	goodret
 
+/ comment: flush buffer structure in r1
+/ comment: buffer struct is (fd, buf free, buf end pointer, 512 bytes buf data)
 fl:
 	mov	r1,r0
 	add	$6,r0

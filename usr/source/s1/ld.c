@@ -33,16 +33,16 @@
 char	premeof[] "Premature EOF on %s";
 
 struct	page {
-	int	nuser;
-	int	bno;
-	int	nibuf;
+	int	nuser;			/* comment: number of user */
+	int	bno;			/* comment: 512B-block number */
+	int	nibuf;			/* comment: number of word in buff */
 	int	buff[256];
 } page[2];
 
 struct	{
 	int	nuser;
 	int	bno;
-} fpage;
+} fpage;				/* comment: empty page */
 
 struct	stream {
 	int	*ptr;
@@ -73,6 +73,7 @@ struct	filhdr {
 	int	relflg;
 } filhdr;
 
+/* comment: for library */
 struct	liblist {
 	int	off;
 	int	bno;
@@ -81,6 +82,7 @@ struct	liblist {
 struct	liblist	liblist[NROUT];
 struct	liblist	*libp { &liblist[0] };
 
+/* comment: a.out symbol entry */
 struct	symbol {
 	char	sname[8];
 	char	stype;
@@ -88,6 +90,7 @@ struct	symbol {
 	int	svalue;
 };
 
+/* comment: current processed symbol */
 struct	symbol	cursym;
 struct	symbol	symtab[NSYM];
 struct	symbol	*hshtab[NSYM+2];
@@ -97,6 +100,7 @@ struct	symbol	*p_etext;
 struct	symbol	*p_edata;
 struct	symbol	*p_end;
 
+/* comment: command options */
 int	xflag;		/* discard local symbols */
 int	Xflag;		/* discard locals starting with 'L' */
 int	rflag;		/* preserve relocation bits, don't define common */
@@ -106,6 +110,7 @@ int	nflag;		/* pure procedure */
 int	dflag;		/* define common even with rflag */
 int	iflag;		/* I/D space separated */
 
+/* comment: current opened file */
 int	infil;
 char	*filname;
 
@@ -119,6 +124,7 @@ int	torigin;
 int	dorigin;
 int	borigin;
 
+/* comment: current text relocation */
 int	ctrel;
 int	cdrel;
 int	cbrel;
@@ -126,10 +132,15 @@ int	cbrel;
 int	errlev;
 int	delarg	4;
 char	tfname[]	"/tmp/lxyyyyy";
+/* comment: file buffers for putw */
+/* comment: buffer structure: fd, buf free, buf end, buf */
+/* comment: toutb: target out buffer */
 int	toutb[259];
+/* comment: doutb: data section out buffer */
 int	doutb[259];
 int	troutb[259];
 int	droutb[259];
+/* comment: soutb: local symbol out buffer */
 int	soutb[259];
 
 struct	symbol	**lookup();
@@ -157,6 +168,7 @@ char **argv;
 			if (++c >= argc)
 				error(1, "Bad 'use'");
 			if (*(hp = slookup(*p++)) == 0) {
+				/* comment: symbol not found */
 				*hp = symp;
 				enter();
 			}
@@ -422,6 +434,7 @@ setupout()
 
 	if ((toutb[0] = creat("l.out", 0666)) < 0)
 		error(1, "Can't create l.out");
+	/* comment: make tmp file name */
 	pid = getpid();
 	for (p = &tfname[12]; p > &tfname[7];) {
 		*--p = (pid&07) + '0';
@@ -450,6 +463,7 @@ setupout()
 	return;
 }
 
+/* comment: create tmp file */
 tcreat(buf, letter)
 int *buf;
 {
@@ -597,11 +611,13 @@ int *lp;
 	}
 }
 
+/* comment: build a.out */
 finishout()
 {
 	register n, *p;
 
 	if (nflag||iflag) {
+		/* comment: fill text to 64B boundary */
 		n = torigin;
 		while (n&077) {
 			n =+ 2;
@@ -629,6 +645,7 @@ finishout()
 	delexit();
 }
 
+/* comment: delete intermediate files */
 delexit()
 {
 	register c;
@@ -662,6 +679,7 @@ int *buf;
 	close(f);
 }
 
+/* comment: write a file name symbol */
 mkfsym(s)
 char *s;
 {
@@ -674,6 +692,7 @@ char *s;
 	mput(soutb, &cursym, sizeof cursym);
 }
 
+/* comment: copy `an` bytes to `aloc` from `text` stream */
 mget(aloc, an)
 int *aloc;
 {
@@ -700,6 +719,8 @@ int *aloc;
 	} while (--n);
 }
 
+/* comment: put `an` bytes from `aloc` to disk file
+ * represented by `buf` */
 mput(buf, aloc, an)
 int *aloc;
 {
@@ -713,7 +734,17 @@ int *aloc;
 	} while (--n);
 }
 
+/* comment: seek data at offset `o`,
+ * of size `s`, at block `ab` of file `infil`
+ * into stream `asp`.
+ */
 dseek(asp, ab, o, s)
+/* comment:
+ * asp: stream *
+ * ab, bno
+ * o: offset
+ * s: size
+ */
 {
 	register struct stream *sp;
 	register struct page *p;
@@ -725,10 +756,18 @@ dseek(asp, ab, o, s)
 	o =& 0377;
 	--sp->pno->nuser;
 	if ((p = &page[0])->bno!=b && (p = &page[1])->bno!=b)
+		/* comment: p == &page[1] */
 		if (p->nuser==0 || (p = &page[0])->nuser==0) {
 			if (page[0].nuser==0 && page[1].nuser==0)
 				if (page[0].bno < page[1].bno)
+					/* comment: if page 0 and 1 is not used,
+					 * and page 0's bno is less than page 1's
+					 * then use page 0.
+					 * It's an optimaztion, for block with greater bno
+					 * may be used later.
+					 */
 					p = &page[0];
+			/* comment: read data from infil */
 			p->bno = b;
 			seek(infil, b, 3);
 			if ((n = read(infil, p->buff, 512)>>1) < 0)
@@ -746,6 +785,7 @@ dseek(asp, ab, o, s)
 		sp->size = 0;
 }
 
+/* comment: get a word from stream */
 get(asp)
 struct stream *asp;
 {
@@ -753,6 +793,7 @@ struct stream *asp;
 
 	sp = asp;
 	if (--sp->nibuf < 0) {
+		/* comment: read next block */
 		dseek(sp, sp->bno+1, 0, -1);
 		--sp->nibuf;
 	}
@@ -783,6 +824,7 @@ char *acp;
 	filname = cp;
 	if ((infil = open(cp, 0)) < 0)
 		error(1, "cannot open");
+	/* comment: reinitialize pages */
 	page[0].bno = page[1].bno = -1;
 	page[0].nuser = page[1].nuser = 0;
 	text.pno = reloc.pno = &fpage;
@@ -824,6 +866,7 @@ char *s;
 	return(lookup());
 }
 
+/* comment: enter symbol to symbol table */
 enter()
 {
 	register struct symbol *sp;
@@ -907,6 +950,7 @@ readhdr(bno, off)
 	filhdr.bsize = (filhdr.bsize+01) & ~01;
 }
 
+/* comment: copy 8 characters */
 cp8c(from, to)
 char *from, *to;
 {
