@@ -4,6 +4,7 @@
  */
 
 #define	SIGINT	2
+/* comment: archive (library) magic number */
 #define	ARCMAGIC 0177555
 #define	FMAGIC	0407
 #define	NMAGIC	0410
@@ -126,7 +127,9 @@ int	borigin;
 
 /* comment: current text relocation */
 int	ctrel;
+/* comment: current data relocation */
 int	cdrel;
+/* comment: current bss relocation */
 int	cbrel;
 
 int	errlev;
@@ -138,7 +141,9 @@ char	tfname[]	"/tmp/lxyyyyy";
 int	toutb[259];
 /* comment: doutb: data section out buffer */
 int	doutb[259];
+/* comment: troutb for text relation bits */
 int	troutb[259];
+/* comment: troutb for data relation bits */
 int	droutb[259];
 /* comment: soutb: local symbol out buffer */
 int	soutb[259];
@@ -169,6 +174,9 @@ char **argv;
 				error(1, "Bad 'use'");
 			if (*(hp = slookup(*p++)) == 0) {
 				/* comment: symbol not found */
+				/* comment: insert a undefined external symbol to
+				 * force load some library
+				 */
 				*hp = symp;
 				enter();
 			}
@@ -233,6 +241,7 @@ char **argv;
 	finishout();
 }
 
+/* comment: build symbols in output file */
 load1arg(acp)
 char *acp;
 {
@@ -241,9 +250,11 @@ char *acp;
 
 	cp = acp;
 	if (getfile(cp)==0) {
+		/* comment: a object file */
 		load1(0, 0, 0);
 		return;
 	}
+	/* comment: archive file */
 	nbno = 0;
 	noff = 1;
 	for (;;) {
@@ -288,6 +299,7 @@ load1(libflg, bno, off)
 	while (text.size > 0) {
 		mget(&cursym, sizeof cursym);
 		if ((cursym.stype&EXTERN)==0) {
+			/* comment: local symbols */
 			if (Xflag==0 || cursym.sname[0]!='L')
 				nloc =+ sizeof cursym;
 			continue;
@@ -295,24 +307,29 @@ load1(libflg, bno, off)
 		symreloc();
 		hp = lookup();
 		if ((sp = *hp) == 0) {
+			/* comment: non-exist symbol */
 			*hp = enter();
 			*cp++ = hp;
 			continue;
 		}
 		if (sp->stype != EXTERN+UNDEF)
+			/* comment: this symbol is resolved */
 			continue;
 		if (cursym.stype == EXTERN+UNDEF) {
 			if (cursym.svalue > sp->svalue)
 				sp->svalue = cursym.svalue;
 			continue;
 		}
+		/* comment: Now, current symbol is not undefined external */
 		if (sp->svalue != 0 && cursym.stype == EXTERN+TEXT)
 			continue;
+		/* comment: number of yet undefined symbols defined in this file */
 		ndef++;
 		sp->stype = cursym.stype;
 		sp->svalue = cursym.svalue;
 	}
 	if (libflg==0 || ndef) {
+		/* comment: if a object file, merge it */
 		tsize =+ filhdr.tsize;
 		dsize =+ filhdr.dsize;
 		bsize =+ filhdr.bsize;
@@ -518,6 +535,7 @@ load2(bno, off)
 		mget(&cursym, sizeof cursym);
 		symreloc();
 		if ((cursym.stype&EXTERN) == 0) {
+			/* comment: local symbol */
 			if (!sflag&&!xflag&&(!Xflag||cursym.sname[0]!='L'))
 				mput(soutb, &cursym, sizeof cursym);
 			continue;
@@ -525,6 +543,7 @@ load2(bno, off)
 		if ((sp = *lookup()) == 0)
 			error(1, "internal error: symbol not found");
 		if (cursym.stype == EXTERN+UNDEF) {
+			/* comment: current symbol is not defined */
 			if (lp >= &local[NSYMPR])
 				error(1, "Local symbol overflow");
 			*lp++ = symno;
@@ -547,6 +566,7 @@ load2(bno, off)
 	borigin =+ filhdr.bsize;
 }
 
+/* comment: apply relocation */
 load2td(lp, creloc, b1, b2)
 int *lp;
 {
@@ -568,6 +588,7 @@ int *lp;
 			t = get(&text);
 		} else
 			t = *text.ptr++;
+
 		if (--reloc.size <= 0) {
 			if (reloc.size < 0)
 				error(1, "Relocation error");
@@ -579,6 +600,7 @@ int *lp;
 			r = get(&reloc);
 		} else
 			r = *reloc.ptr++;
+
 		switch (r&016) {
 
 		case RTEXT:
@@ -742,7 +764,7 @@ dseek(asp, ab, o, s)
 /* comment:
  * asp: stream *
  * ab, bno
- * o: offset
+ * o: offset in word
  * s: size
  */
 {
