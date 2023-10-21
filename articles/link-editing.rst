@@ -268,3 +268,99 @@ JSR R5, 000010(PC)
 JSR PC, 177760(PC)
 JMP 000016(PC)
 
+
+ld.c
+====
+
+file content abstraction
+------------------------
+
+struct	page {
+	int	nuser;			/* comment: number of user */
+	int	bno;			/* comment: 512B-block number */
+	int	nibuf;			/* comment: number of word in buff */
+	int	buff[256];
+} page[2];
+
+struct	{
+	int	nuser;
+	int	bno;
+} fpage;				/* comment: empty page */
+
+struct	stream {
+	int	*ptr;
+	int	bno;
+	int	nibuf;
+	int	size;
+	struct	page *pno;
+};
+
+current file
+int infil
+
+/* comment: seek data at offset `o`,
+ * of size `s`, at block `ab` of file `infil`
+ * into stream `asp`.
+ */
+ /* comment:
+ * asp: stream *
+ * ab, bno
+ * o: offset in word
+ * s: size in byte
+ */
+dseek(asp, ab, o, s)
+
+/* comment: get a word from stream */
+get(asp)
+
+
+link logic
+----------
+
+getfile
+open object file or archive file, init text stream
+
+mget
+copy from text stream
+
+load1
+load from text stream
+
+    readhdr
+
+
+
+
+symbol relocation formula
+
+symbol value = symbol address
+
+current value + segment address
+text:
+text symbol value + text begin address
+data:
+data symbol value + data begin address 
+
+new symbol value = (new symbol address)
+                 = (old symbol address + relocation address)
+
+for text:
+new symbol value = old symbol address + relocation address
+                 = old symbol value - curent tsize
+
+for data:
+new symbol value = old symbol address + relocation address
+                 = old symbol value - tsize
+
+
+
+final value in text + (rel) = value of symbol + (rel) + word in text(constant)
+new final value in text = new value of symbo + word in text
+
+
+for 407 file
+value of data symbol is relative to 0, that is begin of text segment.
+value of data symbol relative to data segment is less than that relative to text segment.
+The difference is text segment size.
+
+

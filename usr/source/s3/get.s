@@ -19,6 +19,8 @@
 /
 /  ioptr: .=.+2    / file descriptor
 /         .=.+2    / charact+2    / pointer to next character (reset if no. chars=0)
+/ comment: add next line
+/         .=.+2    / pointer to the end of buffer
 /         .=.+512. / the buffer
 
 	.globl	getc,getw,fopen

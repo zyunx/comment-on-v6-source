@@ -94,8 +94,11 @@ struct	symbol {
 /* comment: current processed symbol */
 struct	symbol	cursym;
 struct	symbol	symtab[NSYM];
+/* comment: symbol table hash index */
 struct	symbol	*hshtab[NSYM+2];
+/* comment: next free symbol slot */
 struct	symbol	*symp { symtab };
+/* comment: record new entered symbol for current processing file */
 struct	symbol	**local[NSYMPR];
 struct	symbol	*p_etext;
 struct	symbol	*p_edata;
@@ -118,9 +121,11 @@ char	*filname;
 int	tsize;
 int	dsize;
 int	bsize;
+/* comment: local symbol size */
 int	ssize;
 int	nsym;
 
+/* comment: real segment origins in file */
 int	torigin;
 int	dorigin;
 int	borigin;
@@ -241,7 +246,7 @@ char **argv;
 	finishout();
 }
 
-/* comment: build symbols in output file */
+/* comment: pass1: build and relocate symbols in output file */
 load1arg(acp)
 char *acp;
 {
@@ -276,6 +281,7 @@ char *acp;
 	}
 }
 
+/* comment: pass 1, relocate symbols relative to theier own segment */
 load1(libflg, bno, off)
 {
 	register struct symbol *sp, **hp, ***cp;
@@ -291,12 +297,15 @@ load1(libflg, bno, off)
 	cp = local;
 	ssymp = symp;
 	if ((filhdr.relflg&RELFLG)==1) {
+		/* comment: if no relocation, return */
 		error(0, "No relocation bits");
 		return(0);
 	}
+	/* comment: seek to symbol table in file */
 	off =+ (sizeof filhdr)/2 + filhdr.tsize + filhdr.dsize;
 	dseek(&text, bno, off, filhdr.ssize);
 	while (text.size > 0) {
+		/* comment: get a symbol record */
 		mget(&cursym, sizeof cursym);
 		if ((cursym.stype&EXTERN)==0) {
 			/* comment: local symbols */
@@ -312,16 +321,25 @@ load1(libflg, bno, off)
 			*cp++ = hp;
 			continue;
 		}
+		/* comment: symbol found */
 		if (sp->stype != EXTERN+UNDEF)
 			/* comment: this symbol is resolved */
 			continue;
+		/* comment: now the existed symbol is EXTERN+UNDEF */
 		if (cursym.stype == EXTERN+UNDEF) {
+			/* comment: see a.out(5)
+			 * If the symbol's type is undefined external,  and  the  value
+			 * field  is  non-zero, the symbol is interpreted by the loader
+			 * ld as the name of a common region whose size is indicated by
+			 * the value of the symbol.
+			 */
 			if (cursym.svalue > sp->svalue)
 				sp->svalue = cursym.svalue;
 			continue;
 		}
 		/* comment: Now, current symbol is not undefined external */
 		if (sp->svalue != 0 && cursym.stype == EXTERN+TEXT)
+			/* comment: sp is common region symbol */
 			continue;
 		/* comment: number of yet undefined symbols defined in this file */
 		ndef++;
@@ -329,7 +347,8 @@ load1(libflg, bno, off)
 		sp->svalue = cursym.svalue;
 	}
 	if (libflg==0 || ndef) {
-		/* comment: if a object file, merge it */
+		/* comment: if a object file, merge it
+		 * or if a achive file and defined some refered symbol */
 		tsize =+ filhdr.tsize;
 		dsize =+ filhdr.dsize;
 		bsize =+ filhdr.bsize;
@@ -346,6 +365,9 @@ load1(libflg, bno, off)
 	return(0);
 }
 
+/* comment: relocate symbols relative to text segment.
+ * Check undefined external symbols,
+ * transform them if only */
 middle()
 {
 	register struct symbol *sp;
@@ -497,6 +519,7 @@ char *acp;
 
 	cp = acp;
 	if (getfile(cp) == 0) {
+		/* comment: make a file symbol */
 		while (*cp)
 			cp++;
 		while (cp >= acp && *--cp != '/');
@@ -513,6 +536,7 @@ char *acp;
 	libp = ++lp;
 }
 
+/* comment: pass 2, generate object file content */
 load2(bno, off)
 {
 	register struct symbol *sp;
@@ -765,7 +789,7 @@ dseek(asp, ab, o, s)
  * asp: stream *
  * ab, bno
  * o: offset in word
- * s: size
+ * s: size in byte
  */
 {
 	register struct stream *sp;
@@ -822,6 +846,7 @@ struct stream *asp;
 	if (--sp->size <= 0) {
 		if (sp->size < 0)
 			error(1, premeof);
+		/* comment: sp->size == 0, so make stream point to emtpy page */
 		++fpage.nuser;
 		--sp->pno->nuser;
 		sp->pno = &fpage;
@@ -829,6 +854,8 @@ struct stream *asp;
 	return(*sp->ptr++);
 }
 
+/* comment:
+ * return value 0: object file, non 0: archive file */
 getfile(acp)
 char *acp;
 {
@@ -863,15 +890,19 @@ struct symbol **lookup()
 	register struct symbol **hp;
 	register char *cp, *cp1;
 
+	/* comment: compute hash value */
 	i = 0;
 	for (cp=cursym.sname; cp < &cursym.sname[8];)
 		i = (i<<1) + *cp++;
+
 	for (hp = &hshtab[(i&077777)%NSYM+2]; *hp!=0;) {
 		cp1 = (*hp)->sname;
 		for (cp=cursym.sname; cp < &cursym.sname[8];)
 			if (*cp++ != *cp1++)
 				goto no;
+		/* comment: find the symbol and break */
 		break;
+		/* comment: not match, try the next one */
 	    no:
 		if (++hp >= &hshtab[NSYM+2])
 			hp = hshtab;
@@ -902,6 +933,7 @@ enter()
 	return(sp);
 }
 
+/* comment: relocate current symbol relative to ctrel, cdrel, cbrel */
 symreloc()
 {
 	switch (cursym.stype) {
@@ -964,6 +996,14 @@ readhdr(bno, off)
 	mget(&filhdr, sizeof filhdr);
 	if (filhdr.fmagic != FMAGIC)
 		error(1, "Bad format");
+	/* comment: only support that data segment is immediately
+     * contiguous with the text segment.
+	 * for 407 object file, value of data symbol is relative to 
+	 * the begin of text segment.
+	 * value of data symbol relative to data segment
+	 * is less than that relative to text segment.
+     * The difference is text segment size. 
+	 * The same is for bss symbol values */
 	st = (filhdr.tsize+01) & ~01;
 	filhdr.tsize = st;
 	cdrel = -st;
