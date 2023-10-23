@@ -2,6 +2,14 @@
 How does LD work
 ================
 
+Overview
+========
+
+Pass1: load1arg and middle, compute segment sizes and symbol table
+
+Pass2: load2arg, apply relocation and generate a.out 
+
+
 source code:
 
 foo()

@@ -52,6 +52,7 @@ fpass2:
 	<-g\0>
 	.even
 
+/ comment: print file error
 / comment: r0 is file name
 filerr:
 	mov	r4,-(sp)
@@ -93,7 +94,8 @@ fcreat:
 	.data
 9:	sys	stat; 0:..; outbuf
 	.text
-	bec	2f
+	bec	2f			/ comment: branch if error clear
+	/ comment: the file does not exist
 	mov	r4,0f
 	sys	indir; 9f
 	.data

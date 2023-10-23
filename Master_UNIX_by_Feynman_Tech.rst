@@ -19,5 +19,15 @@ Master UNIX by Feynman Technique
 
 #. System Call
 
-    #. System entry
-    #. open
+    #. TODO: System entry
+    #. TODO: open
+
+#. Programming
+
+    # a.out
+    # ld.c, link editor
+    # TODO as??.s, assembler
+
+# Document Preparation
+
+    # TODO nroff
