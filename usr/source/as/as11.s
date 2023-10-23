@@ -84,6 +84,7 @@ filerr:
 	mov	(sp)+,r4
 	rts	r5
 
+/ comment: create tmp file */
 fcreat:
 	mov	r4,-(sp)
 	mov	(r5)+,r4

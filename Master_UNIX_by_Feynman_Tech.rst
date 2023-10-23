@@ -24,10 +24,10 @@ Master UNIX by Feynman Technique
 
 #. Programming
 
-    # a.out
-    # ld.c, link editor
-    # TODO as??.s, assembler
+    #. a.out
+    #. ld.c, link editor
+    #. TODO as??.s, assembler
 
-# Document Preparation
+#. Document Preparation
 
-    # TODO nroff
+    #. TODO nroff

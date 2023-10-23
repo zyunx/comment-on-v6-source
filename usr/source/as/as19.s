@@ -312,6 +312,7 @@ start:
 	jsr	pc,setup
 	jmp	go
 
+/ comment: setup symbol hashtable
 setup:
 	mov	$symtab,r1
 1:
@@ -319,12 +320,14 @@ setup:
 	mov	$8,r2
 	mov	r1,-(sp)
 2:
+	/ comment: r1 is the symbol name
 	movb	(r1)+,r4
 	beq	2f
 	add	r4,r3
 	swab	r3
 	sob	r2,2b
 2:
+	/ comment: r3 is the check sum
 	clr	r2
 	div	$hshsiz,r2
 	ashc	$1,r2
@@ -337,11 +340,14 @@ setup:
 3:
 	tst	-(r3)
 	bne	4b
+	/ comment: now, hashtable entry is empty
 	mov	(sp)+,r1
+	/ comment: save symbol address into hashtable entry
 	mov	r1,(r3)
 	add	$12.,r1
 	cmp	r1,$ebsymtab
 	blo	1b
+	/ comment: now, all symbol in table is looped
 	rts	pc
 
 /overlay buffer
