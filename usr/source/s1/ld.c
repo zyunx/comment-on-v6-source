@@ -123,6 +123,7 @@ int	dsize;
 int	bsize;
 /* comment: local symbol size */
 int	ssize;
+/* comment: number of local symbol */
 int	nsym;
 
 /* comment: real segment origins in file */
@@ -570,6 +571,9 @@ load2(bno, off)
 			/* comment: current symbol is not defined */
 			if (lp >= &local[NSYMPR])
 				error(1, "Local symbol overflow");
+			/* comment: `local` stores external undefined symbols
+			 * of this object file, that is to be relocated.
+			 * index of the local symbol, and symbol in external symbol tables */ 
 			*lp++ = symno;
 			*lp++ = sp;
 			continue;
@@ -590,7 +594,8 @@ load2(bno, off)
 	borigin =+ filhdr.bsize;
 }
 
-/* comment: apply relocation */
+/* comment: build relocation bits,
+ * and apply relocation to text and data segment */
 load2td(lp, creloc, b1, b2)
 int *lp;
 {
@@ -642,14 +647,18 @@ int *lp;
 		case REXT:
 			sp = lookloc(lp, r);
 			if (sp->stype==EXTERN+UNDEF) {
+				/* comment: change relocation's symbol index */
 				r = (r&01) + ((nsym+(sp-symtab))<<4) + REXT;
 				break;
 			}
 			t =+ sp->svalue;
+			/* comment: make the word relocated
+			 * and remove the 'undefined external' flag */
 			r = (r&01) + ((sp->stype-(EXTERN+ABS))<<1);
 			break;
 		}
 		if (r&01)
+			/* comment: if relative to pc */
 			t =- creloc;
 		putw(t, b1);
 		if (rflag)
@@ -678,6 +687,7 @@ finishout()
 		copy(droutb, 'd');
 	}
 	if (sflag==0) {
+		/* comment: local symbol first, then external symbol */
 		if (xflag==0)
 			copy(soutb, 'b');
 		for (p=symtab; p < symp;)
@@ -706,6 +716,9 @@ delexit()
 	exit(delarg);
 }
 
+/* comment: close file `buf` and 
+ * copy file specified by `c` to toutb
+ */
 copy(buf, c)
 int *buf;
 {
@@ -975,6 +988,8 @@ char *s;
 	errlev = 2;
 }
 
+/* comment: lookup the symbol
+ * in current object file */
 lookloc(alp, r)
 {
 	register int *clp, *lp;

@@ -364,3 +364,25 @@ value of data symbol relative to data segment is less than that relative to text
 The difference is text segment size.
 
 
+Relocation
+----------
+for external:
+real value = placeholder + symbol value
+
+
+absolute:
+old real value = placeholder + old symbol absolute value
+new real value = placeholder + (old symbol assolute value + cxrel)
+
+
+relative:
+real value = placeholder + symbol value
+=>
+placeholder = real value - symbol value
+
+for undefined:
+old placeholder = old real value - old symbol value
+new symbol value = old symbol value + cxrel
+new real value = old real value + cxrel
+new placeholder = old placeholder + cxrel  - cxrel
+
