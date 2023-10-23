@@ -52,9 +52,11 @@ betwen:
 2:
 	rts	r5
 
+/ comment: put word in r4 to /tmp/atm1x
 putw:
 	tst	ifflg
 	beq	1f
+	/ comment: now `ifflg` is set, ignore all chars other than '\n'
 	cmp	r4,$'\n
 	bne	2f
 1:
@@ -63,6 +65,7 @@ putw:
 	cmp	obufp,$outbuf+512.
 	blo	2f
 	mov	$outbuf,obufp
+	/ comment: pof is fd for '/tmp/atm1x'
 	movb	pof,r0
 	sys	write; outbuf; 512.
 2:

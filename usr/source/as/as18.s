@@ -3,6 +3,8 @@
 
 / a8 -- pdp-11 assembler pass 1
 
+/ comment: Symbol name alphabets contains all chars
+/ with map value > 0.
 chartab:
 	.byte -14,-14,-14,-14,-02,-14,-14,-14
 	.byte -14,-22, -2,-14,-14,-22,-14,-14
@@ -30,7 +32,9 @@ a.tmp3:	</tmp/atm3a\0>
 	.even
 curfb:
 	-1;-1;-1;-1;-1;-1;-1;-1;-1;-1
+/ comment: output buffer pointer
 obufp:	outbuf
+/ comment: symbol table end pointer
 symend:	usymtab
 
 .bss
@@ -41,6 +45,7 @@ hshsiz = 1553.
 hshtab:	.=2*hshsiz+.
 pof:	.=.+1
 wordf:	.=.+1
+/ comment: current inpu file descriptor
 fin:	.=.+1
 fbfil:	.=.+1
 fileflg:.=.+1
@@ -49,10 +54,13 @@ ch:	.=.+1
 .even
 symbol:	.=.+8.
 obufc:	.=.+2
+/ comment: output buffer
 outbuf:	.=.+512.
 line:	.=.+2
+/ comment: input buffer count
 inbfcnt:.=.+2
 ifflg:	.=.+2
+/ comment: input buffer pointer
 inbfp:	.=.+2
 / comment: number of args for command argument processing
 nargs:	.=.+2

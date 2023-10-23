@@ -3,6 +3,7 @@
 
 / a5 -- pdp-11 assembler pass 1
 
+/ comment: read op symbol into r4, and put the symbol address in atm1x
 readop:
 	mov	savop,r4
 	beq	1f
@@ -65,6 +66,7 @@ rdname:
 	cmp	r1,$'0
 	blo	1f
 	cmp	r1,$'9
+	/ comment: r0 is a digit, read a number
 	blos	rdnum
 1:
 	jmp	rname

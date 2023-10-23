@@ -1,3 +1,4 @@
+/ comment: main control flow
 /
 /
 
@@ -6,6 +7,7 @@
 indir	= 0
 
 	jmp	start
+/ comment: main control flow
 go:
 	jsr	pc,assem
 	movb	pof,r0

@@ -3,6 +3,8 @@
 
 / a4 -- pdp-11 assembler pass1
 
+/ comment: read a name, and create symbol entry if neccesary,
+/ return the symbol entry in r4
 rname:
 	mov	r1,-(sp)
 	mov	r2,-(sp)
@@ -23,30 +25,42 @@ rname:
 	jsr	pc,rch
 	movb	chartab(r0),r3
 	ble	1f
+	/ comment: calculate hash value in (sp)
 	add	r3,(sp)
 	swab	(sp)
 	dec	r5
+	/ comment: if name is greater than 8, ignore rest of chars
 	blt	1b
 	movb	r3,(r2)+
 	br	1b
 1:
+	/ comment: the char is not in name alphabet,
+	/ that is name is read.
 	mov	r0,ch
+	/ comment: hash value of name
 	mov	(sp)+,r1
 	clr	r0
+	/ comment: test '~' prefix flag
 	tst	(sp)+
 	beq	1f
+	/ comment: if '~' prefix flag is set,
+	/ just create symbol entry,
+	/ don't create hash table entry.
 	mov	symend,r4
 	br	4f
 1:
+	/ comment: calculate hashtable index
 	div	$hshsiz,r0
 	ashc	$1,r0
 	add	$hshtab,r1
 1:
+	/ comment: handle hash collision
 	sub	r0,r1
 	cmp	r1,$hshtab
 	bhi	2f
 	add	$2*hshsiz,r1
 2:
+	/ comment: compare symbol names
 	mov	$symbol,r2
 	mov	-(r1),r4
 	beq	3f
@@ -60,9 +74,14 @@ rname:
 	bne	1b
 	br	1f
 3:
+	/ comment: empty hashtable entry found
+	/ that is, it's a new name.
 	mov	symend,r4
+	/ comment: r1 is hash table entry
 	mov	r4,(r1)
 4:
+	/ comment: create a new symbol
+	/ expand memory if neccesary.
 	mov	$symbol,r2
 	mov	r4,-(sp)
 	add	$20,r4
@@ -74,6 +93,7 @@ rname:
 9:	sys	break; 0:end
 	.text
 4:
+	/ comment: create symbol
 	mov	(sp)+,r4
 	mov	(r2)+,(r4)+
 	mov	(r2)+,(r4)+
@@ -84,6 +104,7 @@ rname:
 	mov	r4,symend
 	sub	$4,r4
 1:
+	/ comment: name is found in symbol table
 	mov	r4,-(sp)
 	mov	r4,r3
 	sub	$8,r3
@@ -96,6 +117,7 @@ rname:
 	add	$4000,r4		/ user symbol
 	br	2f
 1:
+	/ comment: process builtin symbol
 	sub	$symtab,r3
 	clr	r2
 	div	$3,r2
@@ -103,6 +125,7 @@ rname:
 	add	$1000,r4		/ builtin symbol
 2:
 	jsr	pc,putw
+	/ comment: r4 is the symbol entry
 	mov	(sp)+,r4
 	mov	(sp)+,r3
 	mov	(sp)+,r2
@@ -158,12 +181,16 @@ number:
 	add	$2,(sp)
 	rts	pc
 
+/ comment: read a char into r0
+/ comment: `ch` is a putback char
 rch:
+	/ comment: read from putback char
 	movb	ch,r0
 	beq	1f
 	clrb	ch
 	rts	pc
 1:
+	/ comment: read from buffer
 	dec	inbfcnt
 	blt	2f
 	movb	*inbfp,r0
@@ -175,8 +202,10 @@ rch:
 	movb	fin,r0
 	beq	3f
 	sys	read; inbuf;512.
+	/ comment: if read error, close file, open next file
 	bcs	2f
 	tst	r0
+	/ comment: if end of file, close file, open next file
 	beq	2f
 	mov	r0,inbfcnt
 	mov	$inbuf,inbfp
@@ -186,16 +215,20 @@ rch:
 	clrb	fin
 	sys	close
 3:
+	/ comment: pull next cmd arg, and open it for input
 	decb	nargs
 	bgt	2f
+	/ comment: No more file args, return end mark
 	mov	$'\e,r0
 	rts	pc
 2:
 	tst	ifflg
 	beq	2f
+	/ comment: ifflg is still set at the end of a file
 	jsr	r5,error; 'i
 	jmp	aexit
 2:
+	/ comment: open next file for input
 	mov	curarg,r0
 	tst	(r0)+
 	mov	(r0),0f
@@ -210,19 +243,25 @@ rch:
 	jsr	r5,filerr; <?\n>
 	jmp	 aexit
 2:
+	/ comment: now, file opened successfully
+	/ comment: current 
 	movb	r0,fin
+	/ comment: line number
 	mov	$1,line
 	mov	r4,-(sp)
 	mov	r1,-(sp)
+	/ comment: put file name to atm1x
 	mov	$5,r4
 	jsr	pc,putw
 	mov	*curarg,r1
 2:
+	/ comment: put file name to atm1x
 	movb	(r1)+,r4
 	beq	2f
 	jsr	pc,putw
 	br	2b
 2:
+	/ comment: put -1 to atm1x
 	mov	$-1,r4
 	jsr	pc,putw
 	mov	(sp)+,r1
