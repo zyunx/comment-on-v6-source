@@ -156,7 +156,7 @@ is a bss segment symbol.
 
 
 To make a symbol extenal, just write a line `.globl <name>` before the name.  
-Like this:
+Like this::
 
     .globl a
     mov a, r0
