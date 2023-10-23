@@ -52,23 +52,27 @@ fpass2:
 	<-g\0>
 	.even
 
+/ comment: r0 is file name
 filerr:
 	mov	r4,-(sp)
 	mov	r0,r4
 	mov	r4,0f
 	clr	r0
 1:
+	/ comment: make r4 point end of filename
 	tstb	(r4)+
 	beq	1f
 	inc	r0
 	br	1b
 1:
+	/ comment: r0 now is the length of filename
 	mov	r0,1f
 	mov	$1,r0
 	sys	indir; 9f
 	.data
 9:	sys	write; 0:0; 1:0
 	.text
+	/ comment: r5 is the rest of error message
 	mov	r5,0f
 	mov	$1,r0
 	sys	indir; 9f
@@ -82,6 +86,7 @@ filerr:
 fcreat:
 	mov	r4,-(sp)
 	mov	(r5)+,r4
+	/ comment: r4 is the file name
 	mov	r4,0f
 1:
 	sys	indir; 9f

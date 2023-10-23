@@ -287,6 +287,8 @@ ebsymtab:
 start:
 	sys	signal; 2; 1
 	ror	r0
+	/ comment: if signal interrupt is ignored previously,
+	/ comment: don't set up interrupt signal handler.
 	bcs	1f
 	sys	signal; 2; aexit
 1:
@@ -300,6 +302,7 @@ start:
 1:
 	clr	unglob
 2:
+	/ comment: number of args and current arg pointer
 	movb	r0,nargs
 	mov	r5,curarg
 	jsr	r5,fcreat; a.tmp1

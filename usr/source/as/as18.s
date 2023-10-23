@@ -54,7 +54,9 @@ line:	.=.+2
 inbfcnt:.=.+2
 ifflg:	.=.+2
 inbfp:	.=.+2
+/ comment: number of args for command argument processing
 nargs:	.=.+2
+/ comment: current arg pointer
 curarg:	.=.+2
 opfound:.=.+2
 savop:	.=.+2
