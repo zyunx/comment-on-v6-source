@@ -1,3 +1,4 @@
+/ comment: token parsers
 /
 /
 
@@ -5,6 +6,7 @@
 
 / comment: read op symbol into r4, and put the symbol address in atm1x
 readop:
+	/ comment: return from op putback buffer
 	mov	savop,r4
 	beq	1f
 	clr	savop
@@ -62,16 +64,19 @@ retread:
 	rts	pc
 
 rdname:
+	/ comment: put back char into input, r0 is the look ahead
 	movb	r0,ch
+	/ comment: r1 is chartab value
 	cmp	r1,$'0
 	blo	1f
 	cmp	r1,$'9
-	/ comment: r0 is a digit, read a number
+	/ comment: r1 is a digit, read a number
 	blos	rdnum
 1:
 	jmp	rname
 
 rdnum:
+	/ comment: if it's a number, branch 1f
 	jsr	pc,number
 		br 1f
 	rts	pc

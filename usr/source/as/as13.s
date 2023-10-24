@@ -1,3 +1,4 @@
+/ comment: assemble a statement
 /
 /
 
@@ -7,10 +8,12 @@ assem:
 	jsr	pc,readop
 	jsr	pc,checkeos
 		br ealoop
+	/ comment: not end of instruction symbol
 	tst	ifflg
 	beq	3f
 	cmp	r4,$200
 	blos	assem
+	/ comment: process '.if' and '.endif'
 	cmpb	(r4),$21	/if
 	bne	2f
 	inc	ifflg
@@ -85,6 +88,7 @@ assem:
 	jsr	r5,error; '.
 	movb	$2,dotrel
 ealoop:
+	/ comment: process token that ends an instruction
 	cmp	r4,$';
 	beq	assem1
 	cmp	r4,$'\n
@@ -94,6 +98,7 @@ ealoop:
 1:
 	cmp	r4,$'\e
 	bne	2f
+	/ comment: end of file
 	tst	ifflg
 	beq	1f
 	jsr	r5,error; 'x
@@ -102,6 +107,7 @@ ealoop:
 2:
 	jsr	r5,error; 'x
 2:
+	/ comment: eat token upto end of instruction
 	jsr	pc,checkeos
 		br assem1
 	jsr	pc,readop
@@ -118,6 +124,7 @@ fbcheck:
 	clr	r0
 	rts	pc
 
+/ comment: check end of symbol
 checkeos:
 	cmp	r4,$'\n
 	beq	1f

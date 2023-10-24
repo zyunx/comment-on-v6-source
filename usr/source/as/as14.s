@@ -1,3 +1,4 @@
+/ comment: for reading from input and puting into symbol table
 /
 /
 
@@ -17,9 +18,11 @@ rname:
 	clr	-(r2)
 	clr	-(sp)
 	clr	-(sp)
+	/ comment: r0 is the lookahead char
 	cmp	r0,$'~		/  symbol not for hash table
 	bne	1f
 	inc	2(sp)
+	/ comment: ignore '~'
 	clr	ch
 1:
 	jsr	pc,rch
@@ -35,7 +38,8 @@ rname:
 	br	1b
 1:
 	/ comment: the char is not in name alphabet,
-	/ that is name is read.
+	/ that is name is read completely.
+	/ comment: put back the non alphanum char
 	mov	r0,ch
 	/ comment: hash value of name
 	mov	(sp)+,r1
@@ -104,7 +108,7 @@ rname:
 	mov	r4,symend
 	sub	$4,r4
 1:
-	/ comment: name is found in symbol table
+	/ comment: now, r4 is point the symbol table entry
 	mov	r4,-(sp)
 	mov	r4,r3
 	sub	$8,r3
@@ -133,6 +137,9 @@ rname:
 	tst	(sp)+
 	rts	pc
 
+/ comment: read a number or temperary label.
+/ It it's a number, return it in r0,
+/ otherwise, return the temperary label in r0 and r4
 number:
 	mov	r2,-(sp)
 	mov	r3,-(sp)
@@ -144,8 +151,10 @@ number:
 	jsr	r5,betwen; '0; '9
 		br 1f
 	sub	$'0,r0
+	/ comment: r5 store decimal
 	mpy	$10.,r5
 	add	r0,r5
+	/ comment: r1 store octal
 	als	$3,r1
 	add	r0,r1
 	br	1b
@@ -156,6 +165,7 @@ number:
 	beq	1f
 	cmp	r0,$'.
 	bne	2f
+	/ comment: return decimal in r0
 	mov	r5,r1
 	clr	r0
 2:
@@ -166,6 +176,7 @@ number:
 	mov	(sp)+,r2
 	rts	pc
 1:
+	/ comment: temperary symbols suffixed with 'b' or 'f'
 	mov	r0,r3
 	mov	r5,r0
 	jsr	pc,fbcheck

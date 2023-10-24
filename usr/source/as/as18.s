@@ -4,7 +4,8 @@
 / a8 -- pdp-11 assembler pass 1
 
 / comment: Symbol name alphabets contains all chars
-/ with map value > 0.
+/ with map value > 0. Otherwise it's the offset of
+/ the token parser function.
 chartab:
 	.byte -14,-14,-14,-14,-02,-14,-14,-14
 	.byte -14,-22, -2,-14,-14,-22,-14,-14

@@ -1,4 +1,4 @@
-/ comment: reserved words and start
+/ comment: symbol table setup, reserved words and start
 /
 /
 
@@ -295,6 +295,8 @@ start:
 1:
 	mov	sp,r5
 	mov	(r5)+,r0
+	/ comment: see as(1), If the optional '—' argument is given, 
+	/ all undefined symbols in the current assembly will be made undefined external.
 	cmpb	*2(r5),$'-
 	bne	1f
 	tst	(r5)+
