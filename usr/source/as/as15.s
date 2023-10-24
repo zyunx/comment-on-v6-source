@@ -108,6 +108,7 @@ dquote:
 	jsr	pc,putw
 	mov	numval,r4
 	jsr	pc,putw
+	/ comment: It a number when r4 is 1
 	mov	$1,r4
 	tst	(sp)+
 	rts	pc

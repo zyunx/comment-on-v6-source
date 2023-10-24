@@ -8,7 +8,7 @@ assem:
 	jsr	pc,readop
 	jsr	pc,checkeos
 		br ealoop
-	/ comment: not end of instruction symbol
+	/ comment: it's not end-of-statement token
 	tst	ifflg
 	beq	3f
 	cmp	r4,$200
@@ -23,18 +23,23 @@ assem:
 	dec	ifflg
 	br	assem
 3:
+	/ comment: It's not in .if
 	mov	r4,-(sp)
+	/ comment: look ahead nex token
 	jsr	pc,readop
 	cmp	r4,$'=
 	beq	4f
 	cmp	r4,$':
 	beq	1f
+	/ comment: otherwise is a operation line
 	mov	r4,savop
 	mov	(sp)+,r4
 	jsr	pc,opline
 	br	ealoop
 1:
 	mov	(sp)+,r4
+	/ comment: check if r4 is a pointer of name type or not.
+	/ It's a name when r4 >= 200
 	cmp	r4,$200
 	bhis	1f
 	cmp	r4,$1		/ digit
@@ -42,11 +47,15 @@ assem:
 	jsr	r5,error; 'x
 	br	assem
 1:
+	/ comment: Now, the current token is a name
+	/ comment: Check if it is defined
 	bitb	$37,(r4)
 	beq	1f
+	/ comment: multiply defined symbol as label
 	jsr	r5,error; 'm
 1:
 	bisb	dot-2,(r4)
+	/ comment: give this symbol dot's value
 	mov	dot,2(r4)
 	br	assem
 3:
@@ -101,13 +110,14 @@ ealoop:
 	/ comment: end of file
 	tst	ifflg
 	beq	1f
+	/ comment: syntax error
 	jsr	r5,error; 'x
 1:
 	rts	pc
 2:
 	jsr	r5,error; 'x
 2:
-	/ comment: eat token upto end of instruction
+	/ comment: eat token upto end of statement
 	jsr	pc,checkeos
 		br assem1
 	jsr	pc,readop
@@ -120,6 +130,7 @@ fbcheck:
 	bhi	1f
 	rts	pc
 1:
+	/ comment: error in local (‘‘f ’’ or ‘‘b’’) type symbol
 	jsr	r5,error; 'f
 	clr	r0
 	rts	pc

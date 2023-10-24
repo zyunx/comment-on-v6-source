@@ -108,7 +108,7 @@ rname:
 	mov	r4,symend
 	sub	$4,r4
 1:
-	/ comment: now, r4 is point the symbol table entry
+	/ comment: now, r4 is the symbol type pointer
 	mov	r4,-(sp)
 	mov	r4,r3
 	sub	$8,r3
