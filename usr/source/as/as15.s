@@ -24,17 +24,29 @@ _readop:
 	bgt	rdname
 	jmp	*1f-2(r1)
 
+	/ comment: chartab -26
 	fixor
+	/ comment: chartab -24
 	escp
-	8b
+	/ comment: chartab -22
+	8b					/ comment: blank, just ignore this char
+	/ comment: chartab -20
 	retread
+	/ comment: chartab -16
 	dquote
+	/ comment: chartab -14
 	garb
+	/ comment: chartab -12
 	squote
+	/ comment: chartab -10
 	rdname
+	/ comment: chartab -6
 	skip
+	/ comment: chartab -4
 	rdnum
+	/ comment: chartab -2
 	retread
+	/ comment: chartab 0
 	string
 1:
 
@@ -100,6 +112,7 @@ dquote:
 	tst	(sp)+
 	rts	pc
 
+/ comment: '/' is read, skip to end of line
 skip:
 	jsr	pc,rch
 	mov	r0,r4
@@ -110,6 +123,7 @@ skip:
 1:
 	rts	pc
 
+/ comment: garbage chars
 garb:
 	jsr	r5,error; 'g
 	br	8b
@@ -120,6 +134,7 @@ string:
 	clr	numval
 1:
 	jsr	pc,rsch
+	/ comment: if r1 is not zero, this char is '>'
 	tst	r1
 	bne	1f
 	mov	r0,r4
@@ -134,6 +149,7 @@ string:
 	tst	(sp)+
 	rts	pc
 
+/ comment: read char, parsing escape sequence
 rsch:
 	jsr	pc,rch
 	cmp	r0,$'\e
@@ -143,6 +159,7 @@ rsch:
 	clr	r1
 	cmp	r0,$'\\
 	bne	3f
+	/ comment: process escape sequence
 	jsr	pc,rch
 	mov	$schar,r2
 1:
@@ -150,6 +167,7 @@ rsch:
 	beq	2f
 	tstb	(r2)+
 	bpl	1b
+	/ comment: return r0 it as it is
 	rts	pc
 2:
 	movb	(r2)+,r0
@@ -162,6 +180,7 @@ rsch:
 1:
 	rts	pc
 4:
+	/ comment: string not terminated properly
 	jsr	r5,error; '<
 	jmp	aexit
 
