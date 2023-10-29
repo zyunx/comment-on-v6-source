@@ -1,13 +1,19 @@
+/ comment: parse expression
 /
 /
 
 /  a7 -- pdp-11 assembler pass 1
 
+/ comment: a token is ready to process
 expres:
 	mov	r5,-(sp)
+	/ comment: for operator
 	mov	$'+,-(sp)
+	/ comment: is operand found?
 	clr	opfound
+	/ comment: expression result, 0
 	clr	r2
+	/ comment: result type, 1 = absolute
 	mov	$1,r3
 	br	1f
 advanc:
@@ -21,14 +27,17 @@ advanc:
 	mov	2(r4),r1
 	br	oprand
 7:
+	/ comment: if current token is a non-symbol
 	cmp	r4,$141
 	blo	1f
 	cmp	r4,$141+10.
 	bhis	2f
+	/ comment: if current token is alocal label, curfbr-141(r4) = curfbr + (r4 - 141)
 	movb	curfbr-141(r4),r0
 	asl	r4
 	mov	curfb-[2*141](r4),r2
 	bpl	oprand
+	/ comment: just show local label error
 	jsr	r5,error; 'f
 	br	oprand
 2:
@@ -36,14 +45,19 @@ advanc:
 	clr	r2
 	br	oprand
 1:
+	/ comment: handle operators
 	mov	$esw1,r1
 1:
+	/ comment: loop all operators
 	cmp	(r1)+,r4
+	/ comment: if equal, operator found
 	beq	1f
 	tst	(r1)+
 	bne	1b
+	/ comment: not a operator, so expression ends.
 	tst	opfound
 	bne	2f
+	/ comment: if operator not found error expression
 	jsr	pc,errore
 2:
 	tst	(sp)+
@@ -95,10 +109,12 @@ brack:
 	mov	(sp)+,r3
 	mov	(sp)+,r2
 
+/ comment: current token is a operand
 oprand:
 	inc	opfound
 	mov	$exsw2,r5
 1:
+	/ comment: check previous operator
 	cmp	(sp),(r5)+
 	beq	1f
 	tst	(r5)+
@@ -192,9 +208,12 @@ eoprnd:
 	mov	$'+,(sp)
 	jmp	advanc
 
+/ comment: combine type
 combin:
+	/ comment: r0 is symbol type, r3 is the result type
 	mov	r0,-(sp)
 	bis	r3,(sp)
+	/ comment (sp) = r0 or r3
 	bic	$!40,(sp)
 	bic	$!37,r0
 	bic	$!37,r3
@@ -206,6 +225,7 @@ combin:
 1:
 	tst	r0
 	beq	1f
+	/ comment: check (r5)
 	tst	(r5)+
 	beq	2f
 	cmp	r0,r3

@@ -120,6 +120,7 @@ opl16:
 
 / < (.ascii)
 opl17:
+	/ comment: numval is the length of string
 	add	numval,dot
 	jsr	pc,readop
 	rts	pc

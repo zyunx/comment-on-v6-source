@@ -137,7 +137,7 @@ string:
 	clr	numval
 1:
 	jsr	pc,rsch
-	/ comment: if r1 is not zero, this char is '>'
+	/ comment: if r1 is zero, this char is escaped '>'
 	tst	r1
 	bne	1f
 	mov	r0,r4
@@ -179,6 +179,7 @@ rsch:
 3:
 	cmp	r0,$'>
 	bne	1f
+	/ comment: not escaped '>'
 	inc	r1
 1:
 	rts	pc

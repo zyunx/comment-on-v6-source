@@ -35,7 +35,7 @@ curfb:
 	-1;-1;-1;-1;-1;-1;-1;-1;-1;-1
 / comment: output buffer pointer
 obufp:	outbuf
-/ comment: symbol table end pointer
+/ comment: user symbol table end pointer
 symend:	usymtab
 
 .bss
