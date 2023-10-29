@@ -88,6 +88,7 @@ rdname:
 	jmp	rname
 
 rdnum:
+	/ comment: maybe a number or a local label.
 	/ comment: if it's a number, branch 1f
 	jsr	pc,number
 		br 1f
@@ -103,6 +104,7 @@ dquote:
 	swab	r0
 	bis	(sp)+,r0
 1:
+	/ comment: numval is the value if the token is a number
 	mov	r0,numval
 	mov	$1,r4
 	jsr	pc,putw
