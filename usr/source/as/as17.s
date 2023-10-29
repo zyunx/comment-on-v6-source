@@ -3,10 +3,14 @@
 
 /  a7 -- pdp-11 assembler pass 1
 
+/ comment: a token is ready to process
 expres:
 	mov	r5,-(sp)
+	/ comment: for operator
 	mov	$'+,-(sp)
+	/ comment: is operand found?
 	clr	opfound
+	/ comment: expression result
 	clr	r2
 	mov	$1,r3
 	br	1f
@@ -21,14 +25,17 @@ advanc:
 	mov	2(r4),r1
 	br	oprand
 7:
+	/ comment: if current token is a non-symbol
 	cmp	r4,$141
 	blo	1f
 	cmp	r4,$141+10.
 	bhis	2f
+	/ comment: if current token is alocal label, curfbr-141(r4) = curfbr + (r4 - 141)
 	movb	curfbr-141(r4),r0
 	asl	r4
 	mov	curfb-[2*141](r4),r2
 	bpl	oprand
+	/ comment: just show local label error
 	jsr	r5,error; 'f
 	br	oprand
 2:
@@ -44,6 +51,7 @@ advanc:
 	bne	1b
 	tst	opfound
 	bne	2f
+	/ comment: if operator not found error expression
 	jsr	pc,errore
 2:
 	tst	(sp)+
@@ -95,10 +103,12 @@ brack:
 	mov	(sp)+,r3
 	mov	(sp)+,r2
 
+/ comment: current token is a operand
 oprand:
 	inc	opfound
 	mov	$exsw2,r5
 1:
+	/ comment: check previous operator
 	cmp	(sp),(r5)+
 	beq	1f
 	tst	(r5)+
@@ -206,6 +216,7 @@ combin:
 1:
 	tst	r0
 	beq	1f
+	/ comment: check (r5)
 	tst	(r5)+
 	beq	2f
 	cmp	r0,r3

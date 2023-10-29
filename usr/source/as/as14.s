@@ -112,12 +112,14 @@ rname:
 	mov	r4,-(sp)
 	mov	r4,r3
 	sub	$8,r3
+	/ comment: check if it is a user defined symbol
 	cmp	r3,$usymtab
 	blo	1f
 	sub	$usymtab,r3
 	clr	r2
 	div	$3,r2
 	mov	r2,r4
+	/ comment: user symbol when r4 > 4000
 	add	$4000,r4		/ user symbol
 	br	2f
 1:
@@ -126,6 +128,7 @@ rname:
 	clr	r2
 	div	$3,r2
 	mov	r2,r4
+	/ comment: builtin symbol when 4000 > r4 > 1000
 	add	$1000,r4		/ builtin symbol
 2:
 	jsr	pc,putw
