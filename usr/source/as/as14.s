@@ -1,3 +1,4 @@
+/ comment: for reading identifier (name or symbol)
 / comment: for reading from input and puting into symbol table
 /
 /
@@ -10,13 +11,16 @@ rname:
 	mov	r1,-(sp)
 	mov	r2,-(sp)
 	mov	r3,-(sp)
+	/ comment: clear symbol buffer
 	mov	$8,r5
 	mov	$symbol+8.,r2
 	clr	-(r2)
 	clr	-(r2)
 	clr	-(r2)
 	clr	-(r2)
+	/ comment: does match other occurrence of the identifier?
 	clr	-(sp)
+	/ comment: symbol hash value
 	clr	-(sp)
 	/ comment: r0 is the lookahead char
 	cmp	r0,$'~		/  symbol not for hash table

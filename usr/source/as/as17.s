@@ -209,14 +209,18 @@ eoprnd:
 	jmp	advanc
 
 / comment: combine type
+/ comment: see 6.3 Type propagation in expressions in UNIX Assembler Manual
 combin:
 	/ comment: r0 is symbol type, r3 is the result type
 	mov	r0,-(sp)
 	bis	r3,(sp)
-	/ comment (sp) = r0 or r3
+	/ comment: (sp) = r0 or r3
+	/ comment: only leave bit 5 of r0 or r3, it's 0 most likely.
 	bic	$!40,(sp)
+	/ comment: leave only type bits
 	bic	$!37,r0
 	bic	$!37,r3
+	/ comment: let the small one in r0
 	cmp	r0,r3
 	ble	1f
 	mov	r0,-(sp)
@@ -224,12 +228,17 @@ combin:
 	mov	(sp)+,r3
 1:
 	tst	r0
+	/ comment: branch if one of them is 0 (undefined)
 	beq	1f
 	/ comment: check (r5)
 	tst	(r5)+
+	/ comment: if arg is 0, return the greater one
 	beq	2f
+	/ comment: now arg is 1
 	cmp	r0,r3
+	/ comment: if not the same, return the greater one
 	bne	2f
+	/ comment: if they're the same, return 1 (absolute)
 	mov	$1,r3
 	br	2f
 1:
