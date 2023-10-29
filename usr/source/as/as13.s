@@ -25,7 +25,7 @@ assem:
 3:
 	/ comment: It's not in .if
 	mov	r4,-(sp)
-	/ comment: look ahead nex token
+	/ comment: look ahead next token
 	jsr	pc,readop
 	cmp	r4,$'=
 	beq	4f
@@ -39,7 +39,7 @@ assem:
 1:
 	mov	(sp)+,r4
 	/ comment: check if r4 is a pointer of name type or not.
-	/ It's a name when r4 >= 200
+	/ comment: It's a name when r4 >= 200, 200 is the celling of ascii values.
 	cmp	r4,$200
 	bhis	1f
 	cmp	r4,$1		/ digit
@@ -59,6 +59,7 @@ assem:
 	mov	dot,2(r4)
 	br	assem
 3:
+	/ comment: it's a number
 	mov	numval,r0
 	jsr	pc,fbcheck
 	movb	dotrel,curfbr(r0)
@@ -67,6 +68,7 @@ assem:
 	mov	dot,nxtfb+2
 	movb	r0,nxtfb+1
 	mov	dot,curfb(r0)
+	/ comment: write to a.tmp2
 	movb	fbfil,r0
 	sys	write; nxtfb; 4
 	br	assem
@@ -94,6 +96,7 @@ assem:
 	mov	r2,2(r1)
 	br	ealoop
 1:
+	/ comment: illegal assignment to ‘‘ . ’’
 	jsr	r5,error; '.
 	movb	$2,dotrel
 ealoop:

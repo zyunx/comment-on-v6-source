@@ -187,6 +187,7 @@ exnot:
 	add	r1,r2
 	br	eoprnd
 
+/ comment: default to '+' operator
 eoprnd:
 	mov	$'+,(sp)
 	jmp	advanc

@@ -165,7 +165,7 @@ number:
 	beq	1f
 	cmp	r0,$'.
 	bne	2f
-	/ comment: return decimal in r0
+	/ comment: is a number, return number in r0
 	mov	r5,r1
 	clr	r0
 2:
@@ -180,11 +180,14 @@ number:
 	mov	r0,r3
 	mov	r5,r0
 	jsr	pc,fbcheck
+	/ comment: 'a' is '1b', 'b' is '2b' ... 'i' is '9b'
+	/ comment: ''j' is '1f', 'k' is '2f' ... 'r' is '9f'
 	add	$141,r0
 	cmp	r3,$'b
 	beq	1f
 	add	$10.,r0
 1:
+	/ comment: is not a number, return local lable in r4
 	mov	r0,r4
 	mov	(sp)+,r5
 	mov	(sp)+,r3
