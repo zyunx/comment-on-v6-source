@@ -257,6 +257,7 @@ start:
 	blt	1f
 	mov	$40,defund		/ globalize all undefineds
 1:
+	/ comment: open files
 	tst	(sp)+
 	mov	(sp)+,a.tmp1
 	mov	(sp)+,a.tmp2
