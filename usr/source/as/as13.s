@@ -37,6 +37,7 @@ assem:
 	jsr	pc,opline
 	br	ealoop
 1:
+	/ comment: prase labels
 	mov	(sp)+,r4
 	/ comment: check if r4 is a pointer of name type or not.
 	/ comment: It's a name when r4 >= 200, 200 is the celling of ascii values.
@@ -54,12 +55,12 @@ assem:
 	/ comment: multiply defined symbol as label
 	jsr	r5,error; 'm
 1:
+	/ comment: give this symbol dot's type (text)
 	bisb	dot-2,(r4)
 	/ comment: give this symbol dot's value
 	mov	dot,2(r4)
 	br	assem
 3:
-	/ comment: it's a number
 	mov	numval,r0
 	jsr	pc,fbcheck
 	movb	dotrel,curfbr(r0)
@@ -73,25 +74,31 @@ assem:
 	sys	write; nxtfb; 4
 	br	assem
 4:
+	/ comment: parse assignment statement
 	jsr	pc,readop
 	jsr	pc,expres
 	mov	(sp)+,r1
 	cmp	r1,$200
 	bhis	1f
+	/ comment: if last token is not a symbol, show error
 	jsr	r5,error; 'x
 	br	ealoop
 1:
 	cmp	r1,$dotrel
 	bne	2f
+	/ comment: left side is dotrel
 	bic	$40,r3
 	cmp	r3,dotrel
 	bne	1f
+	/ comment: now, right side is of type dotrel
 2:
 	bicb	$37,(r1)
 	bic	$!37,r3
 	bne	2f
+	/ comment: if result type is undefined
 	clr	r2
 2:
+	/ comment: set type and value
 	bisb	r3,(r1)
 	mov	r2,2(r1)
 	br	ealoop

@@ -18,6 +18,7 @@ go:
 	sys	close
 	tstb	errflg
 	bne	aexit
+	/ comment: write symbol table
 	jsr	r5,fcreat; a.tmp3
 	mov	r0,r1
 	mov	symend,0f

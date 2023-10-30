@@ -31,6 +31,7 @@ a.tmp1:	</tmp/atm1a\0>
 a.tmp2:	</tmp/atm2a\0>
 a.tmp3:	</tmp/atm3a\0>
 	.even
+/ comment: local label values
 curfb:
 	-1;-1;-1;-1;-1;-1;-1;-1;-1;-1
 / comment: output buffer pointer
@@ -39,6 +40,7 @@ obufp:	outbuf
 symend:	usymtab
 
 .bss
+/ comment: local label relative segment
 curfbr:	.=.+10.
 savdot:	.=.+6
 bufcnt:	.=.+2

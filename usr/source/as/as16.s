@@ -1,3 +1,5 @@
+/ comment: for parsing expression statement,
+/ string statement and keyword statement
 /
 /
 
@@ -10,10 +12,12 @@ opline:
 	cmp	r0,$'<
 	bne	xpr
 	jmp	opl17
+/ comment: expression statement
 xpr:
 	jsr	pc,expres
 	add	$2,dot
 	rts	pc
+/ comment: keyword statement
 1:
 	movb	(r4),r0
 	cmp	r0,$24
@@ -119,6 +123,7 @@ opl16:
 	rts	pc
 
 / < (.ascii)
+/ comment: string statement
 opl17:
 	/ comment: numval is the length of string
 	add	numval,dot

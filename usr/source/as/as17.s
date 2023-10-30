@@ -110,6 +110,7 @@ brack:
 	mov	(sp)+,r2
 
 / comment: current token is a operand
+/ comment: evaluate expression result upto this operand
 oprand:
 	inc	opfound
 	mov	$exsw2,r5
