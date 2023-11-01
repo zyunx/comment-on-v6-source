@@ -61,13 +61,19 @@ assem:
 	mov	dot,2(r4)
 	br	assem
 3:
+	/ comment: process local label
 	mov	numval,r0
 	jsr	pc,fbcheck
+	/ comment: current flag buffer segment
 	movb	dotrel,curfbr(r0)
 	asl	r0
+	/ comment: segment type
 	movb	dotrel,nxtfb
+	/ comment: value
 	mov	dot,nxtfb+2
+	/ comment: label number
 	movb	r0,nxtfb+1
+	/ comment: current flag buffer value
 	mov	dot,curfb(r0)
 	/ comment: write to a.tmp2
 	movb	fbfil,r0
