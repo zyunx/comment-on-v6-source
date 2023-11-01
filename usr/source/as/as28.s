@@ -59,7 +59,9 @@ wordf:	.=.+2
 argb:	.=.+22.
 line:	.=.+2
 savop:	.=.+2
+/ comment: current forward/backward label symbol entry for every digit
 curfb:	.=.+20.
+/ comment: next forward/backward label symbol entry for every digit
 nxtfb:	.=.+20.
 numval:	.=.+2
 maxtyp:	.=.+2

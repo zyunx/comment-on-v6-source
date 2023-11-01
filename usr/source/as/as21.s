@@ -230,13 +230,16 @@ setbrk:
 	rts	pc
 
 setup:
+	/ comment: clear current forward/backward values
 	mov	$curfb,r4
 1:
 	clr	(r4)+
 	cmp	r4,$curfb+40.
 	blo	1b
+	/ comment: set input as text file
 	mov	txtfil,fin
 	clr	ibufc
+	/ comment: setup curfb and nextfb
 	clr	r4
 1:
 	jsr	pc,fbadv

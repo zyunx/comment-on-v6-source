@@ -102,6 +102,7 @@ getw1:
 	mov	r0,ibufc
 	bne	2f
 3:
+	/ comment: read error
 	mov	$4,r4
 	sev
 	rts	pc
