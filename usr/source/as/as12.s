@@ -52,7 +52,7 @@ betwen:
 2:
 	rts	r5
 
-/ comment: put word in r4 to /tmp/atm1x
+/ comment: put word in r4 to /tmp/atm1x(processed source file)
 putw:
 	tst	ifflg
 	beq	1f

@@ -202,6 +202,7 @@ number:
 	add	$2,(sp)
 	rts	pc
 
+/ comment: abstract all input files as a stream of chars
 / comment: read a char into r0
 / comment: `ch` is a putback char
 rch:
@@ -217,6 +218,7 @@ rch:
 	movb	*inbfp,r0
 	inc	inbfp
 	bic	$!177,r0
+	/ comment: ignore 0 byte
 	beq	1b
 	rts	pc
 2:
@@ -265,7 +267,7 @@ rch:
 	jmp	 aexit
 2:
 	/ comment: now, file opened successfully
-	/ comment: current 
+	/ comment: current file descriptor
 	movb	r0,fin
 	/ comment: line number
 	mov	$1,line

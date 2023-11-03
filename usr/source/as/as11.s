@@ -8,6 +8,9 @@ indir	= 0
 
 	jmp	start
 / comment: main control flow
+/ comment: Now, 'unglob' flag is assigned, 
+/ text file and forward/backward label file is created,
+/ and symbol hashtable is setup.
 go:
 	jsr	pc,assem
 	movb	pof,r0
