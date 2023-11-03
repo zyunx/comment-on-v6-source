@@ -27,8 +27,11 @@ chartab:
 .data
 
 namedone:.byte 0
+/ comment: for program text
 a.tmp1:	</tmp/atm1a\0>
+/ comment: for forward/backward label
 a.tmp2:	</tmp/atm2a\0>
+/ comment: for user defined symbols
 a.tmp3:	</tmp/atm3a\0>
 	.even
 / comment: local label values

@@ -87,6 +87,7 @@ readop:
 1:
 	rts	pc
 
+/ comment: get a word form input file into r4
 getw:
 	mov	savop,r4
 	beq	getw1
