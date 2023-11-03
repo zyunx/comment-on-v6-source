@@ -4,7 +4,9 @@
 
 / a5 -- pdp-11 assembler pass 1
 
-/ comment: read op symbol into r4, and put the symbol address in atm1x
+/ comment: Abstract as a stream of token,
+/ and put these tokens in a.temp1 (processed program file),
+/ and if it's a new user symbol, create a user defined symbol entry.
 readop:
 	/ comment: return from op putback buffer
 	mov	savop,r4
@@ -41,7 +43,7 @@ _readop:
 	/ comment: chartab -10
 	rdname
 	/ comment: chartab -6
-	skip
+	skip					/ comment: process comment
 	/ comment: chartab -4
 	rdnum
 	/ comment: chartab -2
@@ -110,8 +112,9 @@ dquote:
 	jsr	pc,putw
 	mov	numval,r4
 	jsr	pc,putw
-	/ comment: It a number when r4 is 1
+	/ comment: if 1 (absolute, see as19.s), double or single quote char
 	mov	$1,r4
+	/ comment: return 2 level
 	tst	(sp)+
 	rts	pc
 

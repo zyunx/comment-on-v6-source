@@ -23,7 +23,23 @@ conventions:
 atm1* file format
 -----------------
 
+all blank token is ignored
 assembly source file begin record: 5 <filename> -1
+token | : 037
+escaped token \/ : '/ or 057
+escaped token \< : 035
+escaped token \> : 036
+escaped token \% : 037
+other escaped token : '\ or 134
+! $ % & ( ) * + , - : = [ ] ^ newline : as is
+double quote char: 1 <double chars value in word>
+single quote char: 1 <single char value in word>
+string: < <escaped chars> -1
+number: 1 <number value in word>
+temperary symbol (forward/backward label) : 141 + forward label digit or 151 + backward label digit
+builtin symbol : $1000 + (builtin symbol index / 3)
+user symbol : $4000 + (user symbol index / 3)
+
 
 
 
