@@ -6,6 +6,7 @@
 
 assem:
 	jsr	pc,readop
+	/ comment: check end of statement
 	jsr	pc,checkeos
 		br ealoop
 	/ comment: it's not end-of-statement token

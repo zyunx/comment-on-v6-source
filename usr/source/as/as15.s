@@ -6,7 +6,9 @@
 
 / comment: Abstract as a stream of token,
 / and put these tokens in a.temp1 (processed program file),
-/ and if it's a new user symbol, create a user defined symbol entry.
+/ and if it's a new user symbol, create a user defined symbol entry,
+/ comment: if it's a symbol, return the symbol type pointer in r4,
+/ otherwise, return the symbol type.
 readop:
 	/ comment: return from op putback buffer
 	mov	savop,r4

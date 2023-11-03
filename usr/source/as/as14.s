@@ -136,7 +136,7 @@ rname:
 	add	$1000,r4		/ builtin symbol
 2:
 	jsr	pc,putw
-	/ comment: r4 is the symbol entry
+	/ comment: r4 is the symbol entry type pointer
 	mov	(sp)+,r4
 	mov	(sp)+,r3
 	mov	(sp)+,r2
