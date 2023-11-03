@@ -303,6 +303,7 @@ start:
 	dec	r0
 	br	2f
 1:
+	/ comment: all undefined symbols to be makd external flag
 	clr	unglob
 2:
 	/ comment: number of args and current arg pointer

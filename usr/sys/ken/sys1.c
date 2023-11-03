@@ -53,10 +53,12 @@ exec()
 	cp = bp->b_addr;
 	na = 0;
 	nc = 0;
+	/* comment: u.u_arg[1] is the **argv */
 	while(ap = fuword(u.u_arg[1])) {
 		na++;
 		if(ap == -1)
 			goto bad;
+		/* comment: next command argument */
 		u.u_arg[1] =+ 2;
 		for(;;) {
 			c = fubyte(ap++);
@@ -64,6 +66,7 @@ exec()
 				goto bad;
 			*cp++ = c;
 			nc++;
+			/* comment: cmd argument is at most 510 bytes long */
 			if(nc > 510) {
 				u.u_error = E2BIG;
 				goto bad;
@@ -159,15 +162,21 @@ exec()
 	estabur(u.u_tsize, u.u_dsize, u.u_ssize, u.u_sep);
 	cp = bp->b_addr;
 	ap = -nc - na*2 - 4;
+	/* comment: set SP, so when the process first run after exec,
+	 * the SP point to argument count */
 	u.u_ar0[R6] = ap;
+	/* comment: store argc */
 	suword(ap, na);
 	c = -nc;
 	while(na--) {
+		/* comment: cmd arg address */
 		suword(ap=+2, c);
+		/* comment: cmd arg content */
 		do
 			subyte(c++, *cp);
 		while(*cp++);
 	}
+	/* comment: end of cmd args flag */
 	suword(ap+2, -1);
 
 	/*
@@ -191,6 +200,7 @@ exec()
 	c = ip;
 	for(ip = &u.u_signal[0]; ip < &u.u_signal[NSIG]; ip++)
 		if((*ip & 1) == 0)
+			/* comment: restore ignored signal back to default */
 			*ip = 0;
 	for(cp = &regloc[0]; cp < &regloc[6];)
 		u.u_ar0[*cp++] = 0;
