@@ -124,7 +124,7 @@ ealoop:
 1:
 	cmp	r4,$'\e
 	bne	2f
-	/ comment: end of file
+	/ comment: end of stream of tokens
 	tst	ifflg
 	beq	1f
 	/ comment: syntax error
@@ -135,6 +135,7 @@ ealoop:
 	jsr	r5,error; 'x
 2:
 	/ comment: eat token upto end of statement
+	/ comment: ignore current statement
 	jsr	pc,checkeos
 		br assem1
 	jsr	pc,readop
