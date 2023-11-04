@@ -4,7 +4,7 @@
 /
 
 / a6 -- pdp-11 assembler pass 1
-
+/ comment: the begin token is already read
 opline:
 	mov	r4,r0
 	jsr	r5,betwen; 0; 200
@@ -21,9 +21,11 @@ xpr:
 1:
 	movb	(r4),r0
 	cmp	r0,$24
+	/ comment: if equal, it's a register expression
 	beq	xpr
 	jsr	r5,betwen; 5; 36
 		br xpr
+	/ comment: it's a nemonic
 	mov	r0,-(sp)
 	jsr	pc,readop
 	mov	(sp)+,r0
@@ -189,6 +191,8 @@ opl32:
 	jsr	r5,error; 'x
 	rts	pc
 
+/ comment: parse a address.
+/ comment: a token is arealy read.
 addres:
 	cmp	r4,$'(
 	beq	alp
@@ -220,6 +224,7 @@ getx:
 	clr	r0
 	rts	pc
 
+/ comment: a left parenthesis
 alp:
 	jsr	pc,readop
 	jsr	pc,expres

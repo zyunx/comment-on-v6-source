@@ -9,6 +9,7 @@
 /          r3 is result type
 /          r0 is current operand type
 /          r1 is current operand value
+/ comment: doesn't touch a.tmp1x and a.tmp2x
 expres:
 	mov	r5,-(sp)
 	/ comment: for operator

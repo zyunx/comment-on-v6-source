@@ -6,19 +6,33 @@ UNIX Assembler
 Assemble Pass 1
 ===============
 
+Goal
+----
+
+#. create a.temp1 file that store all processed tokens.
+#. create a.temp2 file that store all temporary symbols.
+#. create a.temp3 file that sotre all user symbols.
+
+
+Code Conventions
+----------------
+
+#. when reading a symbol(readop), r4 is pointer the symbol entry's type when r4 > 200 or otherwise symbol type itself.
+#. for all statement related parser functions, the first token is already read.
+#. for parse a expression(express), r2 is the result value, r3 is the result type, r1 is the current operand value, r0 is the current operand type
+
+
+Source Files
+------------
 as11.s: main control flow
 as12.s: utility functions
 as13.s: assemble pass 1 flow
 as14.s: low level token functions
 as15.s: high levelo token functions
-as16.s: 
-as17.s:
+as16.s: parse statement and addressing operand
+as17.s: parse expression
 as18.s: common variables
 as19.s: builtin symbol table and start procedure
-
-conventions:
-#. r4 is point the symbol entry.
-
 
 atm1* file format
 -----------------
