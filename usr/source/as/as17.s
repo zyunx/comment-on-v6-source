@@ -5,6 +5,10 @@
 /  a7 -- pdp-11 assembler pass 1
 
 / comment: a token is ready to process
+/ comment: r2 is expression result,
+/          r3 is result type
+/          r0 is current operand type
+/          r1 is current operand value
 expres:
 	mov	r5,-(sp)
 	/ comment: for operator
@@ -32,9 +36,10 @@ advanc:
 	blo	1f
 	cmp	r4,$141+10.
 	bhis	2f
-	/ comment: if current token is alocal label, curfbr-141(r4) = curfbr + (r4 - 141)
+	/ comment: if current token is alocal label, curfbr-141(r4) = r4 + (curfbr - 141) = r4 - 141 + curfbr 
 	movb	curfbr-141(r4),r0
 	asl	r4
+	/ comment: curfb-[2*141](r4) = 2 * r4 + (curfb-[2*141]) = 2 * r4 - [2*141] + curfbr = 2*(r4-141) + curbr
 	mov	curfb-[2*141](r4),r2
 	bpl	oprand
 	/ comment: just show local label error
@@ -111,6 +116,7 @@ brack:
 
 / comment: current token is a operand
 / comment: evaluate expression result upto this operand
+/ comment: process current operand
 oprand:
 	inc	opfound
 	mov	$exsw2,r5
@@ -205,6 +211,7 @@ exnot:
 	br	eoprnd
 
 / comment: default to '+' operator
+/ comment: end of processing a operand
 eoprnd:
 	mov	$'+,(sp)
 	jmp	advanc

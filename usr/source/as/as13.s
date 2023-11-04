@@ -25,6 +25,7 @@ assem:
 	br	assem
 3:
 	/ comment: It's not in .if
+	/ comment: push the first token on stack
 	mov	r4,-(sp)
 	/ comment: look ahead next token
 	jsr	pc,readop
