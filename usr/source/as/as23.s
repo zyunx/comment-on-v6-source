@@ -27,6 +27,8 @@ assem:
 	mov	(sp)+,r4
 2:
 	jsr	pc,opline
+
+/ comment: set txtsiz or datasiz or bssiz = max(dot, txtsiz or datasiz or bssiz)
 dotmax:
 	tstb	passno
 	bne	eal1
@@ -85,15 +87,18 @@ eal1:
 	mov	(sp)+,r1
 	cmp	r1,$symtab	/test for dot
 	bne	1f
+	/ comment: process '.=' statement
 	bic	$40,r3
 	cmp	r3,dotrel	/ can't change relocation
 	bne	2f
 	cmp	r3,$4		/ bss
 	bne	3f
+	/ comment: bss dot
 	mov	r2,dot
 	br	dotmax
 3:
 	sub	dot,r2
+	/ comment: dot can not decrease
 	bmi	2f
 	mov	r2,-(sp)
 3:

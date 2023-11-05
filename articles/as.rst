@@ -12,6 +12,7 @@ Goal
 #. create a.temp1 file that store all processed tokens.
 #. create a.temp2 file that store all temporary symbols.
 #. create a.temp3 file that sotre all user symbols.
+#. calculate all user symbols's type and value.
 
 
 Code Conventions
@@ -55,5 +56,6 @@ builtin symbol : $1000 + (builtin symbol index / 3)
 user symbol : $4000 + (user symbol index / 3)
 
 
-
+Assembler Pass 2
+================
 

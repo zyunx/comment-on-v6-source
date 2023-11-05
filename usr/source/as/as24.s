@@ -18,9 +18,11 @@ oset:
 	mov	(sp)+,r2
 	rts	r5
 
+/ comment: buffered write r0 into a file
 putw:
 	mov	r1,-(sp)
 	mov	r2,-(sp)
+	/ comment: r2 is a pointer to the file io structure
 	mov	(r5)+,r2
 	mov	(r2)+,r1	/ slot
 	cmp	r1,(r2)		/ buf max
@@ -54,6 +56,7 @@ flush1:
 	bic	$!777,r1
 	add	r2,r1		/ write address
 	mov	r1,0f
+	/ comment: r2 is the buffer address
 	mov	r2,r0
 	bis	$777,-(r2)
 	inc	(r2)		/ new seek addr
@@ -69,6 +72,7 @@ flush1:
 	.text
 	rts	r5
 
+/ comment: read token from processed text file
 readop:
 	mov	savop,r4
 	beq	1f

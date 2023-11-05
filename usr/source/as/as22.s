@@ -76,6 +76,7 @@ outw:
 
 outb:
 	cmp	dot-2,$4		/ test bss mode
+	/ comment: do not write to file if in bss mode
 	beq	9b
 	cmp	r3,$1
 	blos	1f
