@@ -102,6 +102,7 @@ eal1:
 	bmi	2f
 	mov	r2,-(sp)
 3:
+	/ comment: full zeros for the gap due to dot increase
 	dec	(sp)
 	bmi	3f
 	clr	r2
@@ -115,6 +116,8 @@ eal1:
 	jsr	r5,error; '.
 	br	ealoop
 1:
+	/ comment: process non-dot '=' statement
+	/ comment: $40 undefined global
 	cmp	r3,$40
 	bne	1f
 	jsr	r5,error; 'r
@@ -124,6 +127,7 @@ eal1:
 	bne	1f
 	clr	r2
 1:
+	/ comment: set symobl type and value
 	bisb	r3,(r1)
 	mov	r2,2(r1)
 

@@ -84,6 +84,7 @@ outb:
 1:
 	tstb	passno
 	beq	2f
+	/ comment: outb pass 2
 	mov	r2,r0
 	bit	$1,dot
 	bne	1f
@@ -97,6 +98,7 @@ outb:
 	mov	txtp,r0
 	movb	r2,-1(r0)
 2:
+	/ comment: outb pass 1
 	inc	dot
 	rts	pc
 
