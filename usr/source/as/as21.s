@@ -50,6 +50,7 @@ go:
 
 / read in f-b definitions
 
+	/ comment: fb table is following user symbol table immediately
 	mov	r1,fbbufp
 	movb	fbfil,fin
 	clr	ibufc

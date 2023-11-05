@@ -2,9 +2,9 @@
 /
 
 / a3 -- pdp-11 assembler pass 2
-
 assem:
 	jsr	pc,readop
+	/ comment: $5 is new file type
 	cmp	r4,$5
 	beq	2f
 	cmp	r4,$'<
@@ -40,6 +40,7 @@ dotmax:
 eal1:
 	jmp	ealoop
 1:
+	/ comment: process label
 	mov	(sp)+,r4
 	cmp	r4,$200
 	bhis	1f
@@ -48,6 +49,7 @@ eal1:
 	jsr	r5,error; 'x
 	br	assem
 1:
+	/ comment: process symbol label
 	tstb	passno
 	bne	2f
 	movb	(r4),r0
@@ -72,6 +74,7 @@ eal1:
 	jsr	r5,error; 'p
 	br	assem
 3:
+	/ comment: for text temperary label
 	mov	numval,r4
 	jsr	pc,fbadv
 	asl	r4
