@@ -65,6 +65,7 @@ outbuf:	.=.+512.
 line:	.=.+2
 / comment: input buffer count
 inbfcnt:.=.+2
+/ comment: if block flag, if 0, statements in block need assembled, otherwise ignored
 ifflg:	.=.+2
 / comment: input buffer pointer
 inbfp:	.=.+2

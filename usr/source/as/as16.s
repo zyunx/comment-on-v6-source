@@ -5,6 +5,7 @@
 
 / a6 -- pdp-11 assembler pass 1
 / comment: the begin token is already read
+/ comment: parse statement, and increment dot
 opline:
 	mov	r4,r0
 	jsr	r5,betwen; 0; 200
@@ -155,6 +156,7 @@ opl22:	/endif
 opl23:
 	cmp	r4,$200
 	blo	1f
+	/ comment: make the symbol global
 	bisb	$40,(r4)
 	jsr	pc,readop
 	cmp	r4,$',
@@ -164,6 +166,7 @@ opl23:
 1:
 	rts	pc
 
+/ comment: switch segment
 opl25:
 opl26:
 opl27:
@@ -193,6 +196,7 @@ opl32:
 
 / comment: parse a address.
 / comment: a token is arealy read.
+/ comment: if a expression prefix (), a constant word is followd by this instruction
 addres:
 	cmp	r4,$'(
 	beq	alp
@@ -225,6 +229,8 @@ getx:
 	rts	pc
 
 / comment: a left parenthesis
+/ r0 = 0 if ()+
+/ r0 = 2 if () only
 alp:
 	jsr	pc,readop
 	jsr	pc,expres
@@ -276,13 +282,16 @@ errora:
 	rts	pc
 
 checkreg:
+	/ comment: r2 is expression value
 	cmp	r2,$7
 	bhi	1f
+	/ comment: r3 is expression type
 	cmp	r3,$1
 	beq	2f
 	cmp	r3,$4
 	bhi	2f
 1:
+	/ comment: error in address
 	jsr	pc,errora
 2:
 	rts	pc

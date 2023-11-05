@@ -9,16 +9,17 @@ assem:
 	/ comment: check end of statement
 	jsr	pc,checkeos
 		br ealoop
-	/ comment: it's not end-of-statement token
+	/ comment: check if it's in a false .if block
 	tst	ifflg
 	beq	3f
 	cmp	r4,$200
 	blos	assem
-	/ comment: process '.if' and '.endif'
+	/ comment: process nested '.if'
 	cmpb	(r4),$21	/if
 	bne	2f
 	inc	ifflg
 2:
+	/ comment: process '.endif'
 	cmpb	(r4),$22   /endif
 	bne	assem
 	dec	ifflg
