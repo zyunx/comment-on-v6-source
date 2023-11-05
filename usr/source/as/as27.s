@@ -21,12 +21,14 @@ advanc:
 	movb	(r4),r0
 	tst	r0
 	bne	1f
+	/ comment: symbol type can be 0(undeifned) at pass 1, but can't be pass 2
 	tstb	passno
 	beq	1f
 	jsr	r5,error; 'u
 1:
 	cmp	r0,$40
 	bne	1f
+	/ comment: it's a undefined global symbol
 	mov	r4,xsymbol
 	clr	r1
 	br	oprand
@@ -36,12 +38,14 @@ advanc:
 7:
 	cmp	r4,$141
 	blo	1f
+	/ comment: current symbol is temperary symbol
 	asl	r4
 	mov	curfb-[2*141](r4),r0
 	mov	2(r0),r1
 	movb	(r0),r0
 	br	oprand
 1:
+	/ comment: current symbol is process operator
 	mov	$esw1,r1
 1:
 	cmp	(r1)+,r4
@@ -104,6 +108,7 @@ brack:
 	mov	(sp)+,r3
 	mov	(sp)+,r2
 
+/ comment: a operand is found
 oprand:
 	mov	$exsw2,r5
 1:
@@ -203,9 +208,12 @@ eoprnd:
 combin:
 	tstb	passno
 	bne	combin1
+	/ comment: combine type for pass 1
+	/ comment: (sp) is global flag, when either two operand is global, result is global
 	mov	r0,-(sp)
 	bis	r3,(sp)
 	bic	$!40,(sp)
+	/ comment: swap r0, r3 so that r0 is type of lower value, r3 is type of greater value
 	bic	$!37,r0
 	bic	$!37,r3
 	cmp	r0,r3
@@ -218,8 +226,10 @@ combin:
 	beq	1f
 	cmp	(r5)+,$reltm2
 	bne	2f
+	/ comment: combine for minus
 	cmp	r0,r3
 	bne	2f
+	/ comment: same type for minus
 	mov	$1,r3
 	br	2f
 1:
@@ -228,9 +238,11 @@ combin:
 2:
 	bis	(sp)+,r3
 	rts	r5
+/ comment: combine type for pass 2
 combin1:
 	mov	r1,-(sp)
 	clr	maxtyp
+	/ comment: use relt*2 table to calute type
 	jsr	pc,maprel
 	mov	r0,r1
 	mpy	$6,r1
@@ -252,6 +264,7 @@ combin1:
 maprel:
 	cmp	r0,$40
 	bne	1f
+	/ comment: if it is global
 	mov	$5,r0
 	rts	pc
 1:
@@ -262,12 +275,14 @@ maprel:
 1:
 	cmp	r0,$5
 	blos	1f
+	/ comment: type value geater than 5 is absolute
 	mov	$1,r0
 1:
 	rts	pc
 
 X = -2
 M = -1
+/ comment: result type of plus
 reltp2:
 	.byte 0, 0, 0, 0, 0, 0
 	.byte 0, M, 2, 3, 4,40
@@ -276,6 +291,7 @@ reltp2:
 	.byte 0, 4, X, X, X, X
 	.byte 0,40, X, X, X, X
 
+/ comment: result type of minus
 reltm2:
 	.byte 0, 0, 0, 0, 0, 0
 	.byte 0, M, 2, 3, 4,40
@@ -284,6 +300,7 @@ reltm2:
 	.byte 0, X, X, X, 1, X
 	.byte 0, X, X, X, X, X
 
+/ comment: result type of others
 relte2:
 	.byte 0, 0, 0, 0, 0, 0
 	.byte 0, M, X, X, X, X
