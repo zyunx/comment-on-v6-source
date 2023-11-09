@@ -2,7 +2,6 @@
 /
 
 / a2 -- pdp-11 assembler pass 2
-
 outw:
 	cmp	dot-2,$4
 	beq	9f
@@ -50,6 +49,7 @@ outw:
 	add	dotdot,r2
 	br	4f
 5:
+	/ comment: if pc-relative is set, substract pc
 	tst	(sp)
 	beq	4f
 	sub	dotdot,r2
@@ -111,6 +111,7 @@ outb:
 	inc	dot
 	rts	pc
 
+/ comment: change output file mode, print chars in argb and error flag and line number.
 error:
 	mov	$666,outmod		/ make nonexecutable
 	mov	r3,-(sp)
@@ -119,6 +120,7 @@ error:
 	mov	r0,-(sp)
 	mov	$argb,r1
 1:
+	/ comment: print chars in argb
 	movb	(r1),ch
 	beq	1f
 	clrb	(r1)+

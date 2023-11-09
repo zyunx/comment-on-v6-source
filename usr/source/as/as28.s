@@ -53,6 +53,7 @@ ibufc:	.=.+2
 txtfil:	.=.+2
 symf:	.=.+2
 adrbuf:	.=.+12.
+/ comment: address of expression symbol
 xsymbol:.=.+2
 fout:	.=.+2
 ch:	.=.+2

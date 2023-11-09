@@ -18,6 +18,7 @@ xpr:
 	jsr	pc,expres
 	jsr	pc,outw
 	rts	pc
+/ comment: process statement starting with names.
 2:
 	movb	(r4),r0
 	cmp	r0,$24		/reg
@@ -28,6 +29,8 @@ xpr:
 	beq	xpr
 	jsr	r5,betwen; 5; 36
 		br xpr
+	/ comment: machine instructions, psuedo operations and system call
+	/ comment: store value and type on stack
 	mov	2(r4),-(sp)
 	mov	r0,-(sp)
 	jsr	pc,readop
@@ -119,7 +122,9 @@ op2b:
 	blo	1f
 	jsr	r5,error; 'x
 1:
+	/ comment: set last address mode if any
 	bis	(sp)+,r2
+	/ comment: set instruction code
 	bis	(sp)+,r2
 	clr	r3
 	jsr	pc,outw
@@ -127,6 +132,7 @@ op2b:
 1:
 	cmp	r1,r5
 	bhis	1f
+	/ comment: if addrbuf has value
 	mov	(r1)+,r2
 	mov	(r1)+,r3
 	mov	(r1)+,xsymbol
@@ -374,7 +380,9 @@ opl32:
 	tst	(sp)+
 	rts	pc
 
+/ comment: See 8.1 Sources and Destinations in UNIX Assembler Referrence
 addres:
+	/ comment: deffered flag
 	clr	-(sp)
 4:
 	cmp	r4,$'(
@@ -397,6 +405,7 @@ getx:
 	jsr	pc,expres
 	jsr	pc,checkreg
 	jsr	pc,checkrp
+	/ comment: set index mode
 	bis	$60,r2
 	bis	(sp)+,r2
 	rts	pc
@@ -405,17 +414,20 @@ getx:
 	cmp	r3,$24
 	bne	1f
 	jsr	pc,checkreg
+	/ comment: set deffered flag, it's a register deffered mode
 	bis	(sp)+,r2
 	rts	pc
 1:
 	mov	r3,-(sp)
 	bic	$40,r3
 	mov	(sp)+,r3
+	/ comment: PC relative flag
 	bis	$100000,r3
 	sub	dot,r2
 	sub	$4,r2
 	cmp	r5,$adrbuf
 	beq	1f
+	/ comment: sub 2 if it's second index
 	sub	$2,r2
 1:
 	mov	r2,(r5)+		/ index
@@ -425,6 +437,7 @@ getx:
 	bis	(sp)+,r2
 	rts	pc
 
+/ comment: (reg) or (reg)+
 alp:
 	jsr	pc,readop
 	jsr	pc,expres
@@ -434,17 +447,21 @@ alp:
 	beq	1f
 	tst	(sp)+
 	beq	2f
+	/ comment: index deffered mode
 	bis	$70,r2
 	clr	(r5)+
 	clr	(r5)+
 	mov	xsymbol,(r5)+
 	rts	pc
 2:
+	/ comment: register deffered mode
 	bis	$10,r2
 	rts	pc
 1:
 	jsr	pc,readop
+	/ comment: auto-increment mode
 	bis	$20,r2
+	/ comment: set deffered flag
 	bis	(sp)+,r2
 	rts	pc
 
@@ -461,16 +478,20 @@ amin:
 	jsr	pc,checkrp
 	jsr	pc,checkreg
 	bis	(sp)+,r2
+	/ comment: auto-decrement mode
 	bis	$40,r2
 	rts	pc
 
 adoll:
 	jsr	pc,readop
 	jsr	pc,expres
+	/ comment: r5 is addrbuf, (value, type, symbol addr)
 	mov	r2,(r5)+
 	mov	r3,(r5)+
 	mov	xsymbol,(r5)+
+	/ comment: deffered mode bit
 	mov	(sp)+,r2
+	/ comment: pc increment or immediate mode
 	bis	$27,r2
 	rts	pc
 
@@ -479,6 +500,7 @@ astar:
 	beq	1f
 	jsr	r5,error; '*
 1:
+	/ comment: it's a deffered address
 	mov	$10,(sp)
 	jsr	pc,readop
 	jmp	4b
@@ -488,6 +510,7 @@ errora:
 	rts	pc
 
 checkreg:
+	/ comment: r2 is the expression value
 	cmp	r2,$7
 	bhi	1f
 	cmp	r1,$1
