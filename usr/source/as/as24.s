@@ -72,6 +72,9 @@ flush1:
 	.text
 	rts	r5
 
+/ comment: The difference between readop and getw is that
+/ readop will consider symbol.
+
 / comment: read token from processed text file
 readop:
 	mov	savop,r4

@@ -1,3 +1,4 @@
+/ comment: parse statement
 /
 /
 
@@ -293,6 +294,7 @@ opl17:
 	jsr	pc,outb
 	br	opl17
 2:
+	/ comment: maybe end of statement symbol, for ealoop
 	jsr	pc,getw
 	rts	pc
 

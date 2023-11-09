@@ -1,3 +1,4 @@
+/ comment: assembler output funtion, r3 is type, r2 is value
 /
 /
 
@@ -90,6 +91,7 @@ outb:
 	blos	1f
 	jsr	r5,error; 'r
 1:
+	/ comment: only for type 0 or 1
 	tstb	passno
 	beq	2f
 	/ comment: outb pass 2

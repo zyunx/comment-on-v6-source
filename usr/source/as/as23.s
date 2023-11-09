@@ -34,6 +34,7 @@ assem:
 dotmax:
 	tstb	passno
 	bne	eal1
+	/ comment: pass 1
 	movb	dotrel,r0
 	asl	r0
 	cmp	dot,txtsiz-4(r0)
