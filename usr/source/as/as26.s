@@ -115,6 +115,7 @@ op2b:
 	mov	r2,(sp)
 	mov	r0,r2
 1:
+	/ comment: shift address mode 6-bits left
 	swab	(sp)
 	asr	(sp)
 	asr	(sp)

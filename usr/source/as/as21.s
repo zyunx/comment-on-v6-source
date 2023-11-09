@@ -89,42 +89,53 @@ go:
 	movb	r0,fin
 	clr	ibufc
 	jsr	pc,setup
+	/ comment: pass 2
 	inc	passno
+	/ comment: bss size
 	inc	bsssiz
 	bic	$1,bsssiz
+	/ comment: text size
 	mov	txtsiz,r1
 	inc	r1
 	bic	$1,r1
 	mov	r1,txtsiz
+	/ comment: data size
 	mov	datsiz,r2
 	inc	r2
 	bic	$1,r2
 	mov	r2,datsiz
+	/ comment: data segment base addr
 	mov	r1,r3
 	mov	r3,datbase	/ txtsiz
 	mov	r3,savdot+2
 	add	r2,r3
 	mov	r3,bssbase	/ txtsiz+datsiz
 	mov	r3,savdot+4
+	/ comment: relation bits size is also txtsiz + datsiz
 	asl	r3
+	/ comment: header size
 	add	$20,r3
 	mov	r3,symseek	/ 2*txtsiz+2*datsiz+20
 	sub	r2,r3
-	mov	r3,drelseek	/ 2*txtsiz+datsiz
+	mov	r3,drelseek	/ 2*txtsiz+datsiz+20
 	sub	r1,r3
 	mov	r3,trelseek	/ txtsiz+datsiz+20
 	sub	r2,r3
 	mov	r3,datseek	/ txtsiz+20
+/ comment: relocate all user symbols
 	mov	$usymtab,r1
 1:
 	jsr	pc,doreloc
 	add	$4,r1
 	cmp	r1,endtable
 	blo	1b
+	/ comment: set text pointer
 	clr	r0
 	jsr	r5,oset; txtp
+	/ comment: set relocation pointer
 	mov	trelseek,r0
 	jsr	r5,oset; relp
+/ comment: write a.out header
 	mov	$8.,r2
 	mov	$txtmagic,r1
 1:
@@ -149,6 +160,7 @@ go:
 	jsr	r5,oset; txtp
 	mov	$usymtab,r1
 1:
+	/ comment: symbol name
 	jsr	pc,getw
 	bvs	1f
 	mov	r4,r0
@@ -162,6 +174,7 @@ go:
 	jsr	pc,getw
 	mov	r4,r0
 	jsr	r5,putw; txtp
+	/ comment: symbol type and value
 	mov	(r1)+,r0
 	jsr	r5,putw; txtp
 	mov	(r1)+,r0
@@ -198,6 +211,7 @@ filerr:
 	sys	write; qnl; 2
 	jmp	aexit
 
+/ comment: do relocate data and bss symbols
 doreloc:
 	movb	(r1),r0
 	bne	1f

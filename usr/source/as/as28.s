@@ -74,6 +74,7 @@ ibufp:	.=.+2
 txtp:	.=.+6+512.
 relp:	.=.+6+512.
 swapf:	.=.+2
+/ comment: register mode limit
 rlimit:	.=.+2
 passno:	.=.+2
 endtable:.=.+2

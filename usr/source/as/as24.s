@@ -2,7 +2,7 @@
 /
 
 / a4 -- pdp-11 assembler pass 2
-
+/ comment: set file io pointer at r0
 oset:
 	mov	r2,-(sp)
 	mov	(r5)+,r1
