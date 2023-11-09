@@ -66,6 +66,7 @@ xpr:
 	opl35
 	opl36
 
+/ comment: end of file
 opeof:
 	mov	$1,line
 	mov	$20,-(sp)

@@ -40,6 +40,7 @@ symseek:.=.+2
 brlen	= 1024.
 brtab:	.=.+[brlen\/8.]
 brtabp:	.=.+2
+/ comment: branch delta
 brdelt:	.=.+2
 fbbufp:	.=.+2
 defund:	.=.+2

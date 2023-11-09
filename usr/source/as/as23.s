@@ -14,10 +14,12 @@ assem:
 	mov	r4,-(sp)
 	cmp	(sp),$1
 	bne	1f
+	/ comment: symbol of number
 	mov	$2,(sp)
 	jsr	pc,getw
 	mov	r4,numval
 1:
+	/ comment: current symbol is a name
 	jsr	pc,readop
 	cmp	r4,$'=
 	beq	4f
@@ -52,7 +54,9 @@ eal1:
 	/ comment: process symbol label
 	tstb	passno
 	bne	2f
+	/ comment: pass 1
 	movb	(r4),r0
+	/ comment: undefined  or estimated text or estimated data, otherwise multiple defined.
 	bic	$!37,r0
 	beq	5f
 	cmp	r0,$33
@@ -69,6 +73,7 @@ eal1:
 	mov	dot,2(r4)
 	br	assem
 2:
+	/ comment: pass 2
 	cmp	dot,2(r4)
 	beq	assem
 	jsr	r5,error; 'p
@@ -80,6 +85,7 @@ eal1:
 	asl	r4
 	mov	curfb(r4),r0
 	movb	dotrel,(r0)
+	/ comment: calculate delta of the label absolute value and dot
 	mov	2(r0),brdelt
 	sub	dot,brdelt
 	mov	dot,2(r0)
