@@ -72,6 +72,7 @@ opeof:
 	mov	$20,-(sp)
 	mov	$argb,r1
 1:
+	/ comment: read file name into (r1)
 	jsr	pc,getw
 	tst	r4
 	bmi	1f

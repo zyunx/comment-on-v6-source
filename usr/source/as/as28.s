@@ -68,6 +68,7 @@ numval:	.=.+2
 maxtyp:	.=.+2
 relfil:	.=.+2
 ibufp:	.=.+2
+/ comment: most simple structure: tuple
 / comment: file io structure, (curent slot, max buf, file seek addr, buf)
 txtp:	.=.+6+512.
 relp:	.=.+6+512.

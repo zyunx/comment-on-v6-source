@@ -29,7 +29,7 @@ assem:
 	mov	(sp)+,r4
 2:
 	jsr	pc,opline
-
+/ comment: update text, data or bss size
 / comment: set txtsiz or datasiz or bssiz = max(dot, txtsiz or datasiz or bssiz)
 dotmax:
 	tstb	passno

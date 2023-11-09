@@ -7,6 +7,7 @@ outw:
 	cmp	dot-2,$4
 	beq	9f
 	bit	$1,dot
+	/ comment: if not zero, error for write word at odd address
 	bne	1f
 	add	$2,dot
 	tstb	passno
@@ -19,9 +20,12 @@ outw:
 	bne	2f
 / external references
 	mov	$666,outmod		/ make nonexecutable
+	/ comment: compute relocation bits
 	mov	xsymbol,r3
 	sub	$usymtab,r3
+	/ comment: r3 = symbol index << 2
 	asl	r3
+	/ comment: now r3 = symbol index << 3
 	bis	$4,r3		/ external relocation
 	br	3f
 2:
@@ -50,11 +54,14 @@ outw:
 	beq	4f
 	sub	dotdot,r2
 4:
+	/ comment: relocation bit 3-1 value equals symbol type - 1
 	dec	r3
 	bpl	3f
 	clr	r3
 3:
 	asl	r3
+	/ comment: now r3 = symbol index << 4
+	/ comment: set PC relative bit
 	bis	(sp)+,r3
 	mov	r2,r0
 	jsr	r5,putw; txtp
@@ -74,6 +81,7 @@ outw:
 	jsr	r5,error; 'x
 	rts	pc
 
+/ comment: output a byte, r3 is type, r2 is the value
 outb:
 	cmp	dot-2,$4		/ test bss mode
 	/ comment: do not write to file if in bss mode
@@ -95,6 +103,7 @@ outb:
 	add	$2,*tseekp
 	br	2f
 1:
+	/ comment: dot is at odd address
 	mov	txtp,r0
 	movb	r2,-1(r0)
 2:
