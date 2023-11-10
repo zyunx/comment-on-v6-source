@@ -4,6 +4,7 @@
 
 / a2 -- pdp-11 assembler pass 2
 outw:
+	/ comment: bss segment if zero
 	cmp	dot-2,$4
 	beq	9f
 	bit	$1,dot
@@ -12,6 +13,7 @@ outw:
 	add	$2,dot
 	tstb	passno
 	beq	8f
+	/ comment: pass 2
 	clr	-(sp)
 	rol	r3
 	adc	(sp)
@@ -30,6 +32,7 @@ outw:
 	br	3f
 2:
 	bic	$40,r3		/ clear any ext bits
+	/ comment: same processing whether it is external
 	cmp	r3,$5
 	blo	4f
 	cmp	r3,$33		/ est. text, data
@@ -45,11 +48,13 @@ outw:
 	blo	5f
 	cmp	r3,$4
 	bhi	5f
+	/ comment: the symbol is of type text, data or bss
 	tst	(sp)
 	bne	4f
 	add	dotdot,r2
 	br	4f
 5:
+	/ comment: the symbol is undefined or absolute
 	/ comment: if pc-relative is set, substract pc
 	tst	(sp)
 	beq	4f
@@ -71,6 +76,7 @@ outw:
 	jsr	r5,putw; relp
 	add	$2,*rseekp
 8:
+	/ comment: pass 0, don't output word
 	rts	pc
 1:
 	jsr	r5,error; 'o
