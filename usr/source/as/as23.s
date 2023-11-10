@@ -67,6 +67,7 @@ eal1:
 6:
 	jsr	r5,error; 'm
 5:
+	/ comment: set label type and value
 	bic	$37,(r4)
 	bis	dotrel,(r4)
 	mov	2(r4),brdelt
@@ -74,7 +75,7 @@ eal1:
 	mov	dot,2(r4)
 	br	assem
 2:
-	/ comment: pass 2
+	/ comment: pass 2, check symbol value with dot
 	cmp	dot,2(r4)
 	beq	assem
 	jsr	r5,error; 'p

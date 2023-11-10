@@ -16,6 +16,7 @@ opline:
 xxpr:
 	tst	(sp)+
 xpr:
+	/ comment: expression statement
 	jsr	pc,expres
 	jsr	pc,outw
 	rts	pc
