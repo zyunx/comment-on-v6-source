@@ -11,8 +11,11 @@ char *tmp5;
 char ts[1000];
 char *tsp ts;
 char *av[50];
+/* comment: compile file list */
 char *clist[50];
+/* comment: link file list */
 char *llist[50];
+/* parse in a string */
 int instring;
 int pflag;
 int sflag;
@@ -24,7 +27,9 @@ int *ibuf;
 int *ibuf1;
 int *ibuf2;
 int *obuf;
+/* comment: line pointer */
 char *lp;
+/* comment: begin of line */
 char *line;
 int lineno;
 int exfail;
@@ -117,13 +122,18 @@ char *argv[]; {
 		goto nocom;
 	if (pflag==0) {
 		tmp0 = copy("/tmp/ctm0a");
+		/* comment: find a nonexist file name */
 		while((c=open(tmp0, 0))>=0) {
 			close(c);
+			/* comment: increment the last letter */
 			tmp0[9]++;
 		}
+		/* comment: create a file untill success */
 		while((creat(tmp0, 0400))<0)
 			tmp0[9]++;
 	}
+	/* comment: if INTERRUPT is not default or ignore,
+	 * set my signal handler */
 	if ((signal(2, 1) & 01) == 0)
 		signal(2, &dexit);
 	(tmp1 = copy(tmp0))[8] = '1';
@@ -141,6 +151,7 @@ char *argv[]; {
 			tmp4 = setsuf(clist[i], 'i');
 		av[1] = expand(clist[i]);
 		if (pflag || exfail)
+			/* comment: Run only macro processor or execution fails */
 			continue;
 		if (av[1] == 0) {
 			cflag++;
@@ -157,6 +168,7 @@ char *argv[]; {
 			cflag++;
 			continue;
 		}
+		/* comment: c2: tmp5 is input, tmp3 is output */
 		av[0] = "c1";
 		av[1] = tmp1;
 		av[2] = tmp2;
@@ -171,6 +183,8 @@ char *argv[]; {
 			continue;
 		}
 		if (oflag) {
+			/* comment: optional optimization phase */
+			/* comment: c2: tmp5 is input, tmp3 is output */
 			av[0] = "c2";
 			av[1] = tmp5;
 			av[2] = tmp3;
@@ -178,6 +192,8 @@ char *argv[]; {
 			callsys(pass2, av);
 			unlink(tmp5);
 		}
+		/* comment: tmp3 is the assembly code generated */
+		/* comment: tmp3 is input */
 		if (sflag)
 			continue;
 		av[0] = "as";
@@ -244,16 +260,22 @@ char *file;
 	exfail = 0;
 	ibuf = ibuf1 = ib1;
 	ibuf2 = ib2;
+	/* comment: see fopen in manual */
 	if (fopen(file, ibuf1)<0)
+		/* comment: open failed */
 		return(file);
 	if (getc(ibuf1) != '#') {
+		/* comment: the file not begin with '#' */
 		close(ibuf1[0]);
 		return(file);
 	}
+	/* comment: char left decrement */
 	ibuf1[1]++;
+	/* comment: */
 	ibuf1[2]--;
 	obuf = ob;
 	symtab = stab;
+	/* comment: clear symbol table */
 	for (c=0; c<200; c++) {
 		stab[c].name[0] = '\0';
 		stab[c].value = 0;
@@ -289,6 +311,15 @@ char *file;
 	return(tmp4);
 }
 
+/* comment:
+ * state: 0 -> 1 = encounter a prepressor(#)
+ *        1 -> 2 = #define 
+ *        1 -> 3 = #include
+ *        1 -> 4 = #ifndef
+ *        1 -> 5 = #ifdef
+ *        1 -> 6 = #elseif
+ * 
+ */
 getline()
 {
 	register int c, sc, state;
@@ -302,8 +333,10 @@ getline()
 	state = 0;
 	if ((c=getch()) == '#')
 		state = 1;
+	/* comment: while not end of line or file */
 	while (c!='\n' && c!='\0') {
 		if ('a'<=c && c<='z' || 'A'<=c && c<='Z' || c=='_') {
+			/* comment: get the name */
 			namep = lp;
 			sch(c);
 			while ('a'<=(c=getch()) && c<='z'
@@ -366,6 +399,7 @@ getline()
 		} else if ((sc=c)=='\'' || sc=='"') {
 			sch(sc);
 			filname = lp;
+			/* comment: read a string */
 			instring++;
 			while ((c=getch())!=sc && c!='\n' && c!='\0') {
 				sch(c);
@@ -389,6 +423,8 @@ getline()
 				return(c);
 			}
 		}
+
+		/* comment: save the char in line and read next char */
 		sch(c);
 		c = getch();
 	}
@@ -398,6 +434,9 @@ getline()
 	return(c);
 }
 
+/* comment: install symbol namep in symbol table,
+ * with value equaling to the symbol name,
+ * and return the location in sp. */
 insym(sp, namep)
 struct symtab **sp;
 char *namep;
@@ -417,6 +456,7 @@ error(s, x)
 	cflag++;
 }
 
+/* save a char on line */
 sch(c)
 {
 	register char *rlp;
@@ -430,6 +470,7 @@ sch(c)
 	lp = rlp;
 }
 
+/* comment: save a char in stringbuf */
 savch(c)
 {
 	*stringbuf++ = c;
@@ -439,6 +480,7 @@ savch(c)
 	dexit();
 }
 
+/* comment: read the next char, ignore comments */
 getch()
 {
 	register int c;
@@ -447,9 +489,11 @@ loop:
 	if ((c=getc1())=='/' && !instring) {
 		if ((c=getc1())!='*')
 			{
+			/* comment: look a head, it's not a comment */
 			ungetc(c);
 			return('/');
 			}
+		/* comment: ignore comments */
 		for(;;) {
 			c = getc1();
 		cloop:
@@ -481,13 +525,17 @@ ungetc(c)
 	*++pushp = c;
 	}
 
+/* comment: read a char from push buffer,
+ * then ibuf, if ibuf is ibuf2, then from ibuf1 */
 getc1()
 {
 	register c;
-
+	/* comment: read from push buffer */
 	if (*pushp !=0)
 		return(*pushp--);
 	depth=0;
+	/* comment: if reading from ibuf2 and end of file or error occurs,
+	 * read from ibuf1  */
 	if ((c = getc(ibuf)) < 0 && ibuf==ibuf2) {
 		close(ibuf2[0]);
 		ibuf = ibuf1;
@@ -508,6 +556,7 @@ char *namep;
 	int i, c, around;
 	np = namep;
 	around = i = 0;
+	/* comment: symtab is hash table */
 	while (c = *np++)
 		i =+ c;
 	i =% symsiz;
@@ -517,6 +566,7 @@ char *namep;
 		np = namep;
 		while (*snp++ == *np)
 			if (*np++ == '\0' || np==namep+8) {
+				/* comment: find a matched name */
 				if (!enterf)
 					subst(namep, sp);
 				return(sp);
@@ -531,6 +581,7 @@ char *namep;
 			sp = symtab;
 	}
 	if (enterf>0) {
+		/* comment: enter the name into the new empty slot */
 		snp = namep;
 		for (np = &sp->name[0]; np < &sp->name[8];)
 			if (*np++ = *snp)
@@ -581,6 +632,7 @@ struct symtab *sp;
 		ungetc(*--bp);
 }
 
+/* comment: get suffix */
 getsuf(as)
 char as[];
 {
@@ -601,6 +653,7 @@ char as[];
 	return(0);
 }
 
+/* comment: set suffix, the original as is not modified. */
 setsuf(as, ch)
 char as[];
 {
@@ -647,6 +700,7 @@ char as[];
 	return(otsp);
 }
 
+/* comment: string list l has no duplication for string os */
 nodup(l, os)
 char **l, *os;
 {
@@ -656,11 +710,18 @@ char **l, *os;
 	s = os;
 	if (getsuf(s) != 'o')
 		return(1);
+	/* comment: s is '0' suffixed */
 	while(t = *l++) {
+		/* comment: for every t in string list l */
 		while(c = *s++)
+			/* comment: for every char c in string s */
 			if (c != *t++)
-				break;
+				/* comment: c does not equal the char of t */
+		/* comment: c may be 0 or c is not equals the char of t.
+		 * if c is 0, then s is a prefix of t,
+		 * otherwise these two string is different. */
 		if (*t=='\0' && c=='\0')
+			/* comment: the two string are exactly same. */
 			return(0);
 		s = os;
 	}
@@ -674,6 +735,7 @@ char *f;
 		return(0);
 	return(unlink(f));
 }
+
 expdef(proto)
   char *proto;
 {
@@ -719,6 +781,7 @@ while (c= *proto++)
       }
    }
 }
+
 token(cpp) char **cpp;
 {
 char *val;
@@ -737,6 +800,7 @@ for (val = *cpp; (stc= **cpp) != ',' && stc!= ')'; (*cpp)++)
   }
 return(val);
 }
+
 coptok (cpp) char **cpp; {
 char *val;
 int stc, stop,paren;
@@ -786,6 +850,7 @@ while (((stc = getch()) != ',' && stc != ')') || paren > 0)
 ungetc(stc);
 return(val);
 }
+
 letter(c)
 {
 if ((c >= 'a' && c <= 'z') ||
@@ -802,6 +867,8 @@ if (letter(c) || (c >= '0' && c <= '9'))
 else
   return(0);
 }
+
+/* comment: two strings equal */
 streq(s,t) char *s, *t;
 {
 int c;
