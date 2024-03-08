@@ -131,6 +131,7 @@ lookup()
 		if (++rp >= &hshtab[hshsiz])
 			rp = hshtab;
 	}
+	/* comment: name not found, insert a name into symbol table */
 	if(++hshused >= hshsiz) {
 		error("Symbol table overflow");
 		exit(1);
@@ -215,6 +216,7 @@ loop:
 		inhdr = 0;
 
 	case SPACE:
+		/* comment: skip SPACE */
 		c = getchar();
 		goto loop;
 
@@ -258,6 +260,7 @@ loop:
 	case DIVIDE:
 		if (subseq('*',1,0))
 			return(DIVIDE);
+		/* comment: skip comment */
 		while ((c = spnextchar()) != EOF) {
 			peekc = 0;
 			if (c=='*') {
@@ -274,6 +277,7 @@ loop:
 
 	case PERIOD:
 	case DIGIT:
+		/* comment: number constant */
 		peekc = c;
 		if ((c=getnum(c=='0'?8:10)) == FCON)
 			cval = isn++;
@@ -318,13 +322,15 @@ loop:
 }
 
 /*
- * If the next input character is c, return a and advance.
+ * If the next input character is c, return b and advance.
  * Otherwise push back the character and return a.
  */
 subseq(c,a,b)
 {
+	/* comment: spnextchar read next char and pushback it, don't advance char */
 	if (spnextchar() != c)
 		return(a);
+	/* comment: advance a char */
 	peekc = 0;
 	return(b);
 }

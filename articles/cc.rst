@@ -1,6 +1,11 @@
 /lib/c0
 -------
 
+extdef ---- symbol
+
+decl1(): 
+
+symbol(): a stream of symbols from source file.
 
 /lib/c1
 -------

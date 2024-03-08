@@ -120,7 +120,9 @@ struct	hshtab	*funcsym;
 int	xdflg;
 int	proflg;
 int	stflg;
+/* comment: current symbol entry */
 struct	hshtab	*csym;
+/* comment: current symbol value */
 int	cval;
 double	fcval;
 int	nchstr;

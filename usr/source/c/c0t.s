@@ -42,6 +42,7 @@ _getnum:
 	clr	nfract
 	cmp	r0,$'.
 	bne	1f
+	/ comment: decimal point found
 	mov	pc,decpt
 	br	1b
 1:
@@ -131,6 +132,7 @@ fperr:	<No floating point!\0>; .even
 	.endif
 
 getdig:
+/ comment: get char from _peekc or call _getchar
 	mov	_peekc,r0
 	beq	1f
 	clr	_peekc
