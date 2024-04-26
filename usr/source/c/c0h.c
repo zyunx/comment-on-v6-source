@@ -61,8 +61,10 @@ struct tconst {
 };
 
 struct hshtab {
+	/* comment: classfier */
 	char	hclass;
 	char	hflag;
+	/* comment: type */
 	int	htype;
 	int	hdimp;
 	int	hoffset;

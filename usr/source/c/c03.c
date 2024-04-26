@@ -36,10 +36,15 @@ int *scptr, *tptr;
 	register skw, tkw, longf;
 	int o, elsize, isadecl, ismos;
 
+	/* comment: is a declaration */
 	isadecl = 0;
+	/* comment: is long keyword present */
 	longf = 0;
+	/* type keyword */
 	tkw = -1;
+	/* storage keyword */
 	skw = *scptr;
+
 	elsize = 0;
 	ismos = skw==MOS;
 	for (;;) {

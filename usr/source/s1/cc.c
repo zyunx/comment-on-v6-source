@@ -2,18 +2,31 @@
 char	sbf[SBSIZE];
 /* C command */
 
+/* comment:
+ * tmp0 is the placeholder or lock.
+ *
+ * with preprocessor flag, tmp4 is preprocessed output
+ *
+ * without optimization
+ * source codes -- pass0 --> tmp1,tmp2 --> pass1 --> tmp3(assembly code)
+ * 
+ * with optimization
+ * source code -- pass0 --> tmp1,tmp2 --> pass1 --> tmp5 --> pass2 --> tmp3 (assembly code)
+ */
 char *tmp0;
 char *tmp1;
 char *tmp2;
 char *tmp3;
 char *tmp4;
 char *tmp5;
+/* comment: string storage pre-allocated */
 char ts[1000];
+/* comment: string storage pointer */
 char *tsp ts;
 char *av[50];
 /* comment: compile file list */
 char *clist[50];
-/* comment: link file list */
+/* comment: loader arguments: load flag, object file, library */
 char *llist[50];
 /* parse in a string */
 int instring;
@@ -60,6 +73,8 @@ char *argv[]; {
 
 	i = nc = nl = f20 = nxo = 0;
 	while(++i < argc) {
+		/* comment: there are 3 types of args, see cc(I) */
+		/* comment: flag arguments */
 		if(*argv[i] == '-')
 			switch (argv[i][1]) {
 				default:
@@ -108,9 +123,13 @@ char *argv[]; {
 		passa:
 			t = argv[i];
 			if(getsuf(t)=='c') {
+				/* comment: c source programs */
 				clist[nc++] = t;
 				t = setsuf(t, 'o');
 			}
+			
+			/* comment: otherwise, loader flags, c-compatible object or libaries */
+			
 			if (nodup(llist, t)) {
 				llist[nl++] = t;
 				if (getsuf(t)=='o')
@@ -118,8 +137,11 @@ char *argv[]; {
 			}
 		}
 	}
+	/* comment: nc = number of source file args, nxo = number of object file args*/
 	if(nc==0)
 		goto nocom;
+
+	/* comment: pflag is macro preprocessor flag */
 	if (pflag==0) {
 		tmp0 = copy("/tmp/ctm0a");
 		/* comment: find a nonexist file name */
@@ -140,15 +162,21 @@ char *argv[]; {
 	(tmp2 = copy(tmp0))[8] = '2';
 	(tmp3 = copy(tmp0))[8] = '3';
 	if (oflag)
+		/* comment: optimizer flag */
 		(tmp5 = copy(tmp0))[8] = '5';
 	if (pflag==0)
 		(tmp4 = copy(tmp0))[8] = '4';
+
+    /* comment: compile c source files */
 	for (i=0; i<nc; i++) {
 		if (nc>1)
 			printf("%s:\n", clist[i]);
+
+		/* comment: compiler pass 0 */
 		av[0] = "c0";
 		if (pflag)
 			tmp4 = setsuf(clist[i], 'i');
+		/* comment: expand file: preprocessor */
 		av[1] = expand(clist[i]);
 		if (pflag || exfail)
 			/* comment: Run only macro processor or execution fails */
@@ -168,7 +196,8 @@ char *argv[]; {
 			cflag++;
 			continue;
 		}
-		/* comment: c2: tmp5 is input, tmp3 is output */
+
+		/* comment: compiler pass 1: generate assembly if not optimized */
 		av[0] = "c1";
 		av[1] = tmp1;
 		av[2] = tmp2;
@@ -182,6 +211,9 @@ char *argv[]; {
 			cflag++;
 			continue;
 		}
+
+		/* comment: compiler pass 2: optimazation */
+		/* comment: c2: tmp5 is input, tmp3 is output */
 		if (oflag) {
 			/* comment: optional optimization phase */
 			/* comment: c2: tmp5 is input, tmp3 is output */
@@ -192,6 +224,8 @@ char *argv[]; {
 			callsys(pass2, av);
 			unlink(tmp5);
 		}
+
+		/* comment: This is a compiler that generate assembly code */
 		/* comment: tmp3 is the assembly code generated */
 		/* comment: tmp3 is input */
 		if (sflag)
@@ -211,7 +245,9 @@ char *argv[]; {
 			cflag++;
 		}
 	}
+
 nocom:
+	/* comment: link objects and library into executable */
 	if (cflag==0 && nl!=0) {
 		i = 0;
 		av[0] = "ld";
@@ -234,6 +270,7 @@ nocom:
 	dexit();
 }
 
+/* comment: delete temp files and exit */
 dexit()
 {
 	if (!pflag) {
@@ -686,6 +723,7 @@ char f[], *v[]; {
 			printf("Fatal error in %s\n", f);
 		dexit();
 	}
+	/* comment: return child process's return value */
 	return((status>>8) & 0377);
 }
 
@@ -717,6 +755,7 @@ char **l, *os;
 			/* comment: for every char c in string s */
 			if (c != *t++)
 				/* comment: c does not equal the char of t */
+				break;
 		/* comment: c may be 0 or c is not equals the char of t.
 		 * if c is 0, then s is a prefix of t,
 		 * otherwise these two string is different. */
@@ -728,6 +767,7 @@ char **l, *os;
 	return(1);
 }
 
+/* comment: unlink a file */
 cunlink(f)
 char *f;
 {
