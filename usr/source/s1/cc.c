@@ -1,4 +1,5 @@
 #define	SBSIZE	2000
+/* comment: string buffer pointed by stringbuf */
 char	sbf[SBSIZE];
 /* C command */
 
@@ -36,9 +37,9 @@ int cflag;
 int oflag;
 int proflag;
 int depth;
-int *ibuf;
-int *ibuf1;
-int *ibuf2;
+int *ibuf;		/* comment: current file buf */
+int *ibuf1;		/* comment: parent file */
+int *ibuf2;		/* comment: child file */
 int *obuf;
 /* comment: line pointer */
 char *lp;
@@ -288,6 +289,7 @@ dexit()
 expand(file)
 char *file;
 {
+	/* comment: for buffered IO */
 	int ib1[259], ib2[259], ob[259];
 	struct symtab stab[200];
 	char ln[196];
@@ -306,9 +308,9 @@ char *file;
 		close(ibuf1[0]);
 		return(file);
 	}
-	/* comment: char left decrement */
+	/* comment: nleft++ */
 	ibuf1[1]++;
-	/* comment: */
+	/* comment: nextp-- */
 	ibuf1[2]--;
 	obuf = ob;
 	symtab = stab;
@@ -333,6 +335,7 @@ char *file;
 		dexit();
 	}
 	while(getline()) {
+		/* comment: preprocess source file line by line */
 		if (ibuf==ibuf2 && pflag==0)
 			putc(001, obuf);	/*SOH: insert */
 		if (ln[0] != '#' && flslvl==0)
@@ -365,8 +368,11 @@ getline()
 
 	if (ibuf==ibuf1)
 		lineno++;
+	
+	/* comment: clear current line */
 	lp = line;
 	*lp = '\0';
+
 	state = 0;
 	if ((c=getch()) == '#')
 		state = 1;
@@ -384,6 +390,7 @@ getline()
 			sch('\0');
 			lp--;
 			if (state>3) {
+				/* comment: handle #ifndef, #ifdef, #elif */
 				if (flslvl==0 &&(state+!lookup(namep,-1)->name[0])==5)
 					trulvl++;
 				else
@@ -394,12 +401,14 @@ getline()
 				return(c);
 			}
 			if (state!=2 || flslvl==0)
+			/* comment: state may be 0,1,3 */
 				{
 				ungetc(c);
 				np = lookup(namep, state);
 				c = getch();
 				}
 			if (state==1) {
+				/* comment: which preprocessor directives */
 				if (np==defloc)
 					state = 2;
 				else if (np==incloc)
@@ -425,6 +434,7 @@ getline()
 			} else if (state==2) {
 				if (flslvl)
 					goto out;
+				/* comment: handle #define */
 				np->value = stringbuf;
 				savch(c);
 				while ((c=getch())!='\n' && c!='\0')
@@ -440,15 +450,18 @@ getline()
 			instring++;
 			while ((c=getch())!=sc && c!='\n' && c!='\0') {
 				sch(c);
+				/* comment: line continuation */
 				if (c=='\\')
 					sch(getch());
 			}
 			instring = 0;
 			if (flslvl)
+				/* comment: in false clause */
 				goto out;
 			if (state==3) {
 				if (flslvl)
 					goto out;
+				/* comment: handle #include */
 				*lp = '\0';
 				while ((c=getch())!='\n' && c!='\0');
 				if (ibuf==ibuf2)
@@ -563,7 +576,8 @@ ungetc(c)
 	}
 
 /* comment: read a char from push buffer,
- * then ibuf, if ibuf is ibuf2, then from ibuf1 */
+ * then if ibuf is ibuf2, read from ibuf2
+ * if ibuf2 is EOF or error, then read from ibuf1 */
 getc1()
 {
 	register c;
@@ -574,6 +588,7 @@ getc1()
 	/* comment: if reading from ibuf2 and end of file or error occurs,
 	 * read from ibuf1  */
 	if ((c = getc(ibuf)) < 0 && ibuf==ibuf2) {
+		/* comment: getc return -1 if EOF or read error */
 		close(ibuf2[0]);
 		ibuf = ibuf1;
 		putc('\n', obuf);
@@ -662,6 +677,7 @@ struct symtab *sp;
 	if (*vp == '(')
 		expdef(vp);
 	else
+	/* comment: substitude name, push to revbuf then, ungetc revbuf */
 	while (*vp)
 		backsch(*vp++);
 	backsch(' ');
@@ -802,6 +818,7 @@ if (k!=narg)
   error("define argument mismatch");
   return;
  }
+ /* comment: substitude */
 while (c= *proto++)
    {
    if (!letter(c))
@@ -814,8 +831,8 @@ while (c= *proto++)
         *wp++ = *proto++;
       *wp = 0;
       for (k=0; k<narg; k++)
-      if(streq(name,parg[k]))
-        break;
+		if(streq(name,parg[k]))
+			break;
       wp = k <narg ? pval[k] : name;
       while (*wp) backsch(*wp++);
       }
@@ -826,18 +843,23 @@ token(cpp) char **cpp;
 {
 char *val;
 int stc;
+/* comment: current char */
 stc = **cpp;
+/* comment: erase current char and increment */
 *(*cpp)++ = '\0';
 if (stc==')') return(0);
+/* comment: eat spaces */
 while (**cpp == ' ') (*cpp)++;
 for (val = *cpp; (stc= **cpp) != ',' && stc!= ')'; (*cpp)++)
   {
   if (!letnum(stc) || (val == *cpp && !letter(stc)))
     {
+		/* comment: parameter must begin with letter, and contain letter and number */
     error("define prototype argument error");
     break;
     }
   }
+  /* comment: token */
 return(val);
 }
 
@@ -891,6 +913,7 @@ ungetc(stc);
 return(val);
 }
 
+/* comment: letter */
 letter(c)
 {
 if ((c >= 'a' && c <= 'z') ||
@@ -900,6 +923,8 @@ if ((c >= 'a' && c <= 'z') ||
 else
     return(0);
 }
+
+/* comment: letter or number */
 letnum(c)
 {
 if (letter(c) || (c >= '0' && c <= '9'))
