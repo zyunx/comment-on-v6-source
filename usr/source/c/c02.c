@@ -22,6 +22,8 @@ extdef()
 	sclass = EXTERN;
 	xdflg = FNDEL;
 	if ((elsize = getkeywords(&sclass, &type)) == -1 && peeksym!=NAME)
+		/* comment: is not keyword(data declaration or struct) and 
+	     * is not a name (maybe function declaration) */
 		goto syntax;
 	if (type==STRUCT)
 		blkhed();

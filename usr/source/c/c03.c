@@ -202,6 +202,7 @@ decl1(askw, tkw, offset, elsize)
 	chkoff = 0;
 	mosflg = skw==MOS;
 	if ((peeksym=symbol())==SEMI || peeksym==RPARN)
+		/* comment: declarator's follow subset */
 		return(0);
 	/*
 	 * Filler field

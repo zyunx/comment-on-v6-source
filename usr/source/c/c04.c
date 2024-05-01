@@ -298,6 +298,7 @@ putchar(c)
 	write(1, &c, 1);
 }
 
+/* comment: write code to temp1(chars or expression tree) or temp2(string) */
 outcode(s, a)
 char *s;
 {
