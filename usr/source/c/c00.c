@@ -228,6 +228,7 @@ loop:
 		return(subseq(c,PLUS,INCBEF));
 
 	case MINUS:
+		/* comment: there is a bug, consider '->-' */
 		return(subseq(c,subseq('>',MINUS,ARROW),DECBEF));
 
 	case ASSIGN:
