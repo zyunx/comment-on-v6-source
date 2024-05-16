@@ -20,6 +20,7 @@ extdef()
 	peeksym = o;
 	type = INT;
 	sclass = EXTERN;
+	/* comment: external definition flag */
 	xdflg = FNDEL;
 	if ((elsize = getkeywords(&sclass, &type)) == -1 && peeksym!=NAME)
 		/* comment: is not keyword(data declaration or struct) and 

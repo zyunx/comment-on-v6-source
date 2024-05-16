@@ -21,6 +21,7 @@
 #define	NCPW	2
 #define	STRSIZ	256
 
+/* comment: syntax tree node */
 struct tnode {
 	int	op;
 	int	type;
@@ -113,7 +114,7 @@ int	nauto;
 int	autolen;
 int	peeksym;
 int	peekc;
-int	eof;
+int	eof;		/* comment: end of file flag, set by symbol() */
 int	line;
 int	osspace[OSSIZ];
 int	*treespace;
@@ -142,6 +143,10 @@ int	dimp;
 int	regvar;
 int	bitoffs;
 struct	tname	funcblk;
+
+/*
+ * comment: symbols
+ */
 
 /*
   operators
@@ -351,5 +356,5 @@ struct	tname	funcblk;
 
 #define	FNDEL	01
 #define	FNUND	02
-#define	FKEYW	04
+#define	FKEYW	04			/* comment: KEYWORD */
 #define	FFIELD	020

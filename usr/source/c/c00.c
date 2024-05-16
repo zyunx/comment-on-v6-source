@@ -88,6 +88,7 @@ char *argv[];
 		hshtab[i%hshsiz].hflag = FKEYW;
 	}
 	while(!eof) {
+		/* comment: external definition */
 		extdef();
 		blkend();
 	}
