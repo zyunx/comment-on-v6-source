@@ -201,6 +201,7 @@ declare(askw, tkw, offset, elsize)
 /*
  * Process a single declarator
  */
+/* comment: please read 8.3 in C Reference Manual */
 decl1(askw, tkw, offset, elsize)
 {
 	int t1, chkoff, a;
