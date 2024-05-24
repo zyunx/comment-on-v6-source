@@ -89,6 +89,7 @@ char *argv[];
 	}
 	while(!eof) {
 		/* comment: external definition */
+		/* comment: "A C program consists of a sequence of external definitions" -- C Reference Manual */
 		extdef();
 		blkend();
 	}

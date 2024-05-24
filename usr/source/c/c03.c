@@ -50,7 +50,7 @@ int *scptr, *tptr;
 	for (;;) {
 		mosflg = ismos;
 		switch ((o=symbol())==KEYW? cval: -1) {
-
+		/* comment: for storage class */
 		case AUTO:
 		case STATIC:
 		case EXTERN:
@@ -59,11 +59,11 @@ int *scptr, *tptr;
 				error("Conflict in storage class");
 			skw = cval;
 			break;
-	
+		/* comment: long modifier */
 		case LONG:
 			longf++;
 			break;
-
+		/* comment: for type */
 		case STRUCT:
 			o = STRUCT;
 			elsize = strdec(&o, ismos);
@@ -76,7 +76,7 @@ int *scptr, *tptr;
 				error("Type clash");
 			tkw = cval;
 			break;
-	
+		/* comment: for the identifier */
 		default:
 			peeksym = o;
 			if (isadecl==0)
@@ -105,6 +105,12 @@ int *scptr, *tptr;
  * Process a structure declaration; a subroutine
  * of getkeywords.
  */
+/*
+ * comment: 3 forms
+ * struct { type-decl-list }
+ * struct identifer { type-decl-list }
+ * struct identifer 
+ **/
 strdec(tkwp, mosf)
 int *tkwp;
 {
@@ -116,6 +122,7 @@ int *tkwp;
 	mosflg = 1;
 	ssym = 0;
 	if ((o=symbol())==NAME) {
+		/* comment: struct tag */
 		ssym = csym;
 		if (ssym->hclass==0) {
 			ssym->hclass = STRTAG;
@@ -130,7 +137,9 @@ int *tkwp;
 	}
 	mosflg = 0;
 	if (o != LBRACE) {
+		/* comment: must the variable name */
 		if (ssym==0) {
+			/* comment: no struct tag */
 		syntax:
 			decsyn(o);
 			return(0);

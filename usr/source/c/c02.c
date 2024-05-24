@@ -9,6 +9,7 @@
 /*
  * Process a single external definition
  */
+/* comment: Please read section 10 external definitions in C Reference Manual */
 extdef()
 {
 	register o, elsize;
@@ -17,8 +18,12 @@ extdef()
 
 	if(((o=symbol())==EOF) || o==SEMI)
 		return;
+	/* comment: put back symbol just read */
 	peeksym = o;
+
+	/* comment: type specifier */
 	type = INT;
+	/* comment: storage class */
 	sclass = EXTERN;
 	/* comment: external definition flag */
 	xdflg = FNDEL;
