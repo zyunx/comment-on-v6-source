@@ -344,6 +344,7 @@ getype()
 
 		case LBRACK:
 			chkdim();
+			
 			if ((o=symbol()) != RBRACK) {
 				peeksym = o;
 				cval = conexp();
@@ -354,6 +355,7 @@ getype()
 					goto syntax;
 			} else
 				dimtab[dimp++] = 1;
+
 			type = type<<TYLEN | ARRAY;
 			goto getf;
 		}

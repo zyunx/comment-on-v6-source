@@ -118,6 +118,7 @@ int	eof;		/* comment: end of file flag, set by symbol() */
 int	line;
 int	osspace[OSSIZ];
 int	*treespace;
+/* comment: current defining symbol */
 struct	hshtab	*defsym;
 struct	hshtab	*funcsym;
 int	xdflg;
@@ -250,6 +251,13 @@ struct	tname	funcblk;
 #define	LONG	6
 #define	NOTYPE	7	/* used internally */
 
+/* comment: see 8.4 Meaning of declarators in C reference manual */
+/* comment: structure of type bit fields 
+ * 1..3: basic type
+ * 4..5: a pointer to the ...
+ *			or a function returning ...
+ *          or a array of ...
+ * 6..7: the same as 4..5 */
 #define	ALIGN	01
 #define	TYPE	07
 #define	TYLEN	2

@@ -30,6 +30,7 @@ build(op) {
 	}
 	dope = opdope[op];
 	if ((dope&BINARY)!=0) {
+		/* comment: binary operator */
 		p2 = chkfun(disarray(*--cp));
 		t2 = p2->type;
 	}

@@ -484,10 +484,15 @@ tree()
 	int p, ps, os;
 
 	space = treespace;
+	/* comment: operators stack */
 	op = opst;
+	/* comment: priorities stack */
 	pp = prst;
+	/* comment: expression tree stack */
 	cp = cmst;
+
 	*op = SEOF;
+	/* comment: default priority */
 	*pp = 06;
 	andflg = 0;
 
@@ -607,12 +612,15 @@ tand:
 	andflg = 0;
 
 oponst:
+	/* comment: priory of the operator */
 	p = (opdope[o]>>9) & 077;
 	if ((o==COMMA || o==COLON) && initflg)
 		p = 05;
 opon1:
 	ps = *pp;
 	if (p>ps || p==ps && (opdope[o]&RASSOC)!=0) {
+		/* comment; if curret operator prioriy > previous operator priority,
+		 * or priority equeals and the operator is right-associative */
 		switch (o) {
 
 		case INCAFT:
@@ -632,12 +640,14 @@ opon1:
 		*++pp = p;
 		goto advanc;
 	}
+	/* comment: prioriy is less than privous operator, and is left associative? */
 	--pp;
 	switch (os = *op--) {
 
 	case SEOF:
 		peeksym = o;
 		build(0);		/* flush conversions */
+		/* comment: return the tree */
 		return(*--cp);
 
 	case CALL:
