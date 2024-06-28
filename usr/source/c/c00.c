@@ -114,6 +114,7 @@ lookup()
 	register struct hshtab *rp;
 	register char *sp, *np;
 
+	/* comment: compute hash */
 	ihash = 0;
 	sp = symbuf;
 	if (*sp=='.')
@@ -121,10 +122,15 @@ lookup()
 	while (sp<symbuf+ncps)
 		ihash =+ *sp++;
 	rp = &hshtab[ihash%hshsiz];
+
 	if (rp->hflag&FKEYW)
+		/* comment: is a keyword */
 		if (findkw())
 			return(KEYW);
+	
+	/* comment: find hshtab entry for the symbol */
 	while (*(np = rp->name)) {
+		/* comment: compare string */
 		for (sp=symbuf; sp<symbuf+ncps;)
 			if (*np++ != *sp++)
 				goto no;
@@ -493,9 +499,11 @@ tree()
 	/* comment: expression tree stack */
 	cp = cmst;
 
+	/* comment: no operator sentinal */
 	*op = SEOF;
 	/* comment: default priority */
 	*pp = 06;
+	/* comment: operand flag */
 	andflg = 0;
 
 advanc:

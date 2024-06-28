@@ -36,6 +36,7 @@ struct {
 	char	lenp;		/* structure length */
 };
 
+/* comment: node of a NAME */
 struct tname {
 	int	op;
 	int	type;
@@ -99,6 +100,7 @@ char	savstr[STRSIZ];
 char	*strptr;
 int	opdope[];
 char	ctab[];
+/* comment: symbol buffer for lexer symbol() */
 char	symbuf[ncps+2];
 int	hshused;
 struct	hshtab	hshtab[hshsiz];
@@ -126,7 +128,7 @@ struct	hshtab	*funcsym;
 int	xdflg;
 int	proflg;
 int	stflg;
-/* comment: current symbol entry */
+/* comment: current symbol for lookup(), thus symbol() */
 struct	hshtab	*csym;
 /* comment: current symbol value */
 int	cval;
