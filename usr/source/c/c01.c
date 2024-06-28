@@ -14,6 +14,8 @@
  * Essentially all the work is in inserting
  * appropriate conversions.
  */
+/* comment: REDUCE, that is building trees bottom-up
+ */
 build(op) {
 	register int t1;
 	int t2, t3, t;

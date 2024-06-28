@@ -646,11 +646,13 @@ opon1:
 			error("expression overflow");
 			exit(1);
 		}
+		/* comment: SHIFT */
 		*++op = o;
 		*++pp = p;
 		goto advanc;
 	}
-	/* comment: prioriy is less than privous operator, and is left associative? */
+	/* comment:operator prioriy is less than privous operator or (priories equal and operator is left associative) */
+	/* comment: REDUCE */
 	--pp;
 	switch (os = *op--) {
 
@@ -681,6 +683,8 @@ opon1:
 	case LPARN:
 		if (o!=RPARN)
 			goto syntax;
+		/* comment: the value and type of parenthesized expression
+		 * is that of unadorned expression. so do nothing. */
 		goto advanc;
 
 	case LBRACK:
