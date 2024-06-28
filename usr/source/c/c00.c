@@ -13,6 +13,7 @@
 
 #include "c0h.c"
 
+/* comment: int serial number for generating unique id */
 int	isn	1;
 int	stflg	1;
 int	peeksym	-1;
@@ -414,6 +415,7 @@ mapch(ac)
 	static mpeek;
 
 	c = ac;
+	/* comment: get next char */
 	if (a = mpeek)
 		mpeek = 0;
 	else

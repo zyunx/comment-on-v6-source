@@ -85,6 +85,7 @@ _getnum:
 1:
 	tst	decpt
 	bne	1f
+	/ comment: 21 is CON
 	mov	$21.,r0		/ fixed constant
 	br	9b
 1:
@@ -115,6 +116,7 @@ _getnum:
 	bne	1f
 	tst	(r0)+
 	bne	1f
+	/ comment: 24 is SFCON
 	mov	$24.,r0
 	mov	_fcval,_cval
 	br	9b

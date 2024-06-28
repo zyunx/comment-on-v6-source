@@ -34,6 +34,7 @@ build(op) {
 		p2 = chkfun(disarray(*--cp));
 		t2 = p2->type;
 	}
+	/* comment: first operand subtree */
 	p1 = *--cp;
 	/*
 	 * sizeof gets turned into a number here.
@@ -324,6 +325,7 @@ struct tnode *ap;
 		return(p);
 	p->ssp++;
 	*cp++ = p;
+	/* comment: deduce reference by 1 of t , */
 	setype(p, decref(t), -1);
 	build(AMPER);
 	return(*--cp);
@@ -392,6 +394,7 @@ int *p1, *p2, *p3;
 	int *oldp;
 
 	n = an+3;
+	/* comment: get a block */
 	p = gblock(n);
 	oldp = p;
 	ap = &op;

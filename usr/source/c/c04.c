@@ -7,6 +7,7 @@
 
 #include "c0h.c"
 
+/* comment: decref an incref are inverse function for each other */
 /*
  * Reduce the degree-of-reference by one.
  * e.g. turn "ptr-to-int" into "int".
@@ -17,9 +18,12 @@ decref(at)
 
 	t = at;
 	if ((t & ~TYPE) == 0) {
+		/* comment: no reference */
 		error("Illegal indirection");
 		return(t);
 	}
+	/* comment: t&TYPE is base byte bits
+	 *          (t >> TYLEN) & ~TYPE decreese degree of reference */
 	return((t>>TYLEN) & ~TYPE | t&TYPE);
 }
 
@@ -29,6 +33,10 @@ decref(at)
  */
 incref(t)
 {
+	/* comment: t&~TYPE = reference bits 
+	 *          (t&~TYPE)<<TYLEN provide space for reference of next degree 
+	 *          t&TYPE = base type bits
+	 *          PTR is pointer reference */
 	return(((t&~TYPE)<<TYLEN) | (t&TYPE) | PTR);
 }
 

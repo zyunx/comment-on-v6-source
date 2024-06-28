@@ -93,7 +93,9 @@ struct	bnode {
 };
 
 char	cvtab[4][4];
+/* comment: string buffer */
 char	savstr[STRSIZ];
+/* comment: string pointer */
 char	*strptr;
 int	opdope[];
 char	ctab[];
@@ -128,6 +130,7 @@ int	stflg;
 struct	hshtab	*csym;
 /* comment: current symbol value */
 int	cval;
+/* comment: crrent float symbol value */
 double	fcval;
 int	nchstr;
 int	nerror;
