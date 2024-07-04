@@ -23,9 +23,12 @@
 
 /* comment: syntax tree node */
 struct tnode {
+	/* comment: operator */
 	int	op;
+	/* comment: value type */
 	int	type;
 	int	dimp;
+	/* comment: left and right operand */
 	struct	tnode *tr1, *tr2;
 };
 
@@ -266,6 +269,7 @@ struct	tname	funcblk;
 #define	ALIGN	01
 #define	TYPE	07
 #define	TYLEN	2
+/* comment: reference type mask */
 #define	XTYPE	(03<<3)
 #define	PTR	010
 #define	FUNC	020

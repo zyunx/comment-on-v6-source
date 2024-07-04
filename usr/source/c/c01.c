@@ -33,10 +33,11 @@ build(op) {
 	dope = opdope[op];
 	if ((dope&BINARY)!=0) {
 		/* comment: binary operator */
+		/* comment: second(right) operand subtree */
 		p2 = chkfun(disarray(*--cp));
 		t2 = p2->type;
 	}
-	/* comment: first operand subtree */
+	/* comment: first(left) operand subtree */
 	p1 = *--cp;
 	/*
 	 * sizeof gets turned into a number here.
@@ -58,6 +59,7 @@ build(op) {
 			p1 = chkfun(p1);
 	}
 	t1 = p1->type;
+
 	pcvn = 0;
 	t = INT;
 	switch (op) {
@@ -96,12 +98,14 @@ build(op) {
 		return;
 
 	case AMPER:
+		/* comment: &(*expression) */
 		if (p1->op==STAR) {
 			p1->tr1->dimp = p1->dimp;
 			p1->tr1->type = incref(t1);
 			*cp++ = p1->tr1;
 			return;
 		}
+		/* comment: &name */
 		if (p1->op==NAME) {
 			*cp++ = block(1,op,incref(t1),p1->dimp,p1);
 			return;
@@ -171,9 +175,12 @@ build(op) {
 		t2 = INT;
 	} else
 		cvn = cvtab[lintyp(t1)][lintyp(t2)];
+	/* comment: left operand shoud be converted */
 	leftc = (cvn>>4)&017;
 	cvn =& 017;
+	/* comment: target type */
 	t = leftc? t2:t1;
+
 	if (dope&ASSGOP) {
 		t = t1;
 		if (op==ASSIGN && (cvn==ITP||cvn==PTI))

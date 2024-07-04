@@ -507,6 +507,7 @@ tree()
 	andflg = 0;
 
 advanc:
+	/* comment: SHIFT */
 	switch (o=symbol()) {
 
 	case NAME:
@@ -646,7 +647,7 @@ opon1:
 			error("expression overflow");
 			exit(1);
 		}
-		/* comment: SHIFT */
+		/* comment: push operator and its priority */
 		*++op = o;
 		*++pp = p;
 		goto advanc;
