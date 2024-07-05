@@ -171,6 +171,8 @@ build(op) {
 			*cp++ = block(1,op,t1,p1->dimp,p1);
 		return;
 	}
+
+	/* comment: type conversion logic */
 	cvn = 0;
 	if (t1==STRUCT || t2==STRUCT) {
 		error("Unimplemented structure operation");
@@ -204,16 +206,21 @@ build(op) {
 			cvn = 0;
 	}
 	if (cvn==PTI) {
+		/* comment: pointer op pointer */
 		cvn = 0;
 		if (op==MINUS) {
 			t = INT;
 			pcvn++;
 		} else {
+			/* comment: operater other than '-' */
 			if (t1!=t2 || t1!=(PTR+CHAR))
+				/* comment: illegal conversion if pointer is not char pointer */
 				cvn = XX;
 		}
 	}
 	if (cvn) {
+		/* comment: convert operand type */
+		/* comment: length of data pointed by the pointer */
 		t1 = plength(p1);
 		t2 = plength(p2);
 		if (cvn==XX || (cvn==PTI&&t1!=t2))
@@ -228,6 +235,7 @@ build(op) {
 	if (fold(op, p1, p2)==0)
 		*cp++ = block(2,op,t,(p1->dimp==0? p2:p1)->dimp,p1,p2);
 	if (pcvn && t1!=(PTR+CHAR)) {
+		/* comment: pointer minus = memory address difference / type length */
 		p1 = *--cp;
 		*cp++ = convert(p1, 0, PTI, plength(p1->tr1));
 	}
@@ -248,6 +256,7 @@ struct tnode *p;
 	case PTI:
 	case ITP:
 		if (len==1)
+			/* comment: pointer to char */
 			return(p);
 		return(block(2, (cvn==PTI?DIVIDE:TIMES), t, 0, p,
 			block(1, CON, 0, 0, len)));
