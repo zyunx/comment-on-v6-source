@@ -27,6 +27,7 @@ build(op) {
 	 * a[i] => *(a+i)
 	 */
 	if (op==LBRACK) {
+		/* comment: translate array element to STAR expression */
 		build(PLUS);
 		op = STAR;
 	}
@@ -89,6 +90,7 @@ build(op) {
 
 	case STAR:
 		if (p1->op==AMPER ) {
+			/* comment: *(&expr) = expr */
 			*cp++ = p1->tr1;
 			return;
 		}
