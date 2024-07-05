@@ -337,6 +337,8 @@ struct tnode *ap;
 	p->ssp++;
 	*cp++ = p;
 	/* comment: deduce reference by 1 of t , */
+	/* comment: for example, a array of int => a pointer to int,
+	 * make use of expression stack */
 	setype(p, decref(t), -1);
 	build(AMPER);
 	return(*--cp);
