@@ -151,18 +151,23 @@ build(op) {
 			*cp++ = block(2, FSEL, t, 0, *--cp, p2->dimp);
 		return;
 	}
+	/* comment: check lvalue if neccesary */
 	if ((dope&LVALUE)!=0)
 		chklval(p1);
+	/* comment: left operand is int, char, long or pointer */
 	if ((dope&LWORD)!=0)
 		chkw(p1, LONG);
+	/* comment: right operand is int, char, long or pointer */
 	if ((dope&RWORD)!=0)
 		chkw(p2, LONG);
 	if ((dope&BINARY)==0) {
+		/* comment: unary operator */
 		if (op==ITOF)
 			t1 = DOUBLE;
 		else if (op==FTOI)
 			t1 = INT;
 		if (!fold(op, p1, 0))
+			/* comment: can't fold to constant */
 			*cp++ = block(1,op,t1,p1->dimp,p1);
 		return;
 	}
