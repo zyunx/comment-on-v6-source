@@ -30,6 +30,12 @@ declist(sclass)
 /*
  * Read the keywords introducing a declaration statement
  */
+/*
+ * comment: return value
+ * >0: struct
+ * =0: atomic type
+ * <0: no keywords
+ */
 getkeywords(scptr, tptr)
 int *scptr, *tptr;
 {
@@ -224,26 +230,36 @@ decl1(askw, tkw, offset, elsize)
 		bitoffs =+ t1;
 		return(elsize);
 	}
+	/* comment: below is to construct type */
+	/* comment: get chainable type components */
 	if ((t1=getype()) < 0)
 		goto syntax;
+	/* comment: reverse chainable type components */
 	type = 0;
 	do
 		type = type<<TYLEN | (t1 & XTYPE);
 	while (((t1=>>TYLEN) & XTYPE)!=0);
+	/* comment: combine chainable type components
+	 * to target components */
 	type =| tkw;
+
 	dsym = defsym;
 	if (!(dsym->hclass==0
 	   || (skw==ARG && dsym->hclass==ARG1)
 	   || (skw==EXTERN && dsym->hclass==EXTERN && dsym->htype==type)))
 		if (skw==MOS && dsym->hclass==MOS && dsym->htype==type)
+			/* comment: member of structure */
 			chkoff = 1;
 		else {
 			redec();
 			goto syntax;
 		}
+	/* comment: set type */
 	dsym->htype = type;
+	/* comment: set storage class */
 	if (skw)
 		dsym->hclass = skw;
+	
 	if (skw==ARG1) {
 		if (paraml==0)
 			paraml = dsym;
@@ -305,6 +321,17 @@ syntax:
 
 /*
  * Read a declarator and get the implied type
+ */
+/*
+ * comment: type is a list of type components,
+ * type components includes target type, such as
+ * int, char, float, double, and chainable type,
+ * like pointer of ..., array of ...,
+ * function returning ...
+ */
+/*
+ * comment: defsym is the identifier, 
+ *          return value is the chainable type components.
  */
 getype()
 {

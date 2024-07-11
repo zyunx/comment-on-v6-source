@@ -128,6 +128,7 @@ int	*treespace;
 /* comment: current defining symbol */
 struct	hshtab	*defsym;
 struct	hshtab	*funcsym;
+/* comment: external definition flag */
 int	xdflg;
 int	proflg;
 int	stflg;
