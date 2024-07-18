@@ -354,9 +354,11 @@ getype()
 		type = 0;
 		ds->ssp = dimp;
 	getf:
+		/* comment: function returning ... or array of ... */
 		switch(o=symbol()) {
 
 		case LPARN:
+			/* comment: function returning ... */
 			if (xdflg) {
 				xdflg = 0;
 				ds = defsym;
@@ -366,6 +368,7 @@ getype()
 			} else
 				if ((o=symbol()) != RPARN)
 					goto syntax;
+				
 			type = type<<TYLEN | FUNC;
 			goto getf;
 
@@ -376,11 +379,13 @@ getype()
 				peeksym = o;
 				cval = conexp();
 				for (o=ds->ssp&0377; o<dimp; o++)
+					/* comment: see C reference manul, array's rank */
 					dimtab[o] =* cval;
 				dimtab[dimp++] = cval;
 				if ((o=symbol())!=RBRACK)
 					goto syntax;
 			} else
+				/* comment: rank 1 is default */
 				dimtab[dimp++] = 1;
 
 			type = type<<TYLEN | ARRAY;

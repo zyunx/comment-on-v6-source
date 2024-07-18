@@ -19,6 +19,7 @@ int	stflg	1;
 int	peeksym	-1;
 int	line	1;
 int	debug	0;
+/* comment: array's rank storage */
 int	dimp	0;
 struct	tname	funcblk { NAME, 0, 0, REG, 0, 0 };
 int	*treespace { osspace };

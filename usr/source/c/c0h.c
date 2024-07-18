@@ -35,6 +35,7 @@ struct tnode {
 struct {
 	int	op;
 	int	type;
+	/* comment: multi-dimensional array */
 	char	ssp;		/* subscript list */
 	char	lenp;		/* structure length */
 };
