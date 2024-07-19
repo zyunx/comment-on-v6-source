@@ -74,6 +74,9 @@ struct hshtab {
 	/* comment: type */
 	int	htype;
 	int	hdimp;
+	/* comment: offset to stack base pointer if auto storage class */
+	/* comment: register number of register if register storage class */
+	/* comment: isn if static storage class */
 	int	hoffset;
 	char	name[ncps];
 };

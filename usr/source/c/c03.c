@@ -316,6 +316,8 @@ decl1(askw, tkw, offset, elsize)
 	} else if (dsym->hclass==REG) {
 		if ((type&TYPE)>CHAR && (type&XTYPE)==0
 		 || (type&XTYPE)>PTR || regvar<3)
+		 	/* comment: register can only store int, char, pointer
+			 * and only r2,r3,r4 are available */
 			error("Bad register %o", type);
 		dsym->hoffset = --regvar;
 	}
