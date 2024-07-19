@@ -37,6 +37,7 @@ struct {
 	int	type;
 	/* comment: multi-dimensional array */
 	char	ssp;		/* subscript list */
+	/* comment: also point to dimtab */
 	char	lenp;		/* structure length */
 };
 
@@ -67,7 +68,7 @@ struct tconst {
 };
 
 struct hshtab {
-	/* comment: classfier */
+	/* comment: storage class */
 	char	hclass;
 	char	hflag;
 	/* comment: type */
@@ -147,6 +148,7 @@ int	strflg;
 int	mosflg;
 int	initflg;
 int	inhdr;
+/* comment: storage for structure length or rank of array */
 int	dimtab[dimsiz];
 char	obuf[518];
 char	sbuf[518];

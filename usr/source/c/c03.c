@@ -297,9 +297,13 @@ decl1(askw, tkw, offset, elsize)
 			redec();
 		dsym->hoffset = offset;
 	}
+
 	if ((dsym->htype&XTYPE)==FUNC) {
 		if (dsym->hclass!=EXTERN && dsym->hclass!=AUTO)
+			/* comment: function can be declared external or in another function */
 			error("Bad function");
+
+		/* comment: function can only be external */
 		dsym->hclass = EXTERN;
 	}
 	if (dsym->hclass==AUTO) {
