@@ -10,6 +10,9 @@
  * Process a single external definition
  */
 /* comment: Please read section 10 external definitions in C Reference Manual */
+/* comment: getkeywords is to parse the decl-specifiers,
+ *          include type specifier and storage specifier.
+ *          decl1 is to parse the declarator */
 extdef()
 {
 	register o, elsize;

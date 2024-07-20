@@ -82,7 +82,7 @@ int *scptr, *tptr;
 				error("Type clash");
 			tkw = cval;
 			break;
-		/* comment: for the identifier */
+		/* comment: otherwise, the start of declarator */
 		default:
 			peeksym = o;
 			if (isadecl==0)
@@ -132,6 +132,7 @@ int *tkwp;
 		ssym = csym;
 		if (ssym->hclass==0) {
 			ssym->hclass = STRTAG;
+			/* comment: initialize structure length as 0 */
 			ssym->lenp = dimp;
 			chkdim();
 			dimtab[dimp++] = 0;
@@ -153,6 +154,7 @@ int *tkwp;
 		if (ssym->hclass!=STRTAG)
 			error("Bad structure name");
 		if ((elsize = dimtab[ssym->lenp&0377])==0) {
+			/* commit: struct of the tag is not defined yet. */
 			*tkwp = RSTRUCT;
 			elsize = ssym;
 		}
@@ -170,6 +172,7 @@ int *tkwp;
 		if (ssym) {
 			if (dimtab[ssym->lenp&0377])
 				error("%.8s redeclared", ssym->name);
+			/* comment: set structure length */
 			dimtab[ssym->lenp&0377] = elsize;
 		}
 	}

@@ -157,6 +157,7 @@ char	obuf[518];
 char	sbuf[518];
 int	dimp;
 int	regvar;
+/* comment: structure bit field offset */
 int	bitoffs;
 struct	tname	funcblk;
 
