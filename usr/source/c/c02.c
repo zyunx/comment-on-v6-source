@@ -46,12 +46,16 @@ extdef()
 		outcode("BS", SYMDEF, ds->name);
 		xdflg = 0;
 		if ((ds->type&XTYPE)==FUNC) {
+			/* comment: for functions */
 			if ((peeksym=symbol())==LBRACE || peeksym==KEYW) {
+				/* comment: it's a function definition, reserve storage for function code. */
+				/* comment: code block's type is that the function returns */
 				funcblk.type = decref(ds->type);
 				cfunc(ds->name);
 				return;
 			}
 		} else 
+			/* comment: for simple variable and arrays, parse initializer */
 			cinit(ds);
 	} while ((o=symbol())==COMMA);
 	if (o==SEMI)
@@ -77,6 +81,7 @@ char *cs;
 
 	savdimp = dimp;
 	outcode("BBS", PROG, RLABEL, cs);
+	/* comment: function's argument types declaration */
 	declist(ARG);
 	regvar = 5;
 	retlab = isn++;
@@ -590,6 +595,7 @@ blkhed()
 		cs->hoffset = pl;
 		cs->hclass = AUTO;
 		if ((cs->htype&XTYPE) == ARRAY) {
+			/* comment: change array to pointer */
 			cs->htype =- (ARRAY-PTR);	/* set ptr */
 			cs->ssp++;		/* pop dims */
 		}

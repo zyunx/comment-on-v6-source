@@ -159,6 +159,7 @@ int	dimp;
 int	regvar;
 /* comment: structure bit field offset */
 int	bitoffs;
+/* comment: function body code block */
 struct	tname	funcblk;
 
 /*
