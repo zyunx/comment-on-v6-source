@@ -122,6 +122,7 @@ struct hshtab *ds;
 		width = 2;
 	}
 	if ((peeksym=symbol())==COMMA || peeksym==SEMI) {
+		/* comment: no initializer, just reserver storage */
 		outcode("BSN",CSPACE,ds->name,(nel*width+ALIGN)&~ALIGN);
 		return;
 	}
@@ -143,9 +144,12 @@ struct hshtab *ds;
 	 * First round up partial initializations.
 	 */
 	if (basetype==STRUCT) {
+		/* comment: for struct, 2*nint is the initializers' size */
 		if (o = 2*ninit % realwidth)
 			outcode("BN", SSPACE, realwidth-o);
+		/* comment: ninit is now the number of struct being initializing */
 		ninit = (2*ninit+realwidth-2) / realwidth;
+		/* comment: nel is now the number of struct to be initialized */
 		nel =/ realwidth/2;
 	}
 	/*
@@ -157,6 +161,7 @@ struct hshtab *ds;
 	if (ninit<nel)
 		outcode("BN", SSPACE, (nel-ninit)*realwidth);
 	else if (ninit>nel) {
+		/* comment: length of array is the maximum of expression in bracket and length of initializer */
 		if ((ds->type&XTYPE)==ARRAY)
 			dimtab[ds->ssp&0377] = ninit;
 		nel = ninit;
@@ -166,6 +171,8 @@ struct hshtab *ds;
 	 */
 	if (ninit>1 && (ds->type&XTYPE)!=ARRAY)
 		error("Too many initializers");
+
+	/* comment: align */
 	if (((nel&width)&ALIGN))
 		outcode("B", EVEN);
 }
@@ -185,8 +192,10 @@ struct hshtab *ds;
 	width = awidth;
 	ninit = aninit;
 	if ((peeksym=symbol())==STRING && type==CHAR) {
+		/* comment: string constant */
 		peeksym = -1;
 		if (ninit)
+			/* comment: error */
 			bxdec();
 		putstr(0);
 		if (nel>nchstr) {
@@ -198,13 +207,16 @@ struct hshtab *ds;
 		return(nchstr);
 	}
 	if (peeksym==RBRACE)
+		/* comment: not a constant */
 		return(ninit);
+
 	initflg++;
 	s = tree();
 	initflg = 0;
 	switch(width) {
 
 	case 1:
+		/* comment: for char */
 		if (s->op != CON)
 			goto bad;
 		outcode("B1N0", BDATA, s->value);
@@ -212,6 +224,7 @@ struct hshtab *ds;
 
 	case 2:
 		if (s->op==CON) {
+			/* comment: for word */
 			outcode("B1N0", WDATA, s->value);
 			break;
 		}
@@ -226,11 +239,13 @@ struct hshtab *ds;
 		break;
 
 	case 4:
+		/* comment: for float or long */
 		sf = fcval;
 		outcode("B1N1N0", WDATA, sf);
 		goto flt;
 
 	case 8:
+		/* comment: for double */
 	prflt:
 		outcode("B1N1N1N1N0", WDATA, fcval);
 	flt:

@@ -143,12 +143,14 @@ struct	hshtab	*csym;
 int	cval;
 /* comment: crrent float symbol value */
 double	fcval;
+/* comment: number of chars in a string literal */
 int	nchstr;
 int	nerror;
 struct	hshtab	*paraml;
 struct	hshtab	*parame;
 int	strflg;
 int	mosflg;
+/* comment: flag to indicate whether it is parsing a initializer */
 int	initflg;
 int	inhdr;
 /* comment: storage for structure length or rank of array */

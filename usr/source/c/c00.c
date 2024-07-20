@@ -17,6 +17,7 @@
 int	isn	1;
 int	stflg	1;
 int	peeksym	-1;
+/* comment: line number */
 int	line	1;
 int	debug	0;
 /* comment: array's rank storage */

@@ -178,6 +178,7 @@ struct tnode *acs;
 		return(8*n);
 
 	case STRUCT:
+		/* comment: structure's storage length */
 		return(n * dimtab[cs->lenp&0377]);
 
 	case RSTRUCT:
