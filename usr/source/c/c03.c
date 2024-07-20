@@ -427,9 +427,12 @@ align(type, offset, aflen)
 	}
 	while ((t&XTYPE)==ARRAY)
 		t = decref(t);
+	/* comment: char doesn't need be aligned */
 	if (t!=CHAR) {
+		/* comment: align it with word */
 		a = (a+ALIGN) & ~ALIGN;
 		if (a>offset)
+			/* comment: if storage has been reserved, reset bit offset */
 			bitoffs = 0;
 	}
 	if (flen) {
@@ -450,6 +453,7 @@ align(type, offset, aflen)
 		} else
 			error("Bad type for field");
 	}
+	/* comment: return reserved storage for alignment */
 	return(a-offset);
 }
 
