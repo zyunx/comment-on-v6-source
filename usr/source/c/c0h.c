@@ -383,8 +383,10 @@ struct	tname	funcblk;
 /*
  * symbol table flags
  */
-
+/* comment: external declaration */
 #define	FNDEL	01
+/* comment: undefined */
 #define	FNUND	02
 #define	FKEYW	04			/* comment: KEYWORD */
+/* comment: structure bit field */
 #define	FFIELD	020
