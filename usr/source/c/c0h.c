@@ -296,7 +296,9 @@ struct	tname	funcblk;
 #define	STATIC	13
 #define	REG	14
 #define	STRTAG	15
+/* comment: function's argument declarations */
 #define ARG	16
+/* comment: function's argument names */
 #define	ARG1	17
 #define	FMOS	18
 

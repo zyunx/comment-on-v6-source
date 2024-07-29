@@ -598,6 +598,7 @@ blkhed()
 	register pl;
 	register struct hshtab *cs;
 
+	/* comment: function arguments declarations */
 	autolen = 6;
 	declist(0);
 	pl = 4;
