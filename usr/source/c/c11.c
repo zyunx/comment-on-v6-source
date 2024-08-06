@@ -641,6 +641,7 @@ getree()
 		if (sp >= &expstack[20])
 			error("Stack botch");
 		op = getw(ascbuf);
+		/* comment: the most 7 significant bigs of op is always 0177, see outcode */
 		if ((op&0177400) != 0177000) {
 			error("Intermediate file error");
 			exit(1);
@@ -648,14 +649,17 @@ getree()
 		switch(op =& 0377) {
 
 	case EOF:
+		/* comment: end of intermediate file */
 		return;
 
 	case BDATA:
+		/* comment: char constant or string in text */
 		printf(".byte ");
 		seq(',');
 		break;
 
 	case WDATA:
+		/* comment: for word constant, float, double */
 		seq(';');
 		break;
 
@@ -693,8 +697,10 @@ getree()
 		break;
 
 	case SAVE:
+		/* comment: start of function body */
 		printf("jsr	r5,csv\n");
 		t = getw(ascbuf)-6;
+		/* comment: reserve local variable storage */
 		if (t==2)
 			printf("tst	-(sp)\n");
 		else if (t > 2)
@@ -781,6 +787,7 @@ getree()
 		break;
 
 	case LABEL:
+		/* comment: label */
 		label(getw(ascbuf));
 		break;
 
@@ -817,6 +824,7 @@ getree()
 	}
 }
 
+/* comment: print a name */
 outname(s)
 {
 	register char *p, c;
@@ -833,6 +841,7 @@ outname(s)
 	return(s);
 }
 
+/* comment: print a sequence of bytes or words */
 seq(c)
 {
 	register o;
@@ -842,6 +851,7 @@ seq(c)
 	for (;;) {
 		printf("%o", getw(ascbuf));
 		if ((o = getw(ascbuf)) != 1)
+			/* comment: end of data indicator */
 			break;
 		printf("%c", c);
 	}

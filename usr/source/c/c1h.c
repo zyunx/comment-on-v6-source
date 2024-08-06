@@ -91,7 +91,9 @@ int	opdope[];
 char	*opntab[];
 int	nstack;
 int	nfloat;
+/* comment: tree space pointer */
 int	*spacep;
+/* comment: space allocated for expression tree */
 int	treespace[ossiz];
 int	eolflg;
 struct tconst czero, cone, fczero;

@@ -254,6 +254,7 @@ struct	tname	funcblk;
 #define	SETREG	105
 #define	RFORCE	110
 #define	BRANCH	111
+/* comment: create a label */
 #define	LABEL	112
 #define	NLABEL	113
 #define	RLABEL	114
@@ -334,16 +335,27 @@ struct	tname	funcblk;
 /*
  * Special operators in intermediate code
  */
+/* comment: byte data .byte, for char constant and string */
 #define	BDATA	200
+/* comment: word data .word, for word, float, double */
 #define	WDATA	201
+/* comment: .text section */
 #define	PROG	202
+/* comment: .data section */
 #define	DATA	203
+/* comment: .bss section, for static variable */
 #define	BSS	204
+/* comment: .comm, create a common name with reserved storage */
 #define	CSPACE	205
+/* comment: for reserving space, .=.+n */
 #define	SSPACE	206
+/* comment: define a global symbol */
 #define	SYMDEF	207
+/* comment: for setup function call frame */
 #define	SAVE	208
+/* comment: return from function */
 #define	RETRN	209
+/* comment: .even for alignment */
 #define	EVEN	210
 #define	PROFIL	212
 #define	SWIT	213

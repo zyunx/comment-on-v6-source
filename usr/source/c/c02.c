@@ -43,6 +43,7 @@ extdef()
 			return;
 		funcsym = ds;
 		ds->hflag =| FNDEL;
+		/* comment: function is always external */
 		outcode("BS", SYMDEF, ds->name);
 		xdflg = 0;
 		if ((ds->type&XTYPE)==FUNC) {
@@ -88,6 +89,7 @@ char *cs;
 	if ((peeksym = symbol()) != LBRACE)
 		error("Compound statement required");
 	statement(1);
+	/* comment: generate code for returning from function with a label */
 	outcode("BNB", LABEL, retlab, RETRN);
 	dimp = savdimp;
 }
@@ -127,6 +129,7 @@ struct hshtab *ds;
 		return;
 	}
 	ninit = 0;
+	/* comment: named label */
 	outcode("BBS", DATA, NLABEL, ds->name);
 	if ((o=symbol())==LBRACE) {
 		do
@@ -174,6 +177,7 @@ struct hshtab *ds;
 
 	/* comment: align */
 	if (((nel&width)&ALIGN))
+		/* comment: generate alignment code */
 		outcode("B", EVEN);
 }
 
@@ -286,6 +290,7 @@ stmt:
 		if (d) {
 			if (proflg)
 				outcode("BN", PROFIL, isn++);
+			/* comment: start of function body */
 			outcode("BN", SAVE, blkhed());
 		}
 		while (!eof) {

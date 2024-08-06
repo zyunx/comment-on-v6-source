@@ -313,6 +313,7 @@ decl1(askw, tkw, offset, elsize)
 		autolen =+ rlength(dsym);
 		dsym->hoffset = -autolen;
 	} else if (dsym->hclass==STATIC) {
+		/* comment: static variable */
 		dsym->hoffset = isn;
 		outcode("BBNBNB", BSS, LABEL, isn++,
 		    SSPACE, rlength(dsym), PROG);
