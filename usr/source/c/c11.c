@@ -330,7 +330,7 @@ clr	r0\n\
 div	$%o,r0\n\
 asl	r1\n\
 add	$L%d,r1\n\
-mov	r0,*(r1)+\n\
+mov	r0,*(r1)+\n\		/* comment: sentinal for below loop: cmp r0,-(r1) */
 mov	(r1)+,r1\n\
 L%d:cmp	r0,-(r1)\n\
 jne	L%d\n\
@@ -360,6 +360,8 @@ struct swtab *afp, *alp;
 	range = lp->swval - fp->swval;
 	/* direct switch */
 	if (range>0 && range <= 3*ncase) {
+		/* comment: case values' range is small, 
+		 * we can use one label for each value */
 		if (fp->swval)
 			printf("sub	$%o,r0\n", fp->swval);
 		printf(dirsw, range, deflab, isn, isn);
@@ -390,6 +392,8 @@ struct swtab *afp, *alp;
 	/* hash switch */
 	best = 077777;
 	for (i=ncase/4; i<=ncase/2; i++) {
+		/* comment: i is between ncase/4 .. ncase/2 */
+		/* comment: poctab records number of same remainders */
 		for (j=0; j<i; j++)
 			poctab[j] = 0;
 		for (swp=fp; swp<=lp; swp++)
@@ -403,19 +407,24 @@ struct swtab *afp, *alp;
 			best = i*worst;
 		}
 	}
+	/* comment: tabs is the number when the number of same remainders is minimum */
 	i = isn++;
 	printf(hashsw, tabs, isn, i, i, isn+tabs+1, isn+1, isn);
 	isn++;
 	for (i=0; i<=tabs; i++)
 		printf("L%d\n", isn+i);
 	for (i=0; i<tabs; i++) {
+		/* comment: labels for cases where case's val % tabs = i */
+		/* comment: !!! apply equavalent relationship theory in discrete math */
 		printf("L%d:..\n", isn++);
 		for (swp=fp; swp<=lp; swp++)
 			if (lrem(0, swp->swval, tabs) == i)
+				/* comment: val % tabs = i 's quotient */
 				printf("%o\n", ldiv(0, swp->swval, tabs));
 	}
 	printf("L%d:", isn++);
 	for (i=0; i<tabs; i++) {
+		/* comment: default label for every parts */
 		printf("L%d\n", deflab);
 		for (swp=fp; swp<=lp; swp++)
 			if (lrem(0, swp->swval, tabs) == i)

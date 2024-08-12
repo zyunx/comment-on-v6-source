@@ -116,11 +116,15 @@ int	*space;
 int	*cp;
 int	cmst[cmsiz];
 int	isn;
+/* comment: switch statement case's label and constant values */
 struct	swtab	swtab[swsiz];
+/* comment: parsing pointer */
 struct	swtab	*swp;
 int	contlab;
+/* comment: break label */
 int	brklab;
 int	retlab;
+/* comment: switch statement default label */
 int	deflab;
 int	nauto;
 int	autolen;

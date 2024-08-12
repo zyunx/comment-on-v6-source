@@ -430,6 +430,7 @@ stmt:
 		case SWITCH:
 			o1 = brklab;
 			brklab = isn++;
+			/* comment: parse and generate code for the constant */
 			np = pexpr();
 			chkw(np, -1);
 			rcexpr(block(1,RFORCE,0,0,np));
@@ -569,11 +570,14 @@ pswitch()
 	cswp = sswp = swp;
 	if (swp==0)
 		cswp = swp = swtab;
+	/* comment: jump to branch control logic */
 	branch(swlab=isn++);
 	dl = deflab;
 	deflab = 0;
+	/* comment: code of cases */
 	statement(0);
 	branch(brklab);
+	/* comment: branch related codes */
 	label(swlab);
 	if (deflab==0)
 		deflab = brklab;
@@ -581,6 +585,7 @@ pswitch()
 	for (; cswp < swp; cswp++)
 		outcode("NN", cswp->swlab, cswp->swval);
 	outcode("0");
+	/* comment: end of switch */
 	label(brklab);
 	deflab = dl;
 	swp = sswp;
