@@ -796,20 +796,23 @@ getree()
 		break;
 
 	case LABEL:
-		/* comment: label */
+		/* comment: numeric label */
 		label(getw(ascbuf));
 		break;
 
 	case NLABEL:
+		/* comment: named label */
 		printf("_%s:\n", outname(s));
 		break;
 
 	case RLABEL:
+		/* comment: function name label */
 		t = outname(s);
 		printf("_%s:\n~~%s:\n", t, t);
 		break;
 
 	case BRANCH:
+		/* comment: jbr */
 		branch(getw(ascbuf), 0);
 		break;
 
