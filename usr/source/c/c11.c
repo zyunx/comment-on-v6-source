@@ -252,6 +252,7 @@ struct tnode *at;
 
 	t = at;
 	if ((opdope[t->op]&RELAT)!=0)
+		/* comment: relational operation */
 		t = t->tr1;
 	if (t->type==FLOAT || t->type==DOUBLE) {
 		nfloat = 1;

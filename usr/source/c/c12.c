@@ -25,13 +25,17 @@ struct tnode *atree;
 	}
 	dope = opdope[op];
 	if ((dope&LEAF) != 0)
+		/* comment: leaf node */
 		return(tree);
 	if ((dope&BINARY) == 0)
+		/* comment: unary operator expression optimizer */
 		return(unoptim(tree));
 	/* is known to be binary */
 	if (tree->type==CHAR)
+		/* comment: always convert binary operation result char to int */
 		tree->type = INT;
 	if ((dope&COMMUTE)!=0) {
+		/* comment: the operation is commutative */
 	acomm:	d1 = tree->type;
 		tree = acommute(tree);
 		tree->type = d1;
@@ -580,6 +584,7 @@ islong(t)
 	return(1);
 }
 
+/* comment: return constant tree node or 0 */
 isconstant(at)
 struct tnode *at;
 {

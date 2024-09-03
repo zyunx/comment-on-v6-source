@@ -375,10 +375,12 @@ struct	tname	funcblk;
 
 #define	BINARY	01
 #define	LVALUE	02
+/* comment: relational operator */
 #define	RELAT	04
 #define	ASSGOP	010
 #define	LWORD	020
 #define	RWORD	040
+/* comment: commutative */
 #define	COMMUTE	0100
 #define	RASSOC	0200
 #define	LEAF	0400

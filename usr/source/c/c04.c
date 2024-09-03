@@ -99,6 +99,7 @@ struct tnode *atree;
 		return;
 
 	default:
+		/* comment: Post-order LRN */
 		treeout(tree->tr1);
 		if (opdope[tree->op]&BINARY)
 			treeout(tree->tr2);

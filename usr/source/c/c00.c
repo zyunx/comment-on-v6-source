@@ -628,6 +628,7 @@ oponst:
 	/* comment: priory of the operator */
 	p = (opdope[o]>>9) & 077;
 	if ((o==COMMA || o==COLON) && initflg)
+		/* comment: for loop's init statement */
 		p = 05;
 opon1:
 	ps = *pp;
