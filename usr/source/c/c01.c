@@ -421,7 +421,7 @@ int *p1, *p2, *p3;
 	int *oldp;
 
 	n = an+3;
-	/* comment: get a block */
+	/* comment: get a block from osspace */
 	p = gblock(n);
 	oldp = p;
 	ap = &op;

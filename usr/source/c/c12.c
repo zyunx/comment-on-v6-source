@@ -177,7 +177,9 @@ struct tnode *atree;
 	struct { int integer; };
 
 	if ((tree=atree)==0)
+		/* comment: null tree(node) */
 		return(0);
+
 	if (tree->op==CBRANCH) {
 		tree->btree = optim(tree->btree);
 		return(tree);

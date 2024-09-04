@@ -493,6 +493,7 @@ tree()
 	register struct hshtab *cs;
 	int p, ps, os;
 
+	/* comment: expression tree space */
 	space = treespace;
 	/* comment: operators stack */
 	op = opst;

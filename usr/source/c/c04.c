@@ -269,6 +269,7 @@ chconbrk(l)
 /*
  * The goto statement.
  */
+ /* comment: goto <pointer to int> */
 dogoto()
 {
 	register struct tnode *np;
@@ -288,6 +289,7 @@ doret()
 	register struct tnode *t;
 
 	if (nextchar() != ';') {
+		/* comment: return value */
 		t = tree();
 		*cp++ = &funcblk;
 		*cp++ = t;

@@ -307,6 +307,7 @@ stmt:
 
 		case GOTO:
 			if (o1 = simplegoto())
+				/* comment: goto label */
 				branch(o1);
 			else 
 				dogoto();
